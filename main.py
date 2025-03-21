@@ -1,61 +1,74 @@
 import pygame
 from player import Player
-
+from settings import Settings
+from maze import Maze
 
 class LabyRunGame:
     def __init__(self):
         """ Constructor """
         pygame.init()
-        self.screen = pygame.display.set_mode((1280, 720))
+        self.settings = Settings()
+
+        width, height = self.settings.get_screen_size()
+        self.screen = pygame.display.set_mode((width, height))
+        self.settings.set_screen_size(self.screen.get_width(), self.screen.get_height())
+
         self.clock = pygame.time.Clock()
         pygame.display.set_caption("LabyRun")
 
-        self.player = Player(self, 100, 100)
+        self.maze = Maze(self, "maps/map1.json")
+
+        self.player1 = Player(self, 930, 55, "red")
+        self.player2 = Player(self, 335, 655)
 
     def _check_events(self):
         """ Check events """
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                return False
+                pygame.quit()
             elif event.type == pygame.KEYDOWN:
-                self._check_keydown_events(event)
-            elif event.type == pygame.KEYUP:
-                self._check_keyup_events(event)
+                if event.key == pygame.K_ESCAPE:
+                    pygame.quit()
+            # Player 1
+            self._player_movements(self.player1, event,
+                                   [pygame.K_UP, pygame.K_DOWN, pygame.K_LEFT, pygame.K_RIGHT]
+                                   )
+            # Player 2
+            self._player_movements(self.player2, event,
+                                   [pygame.K_w, pygame.K_s, pygame.K_a, pygame.K_d]
+                                   )
 
-    def _check_keydown_events(self, event):
-        """ Check keydown events """
-        if event.key == pygame.K_ESCAPE:
-            return False
-        if event.key == pygame.K_UP or event.key == pygame.K_w:
-            self.player.movings["up"] = True
-        if event.key == pygame.K_DOWN or event.key == pygame.K_s:
-            self.player.movings["down"] = True
-        if event.key == pygame.K_LEFT or event.key == pygame.K_a:
-            self.player.movings["left"] = True
-        if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
-            self.player.movings["right"] = True
-
-    def _check_keyup_events(self, event):
-        """ Check keyup events """
-        if event.key == pygame.K_UP or event.key == pygame.K_w:
-            self.player.movings["up"] = False
-        if event.key == pygame.K_DOWN or event.key == pygame.K_s:
-            self.player.movings["down"] = False
-        if event.key == pygame.K_LEFT or event.key == pygame.K_a:
-            self.player.movings["left"] = False
-        if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
-            self.player.movings["right"] = False
+    def _player_movements(self, player, event, keys):
+        """ Player movements """
+        if event.type == pygame.KEYDOWN:
+            if event.key == keys[0]:
+                player.movings["up"] = True
+            if event.key == keys[1]:
+                player.movings["down"] = True
+            if event.key == keys[2]:
+                player.movings["left"] = True
+            if event.key == keys[3]:
+                player.movings["right"] = True
+        if event.type == pygame.KEYUP:
+            if event.key == keys[0]:
+                player.movings["up"] = False
+            if event.key == keys[1]:
+                player.movings["down"] = False
+            if event.key == keys[2]:
+                player.movings["left"] = False
+            if event.key == keys[3]:
+                player.movings["right"] = False
 
     def run(self):
         """ Main loop """
-        running = True
-        while running:
+        while True:
             self._check_events()
             self.screen.fill("black")
-            self.player.update()
+            self.maze.draw()
+            self.player1.update()
+            self.player2.update()
             pygame.display.flip()
             self.clock.tick(60)
-        pygame.quit()
 
 
 if __name__ == "__main__":
