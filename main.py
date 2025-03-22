@@ -23,18 +23,24 @@ class LabyRunGame:
         self.player1 = Player(self, 930, 55, "red")
         self.player2 = Player(self, 335, 655)
 
-        self.game_manager = GameState()
+        self.game_state = GameState()
         self.menu = Menu(self)
 
     def _check_events(self):
         """ Check events """
         for event in pygame.event.get():
+            # Game events
             if event.type == pygame.QUIT:
                 pygame.quit()
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     pygame.quit()
-            if self.game_manager.is_running():
+
+            # Menu events
+            self.menu.handle_events(event)
+
+            # Player movements
+            if self.game_state.is_running():
                 # Player 1
                 self._player_movements(self.player1, event,
                                        [pygame.K_UP, pygame.K_DOWN, pygame.K_LEFT, pygame.K_RIGHT]
@@ -70,7 +76,7 @@ class LabyRunGame:
         while True:
             self._check_events()
             self.screen.fill((0, 0, 0))
-            if self.game_manager.is_running():
+            if self.game_state.is_running():
                 self.maze.draw()
                 self.player1.update()
                 self.player2.update()
