@@ -2,6 +2,8 @@ import pygame
 from player import Player
 from settings import Settings
 from maze import Maze
+from game_state import GameState
+from menu import Menu
 
 class LabyRunGame:
     def __init__(self):
@@ -21,6 +23,9 @@ class LabyRunGame:
         self.player1 = Player(self, 930, 55, "red")
         self.player2 = Player(self, 335, 655)
 
+        self.game_manager = GameState()
+        self.menu = Menu(self)
+
     def _check_events(self):
         """ Check events """
         for event in pygame.event.get():
@@ -29,14 +34,15 @@ class LabyRunGame:
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     pygame.quit()
-            # Player 1
-            self._player_movements(self.player1, event,
-                                   [pygame.K_UP, pygame.K_DOWN, pygame.K_LEFT, pygame.K_RIGHT]
-                                   )
-            # Player 2
-            self._player_movements(self.player2, event,
-                                   [pygame.K_w, pygame.K_s, pygame.K_a, pygame.K_d]
-                                   )
+            if self.game_manager.is_running():
+                # Player 1
+                self._player_movements(self.player1, event,
+                                       [pygame.K_UP, pygame.K_DOWN, pygame.K_LEFT, pygame.K_RIGHT]
+                                       )
+                # Player 2
+                self._player_movements(self.player2, event,
+                                       [pygame.K_w, pygame.K_s, pygame.K_a, pygame.K_d]
+                                       )
 
     def _player_movements(self, player, event, keys):
         """ Player movements """
@@ -63,10 +69,13 @@ class LabyRunGame:
         """ Main loop """
         while True:
             self._check_events()
-            self.screen.fill("black")
-            self.maze.draw()
-            self.player1.update()
-            self.player2.update()
+            self.screen.fill((0, 0, 0))
+            if self.game_manager.is_running():
+                self.maze.draw()
+                self.player1.update()
+                self.player2.update()
+            else:
+                self.menu.draw()
             pygame.display.flip()
             self.clock.tick(60)
 
