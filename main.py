@@ -1,7 +1,7 @@
 import pygame
 from player import Player
 from settings import Settings
-from maze import Maze
+from maze_components import Maze
 from game_state import GameState
 from menu import Menu
 
