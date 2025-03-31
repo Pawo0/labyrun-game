@@ -41,6 +41,11 @@ class Maze:
                 else:
                     self.floors.add(Floor(pos_x, pos_y, self.block_size))
 
+    def check_collision(self, rect):
+        temp_sprite = pygame.sprite.Sprite()
+        temp_sprite.rect = rect
+        return pygame.sprite.spritecollide(temp_sprite, self.walls, False)
+
     def draw(self):
         self.walls.draw(self.screen)
         self.floors.draw(self.screen)
