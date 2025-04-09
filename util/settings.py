@@ -18,11 +18,11 @@ class Settings:
 
         # Player settings
         self.player_speed = 5
-        self.player_width = 15
-        self.player_height = 15
+        self.player_width = 10
+        self.player_height = 10
 
         # Maze settings
-        self.block_size = 35
+        self.block_size = 25
 
     def get_screen_size(self):
         """

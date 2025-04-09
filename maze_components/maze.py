@@ -34,14 +34,12 @@ class Maze:
 
         self.create_sprites()
 
-    def load_maze(self, maze_json, mirrored=False):
+    def load_maze(self, maze_json):
         """
         Loads the maze from a JSON file.
         """
         with open(maze_json, "r", encoding="utf-8") as file:
             self.maze = json.load(file)["maze"]
-        if mirrored:
-            self.maze = [row[::-1] for row in self.maze]
 
     def create_sprites(self):
         """
@@ -70,3 +68,15 @@ class Maze:
         """
         self.walls.draw(self.screen)
         self.floors.draw(self.screen)
+
+    def get_lower_left(self):
+        """
+        Returns the lower left corner of the maze.
+        """
+        return self.offset_x, self.offset_y + self.maze_height
+
+    def get_lower_right(self):
+        """
+        Returns the lower right corner of the maze.
+        """
+        return self.offset_x + self.maze_width, self.offset_y + self.maze_height

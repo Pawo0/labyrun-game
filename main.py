@@ -26,15 +26,33 @@ class LabyRunGame:
         self.clock = pygame.time.Clock()
         pygame.display.set_caption("LabyRun")
 
-        create_map(21, 21)
+        create_map(31, 31)
 
         self.maze = Maze(self, "maps/map.json")
 
-        self.player1 = Player(self, 930, 55, "red")
-        self.player2 = Player(self, 335, 655)
+        left_x, left_y, right_x, right_y = self._calculate_initial_positions()
+
+        self.player1 = Player(self, right_x, right_y, "red")
+        self.player2 = Player(self, left_x, left_y)
 
         self.game_state = GameState()
         self.menu = Menu(self)
+
+    def _calculate_initial_positions(self):
+        """
+        Calculates the initial positions of the players.
+        """
+        left = self.maze.get_lower_left()
+        right = self.maze.get_lower_right()
+        block_size = self.settings.block_size
+        player_size = self.settings.player_width
+
+        left_x = left[0] + 1.5 * block_size - player_size // 2
+        left_y = left[1] - 2 * block_size + player_size // 2
+        right_x = right[0] - 2 * block_size + player_size // 2
+        right_y = right[1] - 2 * block_size + player_size // 2
+
+        return left_x, left_y, right_x, right_y
 
     def _check_events(self):
         """

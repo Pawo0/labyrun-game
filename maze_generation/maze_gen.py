@@ -71,8 +71,8 @@ def generate_maze(width: int, height: int):
     if width < 0 or height < 0:
         raise ValueError("Maze dimensions must be positive.")
 
-    if width % 2 == 0 or height % 2 == 0:
-        raise ValueError("Maze dimensions must be odd.")
+    if width % 4 != 3 or height % 4 != 3:
+        raise ValueError("Maze dimensions must be equal to a multiple of 4 - 1.")
 
     maze = [[1 for _ in range(width)] for _ in range(height)]
     cells = [(row, col) for row in range(1, height, 2) for col in range(1, width, 2)]
