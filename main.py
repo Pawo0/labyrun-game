@@ -1,13 +1,20 @@
+"""
+LabyRun is a 2D maze game where two players race through a maze to reach the treasure.
+Authors: Paweł Czajczyk, Jakub Psarski
+"""
 import pygame
-from player import Player
-from settings import Settings
+
 from maze_components import Maze
-from game_state import GameState
 from menu import Menu
+from entities import Player
+from util import GameState, Settings
+
 
 class LabyRunGame:
+    """
+    Main class for the game.
+    """
     def __init__(self):
-        """ Constructor """
         pygame.init()
         self.settings = Settings()
 
@@ -27,7 +34,9 @@ class LabyRunGame:
         self.menu = Menu(self)
 
     def _check_events(self):
-        """ Check events """
+        """
+        Checks game events.
+        """
         for event in pygame.event.get():
             # Game events
             if event.type == pygame.QUIT:
@@ -51,28 +60,32 @@ class LabyRunGame:
                                        )
 
     def _player_movements(self, player, event, keys):
-        """ Player movements """
+        """
+        Handles player movements.
+        """
         if event.type == pygame.KEYDOWN:
             if event.key == keys[0]:
-                player.movings["up"] = True
+                player.movements["up"] = True
             if event.key == keys[1]:
-                player.movings["down"] = True
+                player.movements["down"] = True
             if event.key == keys[2]:
-                player.movings["left"] = True
+                player.movements["left"] = True
             if event.key == keys[3]:
-                player.movings["right"] = True
+                player.movements["right"] = True
         if event.type == pygame.KEYUP:
             if event.key == keys[0]:
-                player.movings["up"] = False
+                player.movements["up"] = False
             if event.key == keys[1]:
-                player.movings["down"] = False
+                player.movements["down"] = False
             if event.key == keys[2]:
-                player.movings["left"] = False
+                player.movements["left"] = False
             if event.key == keys[3]:
-                player.movings["right"] = False
+                player.movements["right"] = False
 
     def run(self):
-        """ Main loop """
+        """
+        Main loop of the game.
+        """
         while True:
             self._check_events()
             self.screen.fill((0, 0, 0))

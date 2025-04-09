@@ -1,7 +1,11 @@
+"""
+This module contains the Button class.
+"""
 import pygame
 
 
 class Button:
+    """This class creates buttons in the game menu."""
     def __init__(self, main, text, x, y, active):
         self.main = main
         self.screen = main.screen
@@ -19,18 +23,29 @@ class Button:
         self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
 
     def draw(self):
+        """
+        Draws the button on the screen.
+        """
         if self.active:
             pygame.draw.rect(self.screen, self.outline_color_active,
                              (self.x - 5, self.y - 5, self.width + 10, self.height + 10))
         else:
             pygame.draw.rect(self.screen, self.outline_color,
                              (self.x - 5, self.y - 5, self.width + 10, self.height + 10))
-        pygame.draw.rect(self.screen, self.background_color, (self.x, self.y, self.width, self.height))
+        pygame.draw.rect(self.screen,
+                         self.background_color,
+                         (self.x, self.y, self.width, self.height))
         text_render = self.font.render(self.text, True, self.text_color)
         self.screen.blit(text_render, (self.x, self.y))
 
     def is_clicked(self, mouse_pos):
+        """
+        Checks if the button is clicked.
+        """
         return self.rect.collidepoint(mouse_pos)
 
     def is_hovered(self, mouse_pos):
+        """
+        Checks if the mouse is hovering over the button.
+        """
         return self.rect.collidepoint(mouse_pos)

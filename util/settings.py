@@ -1,6 +1,17 @@
+"""
+This module contains the Settings class.
+"""
+
+
 class Settings:
+    """
+    This class manages game settings:
+    - Screen size
+    - Maze block size
+    - Player size
+    - Player speed
+    """
     def __init__(self):
-        """ Constructor """
         # Screen settings
         self.screen_width = 1280
         self.screen_height = 720
@@ -14,9 +25,14 @@ class Settings:
         self.block_size = 35
 
     def get_screen_size(self):
-        """ Get width and height of the screen """
+        """
+        Returns the width and height of the screen
+        """
         return self.screen_width, self.screen_height
 
     def set_screen_size(self, width, height):
+        """
+        Sets the width and height of the screen
+        """
         self.screen_width = width
         self.screen_height = height

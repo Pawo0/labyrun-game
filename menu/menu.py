@@ -1,19 +1,31 @@
-from button import Button
+"""
+This module contains the Menu class.
+"""
 import pygame
+
+from .button import Button
 
 
 class Menu:
+    """
+    This class handles the main menu of the game.
+    """
     def __init__(self, main):
         self.main = main
         self.screen = main.screen
         self.items = ["Start", "Settings", "Quit"]
-        self.ys = [self.screen.get_height() // 2 - 100, self.screen.get_height() // 2,
+        self.ys = [self.screen.get_height() // 2 - 100,
+                   self.screen.get_height() // 2,
                    self.screen.get_height() // 2 + 100]
         self.x = self.screen.get_width() // 2
         self.selected = 0
-        self.buttons = [Button(self.main, item, self.x, self.ys[i], i == 0) for i, item in enumerate(self.items)]
+        self.buttons = [Button(self.main, item, self.x, self.ys[i], i == 0)
+                        for i, item in enumerate(self.items)]
 
     def draw(self):
+        """
+        Draws the menu on the screen.
+        """
         for i, button in enumerate(self.buttons):
             button.active = i == self.selected
             button.draw()
@@ -27,6 +39,9 @@ class Menu:
             pygame.quit()
 
     def handle_events(self, event):
+        """
+        Handles events for the menu.
+        """
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_UP:
                 self.selected = (self.selected - 1) % len(self.items)
@@ -45,4 +60,3 @@ class Menu:
                 if button.is_clicked(event.pos):
                     self._button_pressed()
                     break
-

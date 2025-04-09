@@ -1,3 +1,4 @@
-from .wall import Wall
-from .floor import Floor
+"""
+This module provides utilities for creating, manipulating and visualizing the maze.
+"""
 from .maze import Maze
