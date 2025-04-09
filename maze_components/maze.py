@@ -28,8 +28,9 @@ class Maze:
         # self.offset_y = (self.screen.get_height() - len(self.maze) * self.block_size) // 2
 
         self.maze_width = len(self.maze[0]) * self.block_size
+        self.maze_height = len(self.maze) * self.block_size
         self.offset_x = (self.screen.get_width() - self.maze_width) // 2
-        self.offset_y = (self.screen.get_height() - self.maze_width) // 2
+        self.offset_y = (self.screen.get_height() - self.maze_height) // 2
 
         self.create_sprites()
 

@@ -5,6 +5,7 @@ Authors: Paweł Czajczyk, Jakub Psarski
 import pygame
 
 from maze_components import Maze
+from maze_generation import create_map
 from menu import Menu
 from entities import Player
 from util import GameState, Settings
@@ -25,7 +26,9 @@ class LabyRunGame:
         self.clock = pygame.time.Clock()
         pygame.display.set_caption("LabyRun")
 
-        self.maze = Maze(self, "maps/map1.json")
+        create_map(21, 21)
+
+        self.maze = Maze(self, "maps/map.json")
 
         self.player1 = Player(self, 930, 55, "red")
         self.player2 = Player(self, 335, 655)
