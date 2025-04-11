@@ -1,19 +1,19 @@
 """
-This module contains the Menu class.
+This module contains the GameOverMenu class.
 """
 import pygame
 
 from .button import Button
 
 
-class Menu:
+class GameOverMenu:
     """
-    This class handles the main menu of the game.
+    This class handles the game over menu.
     """
     def __init__(self, main):
         self.main = main
         self.screen = main.screen
-        self.items = ["Start", "Settings", "Quit"]
+        self.items = ["Play Again", "Main Menu", "Quit"]
         self.ys = [self.screen.get_height() // 2 - 225,
                    self.screen.get_height() // 2 - 100,
                    self.screen.get_height() // 2,
@@ -24,14 +24,21 @@ class Menu:
                         for i, item in enumerate(self.items)]
         self.background_color = (0, 0, 0)
         self.font = pygame.font.SysFont('arialblack', 40)
-        self.text_width, self.text_height = self.font.size("LabyRun")
+        self.text_width, self.text_height = self.font.size(
+            f"{"Player 1" if self.main.game_state.winner == 1 else "Player 2"} Wins!"
+        )
         self.text_color = (255, 255, 255)
+
 
     def draw(self):
         """
         Draws the menu on the screen.
         """
-        text_render = self.font.render("LabyRun", True, self.text_color)
+        text_render = self.font.render(
+            f"{"Player 1" if self.main.game_state.winner == 1 else "Player 2"} Wins!",
+            True,
+            self.text_color
+        )
         self.screen.blit(text_render, (self.x - self.text_width // 2, self.ys[0]))
 
         for i, button in enumerate(self.buttons):
@@ -42,7 +49,7 @@ class Menu:
         if self.selected == 0:
             self.main.game_state.run_game()
         elif self.selected == 1:
-            pass
+            self.main.game_state.main_menu()
         elif self.selected == 2:
             pygame.quit()
 

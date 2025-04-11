@@ -38,6 +38,10 @@ class Engine:
                                        [pygame.K_UP, pygame.K_DOWN, pygame.K_LEFT, pygame.K_RIGHT]
                                        )
 
+            # Game Over events
+            if self.main.game_state.is_game_over():
+                self.main.gameover_menu.handle_events(event)
+
 
     def _player_movements(self, player, event, keys):
         """
@@ -76,11 +80,9 @@ class Engine:
 
     def _check_win_condition(self):
         if self.main.player1.x > self.win_zone[0]:
-            self.main.game_state.game_won(self.main.player1)
-            print("Player 1 wins!")
+            self.main.game_state.game_won(1)
         if self.main.player2.x < self.win_zone[1]:
-            self.main.game_state.game_won(self.main.player2)
-            print("Player 2 wins!")
+            self.main.game_state.game_won(2)
 
 
     def run(self):
@@ -95,9 +97,9 @@ class Engine:
                 self.main.player1.update()
                 self.main.player2.update()
                 self._check_win_condition()
-            elif not self.main.game_state.is_game_over():
-                self.main.menu.draw()
+            elif self.main.game_state.is_game_over():
+                self.main.gameover_menu.draw()
             else:
-                pass
+                self.main.menu.draw()
             pygame.display.flip()
             self.main.clock.tick(60)

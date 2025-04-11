@@ -7,10 +7,11 @@ class GameState:
     """
     This class manages the current state of the game.
     """
-    def __init__(self):
+    def __init__(self, main):
         self.running = False
         self.game_over = False
         self.winner = None
+        self.main = main
 
     def game_won(self, winner):
         """
@@ -25,6 +26,18 @@ class GameState:
         Sets the game state to running.
         """
         self.running = True
+        self.game_over = False
+        self.winner = None
+        self.main.player1.reset(self.main.player1_initial_position)
+        self.main.player2.reset(self.main.player2_initial_position)
+
+    def main_menu(self):
+        """
+        Sets the game state to main menu.
+        """
+        self.running = False
+        self.game_over = False
+        self.winner = None
 
     def is_running(self):
         """
