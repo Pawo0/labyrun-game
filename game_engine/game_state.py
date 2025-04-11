@@ -9,12 +9,14 @@ class GameState:
     """
     def __init__(self):
         self.running = False
+        self.game_over = False
 
-    def game_over(self):
+    def game_won(self):
         """
         Sets the game state to game over.
         """
         self.running = False
+        self.game_over = True
 
     def run_game(self):
         """
@@ -27,3 +29,9 @@ class GameState:
         Returns the current game state.
         """
         return self.running
+
+    def is_game_over(self):
+        """
+        Returns the current game state.
+        """
+        return self.game_over
