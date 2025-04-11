@@ -13,16 +13,16 @@ class Settings:
     """
     def __init__(self):
         # Screen settings
-        self.screen_width = 1280
-        self.screen_height = 720
+        self.screen_width = 1920
+        self.screen_height = 1080
 
         # Player settings
         self.player_speed = 5
-        self.player_width = 15
-        self.player_height = 15
+        self.player_width = 10
+        self.player_height = 10
 
         # Maze settings
-        self.block_size = 35
+        self.block_size = 25
 
     def get_screen_size(self):
         """

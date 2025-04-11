@@ -5,6 +5,7 @@ Authors: Paweł Czajczyk, Jakub Psarski
 import pygame
 
 from maze_components import Maze
+from maze_generation import create_map
 from menu import Menu
 from entities import Player
 from util import GameState, Settings
@@ -25,13 +26,33 @@ class LabyRunGame:
         self.clock = pygame.time.Clock()
         pygame.display.set_caption("LabyRun")
 
-        self.maze = Maze(self, "maps/map1.json")
+        create_map(31, 31)
 
-        self.player1 = Player(self, 930, 55, "red")
-        self.player2 = Player(self, 335, 655)
+        self.maze = Maze(self, "maps/map.json")
+
+        left_x, left_y, right_x, right_y = self._calculate_initial_positions()
+
+        self.player1 = Player(self, right_x, right_y, "red")
+        self.player2 = Player(self, left_x, left_y)
 
         self.game_state = GameState()
         self.menu = Menu(self)
+
+    def _calculate_initial_positions(self):
+        """
+        Calculates the initial positions of the players.
+        """
+        left = self.maze.get_lower_left()
+        right = self.maze.get_lower_right()
+        block_size = self.settings.block_size
+        player_size = self.settings.player_width
+
+        left_x = left[0] + 1.5 * block_size - player_size // 2
+        left_y = left[1] - 2 * block_size + player_size // 2
+        right_x = right[0] - 2 * block_size + player_size // 2
+        right_y = right[1] - 2 * block_size + player_size // 2
+
+        return left_x, left_y, right_x, right_y
 
     def _check_events(self):
         """
