@@ -23,6 +23,8 @@ class Settings:
 
         # Maze settings
         self.block_size = 25
+        self.maze_width = 31
+        self.maze_height = 31
 
     def get_screen_size(self):
         """
@@ -36,3 +38,12 @@ class Settings:
         """
         self.screen_width = width
         self.screen_height = height
+
+    def calculate_block_size(self):
+        """
+        Calculates the block size based on the screen size and maze dimensions.
+        """
+        self.block_size = min(
+            self.screen_width // (self.maze_width * 2 + 3),
+            self.screen_height // self.maze_height
+        )

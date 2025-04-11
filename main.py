@@ -19,14 +19,14 @@ class LabyRunGame:
         pygame.init()
         self.settings = Settings()
 
-        width, height = self.settings.get_screen_size()
-        self.screen = pygame.display.set_mode((width, height))
+        self.screen = pygame.display.set_mode()
         self.settings.set_screen_size(self.screen.get_width(), self.screen.get_height())
+        self.settings.calculate_block_size()
 
         self.clock = pygame.time.Clock()
         pygame.display.set_caption("LabyRun")
 
-        create_map(31, 31)
+        create_map(self.settings.maze_width, self.settings.maze_height)
 
         self.maze = Maze(self, "maps/map.json")
 
