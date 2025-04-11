@@ -6,7 +6,7 @@ import pygame
 
 from maze_components import Maze
 from maze_generation import create_map
-from menu import Menu, GameOverMenu
+from menu import MainMenu, GameOverMenu
 from entities import Player
 from util import Settings
 from game_engine import Engine, GameState
@@ -25,9 +25,7 @@ class LabyRunGame:
         self.clock = pygame.time.Clock()
         pygame.display.set_caption("LabyRun")
 
-        create_map(self.settings.maze_width, self.settings.maze_height)
-
-        self.maze = Maze(self, "maps/map.json")
+        self.generate_maze()
 
         self.player1_initial_position, self.player2_initial_position = \
             self._calculate_initial_positions()
@@ -36,7 +34,7 @@ class LabyRunGame:
         self.player2 = Player(self, self.player2_initial_position)
 
         self.game_state = GameState(self)
-        self.menu = Menu(self)
+        self.menu = MainMenu(self)
         self.gameover_menu = GameOverMenu(self)
         self.engine = Engine(self)
 
@@ -56,9 +54,16 @@ class LabyRunGame:
 
         return (left_x, left_y), (right_x, right_y)
 
+    def generate_maze(self):
+        """
+        Generates the maze.
+        """
+        create_map(self.settings.maze_width, self.settings.maze_height)
+        self.maze = Maze(self, "maps/map.json")
+
     def run(self):
         """
-        Run the game.
+        Runs the game.
         """
         self.engine.run()
 

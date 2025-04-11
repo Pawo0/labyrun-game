@@ -30,6 +30,7 @@ class GameState:
         self.winner = None
         self.main.player1.reset(self.main.player1_initial_position)
         self.main.player2.reset(self.main.player2_initial_position)
+        self.main.generate_maze()
 
     def main_menu(self):
         """

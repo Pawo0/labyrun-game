@@ -12,9 +12,9 @@ class Settings:
     - Player speed
     """
     def __init__(self, width, height):
-        # Maze settings
-        self.maze_width = 19
-        self.maze_height = 19
+        # small values for testing
+        self.maze_width = 7
+        self.maze_height = 7
 
         self.screen_width = width
         self.screen_height = height
