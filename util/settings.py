@@ -13,8 +13,8 @@ class Settings:
     """
     def __init__(self, width, height):
         # Maze settings
-        self.maze_width = 31
-        self.maze_height = 31
+        self.maze_width = 19
+        self.maze_height = 19
 
         self.screen_width = width
         self.screen_height = height

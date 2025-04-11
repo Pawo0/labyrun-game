@@ -31,8 +31,8 @@ class LabyRunGame:
 
         left_x, left_y, right_x, right_y = self._calculate_initial_positions()
 
-        self.player1 = Player(self, right_x, right_y, "red")
-        self.player2 = Player(self, left_x, left_y)
+        self.player1 = Player(self, left_x, left_y, "red")
+        self.player2 = Player(self, right_x, right_y)
 
         self.game_state = GameState()
         self.menu = Menu(self)

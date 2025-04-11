@@ -10,6 +10,7 @@ class Engine:
     """
     def __init__(self, main):
         self.main = main
+        self.win_zone = self._calculate_win_zone()
 
     def _check_events(self):
         """
@@ -30,11 +31,11 @@ class Engine:
             if self.main.game_state.is_running():
                 # Player 1
                 self._player_movements(self.main.player1, event,
-                                       [pygame.K_UP, pygame.K_DOWN, pygame.K_LEFT, pygame.K_RIGHT]
+                                       [pygame.K_w, pygame.K_s, pygame.K_a, pygame.K_d]
                                        )
                 # Player 2
                 self._player_movements(self.main.player2, event,
-                                       [pygame.K_w, pygame.K_s, pygame.K_a, pygame.K_d]
+                                       [pygame.K_UP, pygame.K_DOWN, pygame.K_LEFT, pygame.K_RIGHT]
                                        )
 
 
@@ -62,6 +63,26 @@ class Engine:
                 player.movements["right"] = False
 
 
+    def _calculate_win_zone(self):
+        """
+        Calculates the win zone for the players.
+        """
+        mid = self.main.settings.screen_width // 2
+        block_size = self.main.settings.block_size
+
+        return mid - block_size * 1.5 - self.main.settings.player_width, \
+               mid + block_size * 1.5 - self.main.settings.player_width
+
+
+    def _check_win_condition(self):
+        if self.main.player1.x > self.win_zone[0]:
+            self.main.game_state.game_won(self.main.player1)
+            print("Player 1 wins!")
+        if self.main.player2.x < self.win_zone[1]:
+            self.main.game_state.game_won(self.main.player2)
+            print("Player 2 wins!")
+
+
     def run(self):
         """
         Main loop of the game.
@@ -73,9 +94,10 @@ class Engine:
                 self.main.maze.draw()
                 self.main.player1.update()
                 self.main.player2.update()
+                self._check_win_condition()
             elif not self.main.game_state.is_game_over():
                 self.main.menu.draw()
             else:
-                print("Game Over")
+                pass
             pygame.display.flip()
             self.main.clock.tick(60)
