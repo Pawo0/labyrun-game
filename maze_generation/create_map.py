@@ -2,6 +2,7 @@
 This module generates a 2-player maze map by creating two mazes of the same dimensions.
 """
 import json
+import os
 
 from .maze_gen import generate_maze
 
@@ -27,5 +28,9 @@ def create_map(width, height):
         "maze": maze_map
     }
 
-    with open("maps/map.json", "w", encoding="utf-8") as file:
+    directory = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "maps")
+    os.makedirs(directory, exist_ok=True)
+    file_path = os.path.join(directory, "map.json")
+
+    with open(file_path, "w", encoding="utf-8") as file:
         json.dump(maze_json, file, indent=2)
