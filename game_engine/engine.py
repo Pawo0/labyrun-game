@@ -25,10 +25,11 @@ class Engine:
                     pygame.quit()
 
             # Menu events
-            self.main.menu.handle_events(event)
+            if self.main.game_state.get_current_state() == "main_menu":
+                self.main.menu.handle_events(event)
 
             # Player movements
-            if self.main.game_state.is_running():
+            if self.main.game_state.get_current_state() == "running":
                 # Player 1
                 self._player_movements(self.main.player1, event,
                                        [pygame.K_w, pygame.K_s, pygame.K_a, pygame.K_d]
@@ -39,7 +40,7 @@ class Engine:
                                        )
 
             # Game Over events
-            if self.main.game_state.is_game_over():
+            if self.main.game_state.get_current_state() == "game_over":
                 self.main.gameover_menu.handle_events(event)
 
 
@@ -92,14 +93,14 @@ class Engine:
         while True:
             self._check_events()
             self.main.screen.fill((0, 0, 0))
-            if self.main.game_state.is_running():
+            if self.main.game_state.get_current_state() == "running":
                 self.main.maze.draw()
                 self.main.player1.update()
                 self.main.player2.update()
                 self._check_win_condition()
-            elif self.main.game_state.is_game_over():
+            elif self.main.game_state.get_current_state() == "game_over":
                 self.main.gameover_menu.draw()
-            else:
+            elif self.main.game_state.get_current_state() == "main_menu":
                 self.main.menu.draw()
             pygame.display.flip()
             self.main.clock.tick(60)
