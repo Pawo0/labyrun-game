@@ -8,35 +8,31 @@ from .button import Button
 
 class Menu:
     """
-    This class handles the main menu of the game.
+    Base class for game menus.
     """
-    def __init__(self, main):
+    def __init__(self, main, title, items):
         self.main = main
         self.screen = main.screen
-        self.items = ["Start", "Settings", "Quit"]
-        self.ys = [self.screen.get_height() // 2 - 100,
-                   self.screen.get_height() // 2,
-                   self.screen.get_height() // 2 + 100]
+        self.items = items
+        self.ys = [self.screen.get_height() // 2 - 225]
+
+        button_start_y = self.screen.get_height() // 2 - 100 # kazdy kolejny przycisk 100 pikseli nizej
+        button_spacing = 100
+        for i in range(len(items)):
+            self.ys.append(button_start_y + i * button_spacing)
+
         self.x = self.screen.get_width() // 2
         self.selected = 0
-        self.buttons = [Button(self.main, item, self.x, self.ys[i], i == 0)
+        self.buttons = [Button(self.main, item, self.x, self.ys[i + 1], i == 0)
                         for i, item in enumerate(self.items)]
-
-    def draw(self):
-        """
-        Draws the menu on the screen.
-        """
-        for i, button in enumerate(self.buttons):
-            button.active = i == self.selected
-            button.draw()
+        self.background_color = (0, 0, 0)
+        self.font = pygame.font.SysFont('arialblack', 40)
+        self.title = title
+        self.text_width, self.text_height = self.font.size(title)
+        self.text_color = (255, 255, 255)
 
     def _button_pressed(self):
-        if self.selected == 0:
-            self.main.game_state.run_game()
-        elif self.selected == 1:
-            pass
-        elif self.selected == 2:
-            pygame.quit()
+        raise NotImplementedError("This method should be overridden by subclasses.")
 
     def handle_events(self, event):
         """
@@ -60,3 +56,14 @@ class Menu:
                 if button.is_clicked(event.pos):
                     self._button_pressed()
                     break
+
+    def draw(self):
+        """
+        Draws the menu on the screen.
+        """
+        text_render = self.font.render(self.title, True, self.text_color)
+        self.screen.blit(text_render, (self.x - self.text_width // 2, self.ys[0]))
+
+        for i, button in enumerate(self.buttons):
+            button.active = i == self.selected
+            button.draw()
