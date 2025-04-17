@@ -21,6 +21,7 @@ class MainMenu(Menu):
         if self.selected == 0:
             self.main.game_state.run_game()
         elif self.selected == 1:
-            pass
+            self.main.game_state.open_settings_menu()
         elif self.selected == 2:
             pygame.quit()
+            exit()

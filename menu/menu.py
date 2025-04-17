@@ -14,10 +14,13 @@ class Menu:
         self.main = main
         self.screen = main.screen
         self.items = items
-        self.ys = [self.screen.get_height() // 2 - 225,
-                   self.screen.get_height() // 2 - 100,
-                   self.screen.get_height() // 2,
-                   self.screen.get_height() // 2 + 100]
+        self.ys = [self.screen.get_height() // 2 - 225]
+
+        button_start_y = self.screen.get_height() // 2 - 100 # kazdy kolejny przycisk 100 pikseli nizej
+        button_spacing = 100
+        for i in range(len(items)):
+            self.ys.append(button_start_y + i * button_spacing)
+
         self.x = self.screen.get_width() // 2
         self.selected = 0
         self.buttons = [Button(self.main, item, self.x, self.ys[i + 1], i == 0)

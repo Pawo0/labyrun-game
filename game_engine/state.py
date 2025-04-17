@@ -19,7 +19,7 @@ class GameState:
             "main_menu": "main_menu",
             "running": "running",
             "game_over": "game_over",
-            "settings": "settings",
+            "settings_menu": "settings_menu",
         }
 
         self.state = self.states["main_menu"]  # Default state is main_menu
@@ -50,11 +50,11 @@ class GameState:
         self.state = self.states["main_menu"]  # Set state to main_menu
         self.winner = None
 
-    def settings(self):
+    def open_settings_menu(self):
         """
         Sets the game state to settings.
         """
-        self.state = self.states["settings"]  # Set state to settings
+        self.state = self.states["settings_menu"]  # Set state to settings
 
     def get_current_state(self):
         """

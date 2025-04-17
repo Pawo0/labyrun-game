@@ -6,7 +6,7 @@ import pygame
 
 from maze_components import Maze
 from maze_generation import create_map
-from menu import MainMenu, GameOverMenu
+from menu import MainMenu, GameOverMenu, SettingsMenu
 from entities import Player
 from util import Settings
 from game_engine import Engine, GameState
@@ -36,6 +36,7 @@ class LabyRunGame:
         self.game_state = GameState(self)
         self.menu = MainMenu(self)
         self.gameover_menu = GameOverMenu(self)
+        self.settings_menu = SettingsMenu(self)
         self.engine = Engine(self)
 
     def _calculate_initial_positions(self):
