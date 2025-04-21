@@ -14,6 +14,7 @@ class Menu:
         self.main = main
         self.screen = main.screen
         self.items = items
+        # zaczynamy stawiac przyciski statyczne 225 pikseli od srodka ekranu
         self.ys = [self.screen.get_height() // 2 - 225]
 
         button_start_y = self.screen.get_height() // 2 - 100 # kazdy kolejny przycisk 100 pikseli nizej

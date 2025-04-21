@@ -16,7 +16,7 @@ class SettingsMenu(Menu):
         elif self.selected == 1:
             pass
         elif self.selected == 2:
-            pass
+            self.main.game_state.open_maze_size()
         elif self.selected == 3:
             self.main.game_state.main_menu()
 

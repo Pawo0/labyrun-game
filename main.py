@@ -11,6 +11,7 @@ from entities import Player
 from util import Settings
 from game_engine import Engine, GameState
 
+from settings_pages import MazeSize
 
 class LabyRunGame:
     """
@@ -20,7 +21,7 @@ class LabyRunGame:
         pygame.init()
 
         self.screen = pygame.display.set_mode()
-        self.settings = Settings(self.screen.get_width(), self.screen.get_height())
+        self.settings = Settings(self)
 
         self.clock = pygame.time.Clock()
         pygame.display.set_caption("LabyRun")
@@ -37,6 +38,9 @@ class LabyRunGame:
         self.menu = MainMenu(self)
         self.gameover_menu = GameOverMenu(self)
         self.settings_menu = SettingsMenu(self)
+        self.maze_size_menu = MazeSize(self)
+
+
         self.engine = Engine(self)
 
     def _calculate_initial_positions(self):

@@ -48,8 +48,11 @@ class Engine:
 
             # Settings menu events
             elif current_state == "settings_menu":
-                self.main.settings_menu.handle_events(event)
-
+                # todo zdecydowanie nie powinno tak byc ze musze zmieniac tu i w petli gry
+                if self.main.game_state.get_current_settings_state() == "main":
+                    self.main.settings_menu.handle_events(event)
+                elif self.main.game_state.get_current_settings_state() == "maze_size":
+                    self.main.maze_size_menu.handle_events(event)
 
     def _player_movements(self, player, event, keys):
         """
@@ -110,6 +113,11 @@ class Engine:
             elif self.main.game_state.get_current_state() == "main_menu":
                 self.main.menu.draw()
             elif self.main.game_state.get_current_state() == "settings_menu":
-                self.main.settings_menu.draw()
+                # zrobione na pale
+                # todo zamiast game_state lepsze bedzie w settings_menu
+                if self.main.game_state.get_current_settings_state() == "main":
+                    self.main.settings_menu.draw()
+                elif self.main.game_state.get_current_settings_state() == "maze_size":
+                    self.main.maze_size_menu.draw()
             pygame.display.flip()
             self.main.clock.tick(60)
