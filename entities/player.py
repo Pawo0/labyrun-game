@@ -9,19 +9,30 @@ class Player:
     This class represents the player in the game. 
     It handles position, movement, and draws the player on the screen.
     """
-    def __init__(self, main, pos, color="white"):
+
+    def __init__(self, main, player=1):
         self.main = main
         self.settings = main.settings
         self.screen = main.screen
 
-        self.x = pos[0]
-        self.y = pos[1]
-
         self.speed = self.settings.player_speed
         self.width = self.settings.player_width
         self.height = self.settings.player_height
-        self.color = color
         self.movements = {"up": False, "down": False, "left": False, "right": False}
+
+        # depending on the player, set the color and initial position
+        self.player = player
+        if player == 1:
+            self.color = self.settings.player1_color
+            self.pos = self.settings.player1_initial_position
+        elif player == 2:
+            self.color = self.settings.player2_color
+            self.pos = self.settings.player2_initial_position
+        else:
+            raise ValueError("Player must be 1 or 2")
+
+        self.x = self.pos[0]
+        self.y = self.pos[1]
 
     def update(self):
         """
@@ -52,13 +63,6 @@ class Player:
         # self.y = new_y
 
         self.draw()
-
-    def reset(self, pos):
-        """
-        Resets the player's position to the initial position.
-        """
-        self.x, self.y = pos
-        self.movements = {"up": False, "down": False, "left": False, "right": False}
 
     def draw(self):
         """

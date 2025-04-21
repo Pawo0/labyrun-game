@@ -18,46 +18,37 @@ class LabyRunGame:
     Main class for the game.
     """
     def __init__(self):
+
+
+        # inicjalizacja pygame
         pygame.init()
 
+        # ustawienia okna
         self.screen = pygame.display.set_mode()
         self.settings = Settings(self)
 
         self.clock = pygame.time.Clock()
         pygame.display.set_caption("LabyRun")
 
+        # generacja mapy labiryntu
+        self.maze = None
         self.generate_maze()
 
-        self.player1_initial_position, self.player2_initial_position = \
-            self._calculate_initial_positions()
 
-        self.player1 = Player(self, self.player1_initial_position, "red")
-        self.player2 = Player(self, self.player2_initial_position)
+        # inicjalizacja graczy
+        self.player1 = Player(self,  1)
+        self.player2 = Player(self, 2)
 
+        # inicjalizacja menu
         self.game_state = GameState(self)
         self.menu = MainMenu(self)
         self.gameover_menu = GameOverMenu(self)
         self.settings_menu = SettingsMenu(self)
         self.maze_size_menu = MazeSize(self)
 
-
+        # ustawienia silnika
         self.engine = Engine(self)
 
-    def _calculate_initial_positions(self):
-        """
-        Calculates the initial positions of the players.
-        """
-        left = self.maze.get_lower_left()
-        right = self.maze.get_lower_right()
-        block_size = self.settings.block_size
-        player_size = self.settings.player_width
-
-        left_x = left[0] + 1.5 * block_size - player_size // 2
-        left_y = left[1] - 2 * block_size + player_size // 2
-        right_x = right[0] - 2 * block_size + player_size // 2
-        right_y = right[1] - 2 * block_size + player_size // 2
-
-        return (left_x, left_y), (right_x, right_y)
 
     def generate_maze(self):
         """
@@ -65,6 +56,7 @@ class LabyRunGame:
         """
         create_map(self.settings.maze_width, self.settings.maze_height)
         self.maze = Maze(self, "maps/map.json")
+        self.settings.calculate_initial_positions()
 
     def run(self):
         """
