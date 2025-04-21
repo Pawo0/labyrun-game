@@ -34,6 +34,12 @@ class Player:
         self.x = self.pos[0]
         self.y = self.pos[1]
 
+    def reset(self, player=1):
+        """
+        Resets the player's position and movement state.
+        """
+        self.__init__(self.main, player)
+
     def update(self):
         """
         Updates the player's position based on the current movement state.

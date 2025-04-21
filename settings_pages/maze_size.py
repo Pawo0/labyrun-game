@@ -1,12 +1,13 @@
 from .settings_options import SettingsOptions
 
+
 class MazeSize(SettingsOptions):
     def __init__(self, main):
         # Definiowanie opcji dla rozmiaru labiryntu
         options_names = ["Width", "Height"]
         options_values = [
-            [5, 7, 9, 11, 13, 15],  # możliwe szerokości
-            [5, 7, 9, 11, 13, 15]  # możliwe wysokości
+            [5, 11, 15, 23, 31],  # możliwe szerokości
+            [5, 11, 15, 23, 31]  # możliwe wysokości
         ]
 
         # Znajdź aktualne wartości w options_values

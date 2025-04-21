@@ -49,9 +49,9 @@ class GameState:
         self.state = self.states["running"]  # Set state to running
 
         self.winner = None
-        self.main.player1.__init__(self.main, 1)  # Reinitialize player1
-        self.main.player2.__init__(self.main, 2)  # Reinitialize player2
         self.main.generate_maze()
+        self.main.player1.reset(1)  # Reinitialize player1
+        self.main.player2.reset(2)  # Reinitialize player2
 
     def main_menu(self):
         """
