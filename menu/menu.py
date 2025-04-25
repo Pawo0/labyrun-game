@@ -5,7 +5,7 @@ import pygame
 
 from .button import Button
 
-
+# todo change comments to english
 class Menu:
     """
     Base class for game menus.
@@ -17,7 +17,7 @@ class Menu:
         # zaczynamy stawiac przyciski statyczne 225 pikseli od srodka ekranu
         self.ys = [self.screen.get_height() // 2 - 225]
 
-        button_start_y = self.screen.get_height() // 2 - 100 # kazdy kolejny przycisk 100 pikseli nizej
+        button_start_y = self.screen.get_height() // 2 - 100 # kazdy przycisk 100 pikseli nizej
         button_spacing = 100
         for i in range(len(items)):
             self.ys.append(button_start_y + i * button_spacing)

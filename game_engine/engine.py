@@ -1,6 +1,8 @@
 """
 This module contains the Engine class
 """
+import sys
+
 import pygame
 
 
@@ -20,11 +22,11 @@ class Engine:
             # Game events
             if event.type == pygame.QUIT:
                 pygame.quit()
-                exit()
+                sys.exit()
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     pygame.quit()
-                    exit()
+                    sys.exit()
 
             current_state = self.main.game_state.get_current_state()
 

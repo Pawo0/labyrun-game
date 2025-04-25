@@ -6,19 +6,16 @@ import pygame
 
 from maze_components import Maze
 from maze_generation import create_map
-from menu import MainMenu, GameOverMenu, SettingsMenu
+from menu import MainMenu, GameOverMenu, SettingsMenu, MazeSize
 from entities import Player
 from util import Settings
 from game_engine import Engine, GameState
-
-from settings_pages import MazeSize
 
 class LabyRunGame:
     """
     Main class for the game.
     """
     def __init__(self):
-
 
         # inicjalizacja pygame
         pygame.init()

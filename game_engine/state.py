@@ -14,7 +14,7 @@ class GameState:
 
         # Here we define all possible states of the game for easier management
         # something like enum // for future improvements
-        # todo : przyjrzec sie temu, oraz sprawdzanie eventow dla poszczegolnych stanow mozna wyodrebnic
+        # todo : przyjrzec sie temu, sprawdzanie eventow dla poszczegolnych stanow mozna wyodrebnic
         self.states = {
             "main_menu": "main_menu",
             "running": "running",
@@ -50,8 +50,8 @@ class GameState:
 
         self.winner = None
         self.main.generate_maze()
-        self.main.player1.reset(1)  # Reinitialize player1
-        self.main.player2.reset(2)  # Reinitialize player2
+        self.main.player1.reset()  # Reinitialize player1
+        self.main.player2.reset()  # Reinitialize player2
 
     def main_menu(self):
         """

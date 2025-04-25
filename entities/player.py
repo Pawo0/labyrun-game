@@ -14,18 +14,33 @@ class Player:
         self.main = main
         self.settings = main.settings
         self.screen = main.screen
+        self.player = player
 
+        self.speed = None
+        self.width = None
+        self.height = None
+        self.movements = None
+        self.color = None
+        self.pos = None
+        self.x = None
+        self.y = None
+
+        self.reset()
+
+    def reset(self):
+        """
+        Resets the player's position and movement state.
+        """
         self.speed = self.settings.player_speed
         self.width = self.settings.player_width
         self.height = self.settings.player_height
         self.movements = {"up": False, "down": False, "left": False, "right": False}
 
         # depending on the player, set the color and initial position
-        self.player = player
-        if player == 1:
+        if self.player == 1:
             self.color = self.settings.player1_color
             self.pos = self.settings.player1_initial_position
-        elif player == 2:
+        elif self.player == 2:
             self.color = self.settings.player2_color
             self.pos = self.settings.player2_initial_position
         else:
@@ -33,12 +48,6 @@ class Player:
 
         self.x = self.pos[0]
         self.y = self.pos[1]
-
-    def reset(self, player=1):
-        """
-        Resets the player's position and movement state.
-        """
-        self.__init__(self.main, player)
 
     def update(self):
         """
@@ -65,9 +74,6 @@ class Player:
             self.x = new_x
         if not self.main.maze.check_collision(tmp_rect_y):
             self.y = new_y
-        # self.x = new_x
-        # self.y = new_y
-
         self.draw()
 
     def draw(self):

@@ -1,6 +1,8 @@
 """
 This module contains the MainMenu class.
 """
+import sys
+
 import pygame
 
 from .menu import Menu
@@ -24,4 +26,4 @@ class MainMenu(Menu):
             self.main.game_state.open_settings_menu()
         elif self.selected == 2:
             pygame.quit()
-            exit()
+            sys.exit()

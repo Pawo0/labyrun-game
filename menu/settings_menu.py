@@ -1,3 +1,4 @@
+# todo add docstrings
 from .menu import Menu
 
 class SettingsMenu(Menu):
@@ -19,4 +20,3 @@ class SettingsMenu(Menu):
             self.main.game_state.open_maze_size()
         elif self.selected == 3:
             self.main.game_state.main_menu()
-

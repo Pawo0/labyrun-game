@@ -1,6 +1,8 @@
 """
 This module contains the GameOverMenu class.
 """
+import sys
+
 import pygame
 
 from .menu import Menu
@@ -24,7 +26,7 @@ class GameOverMenu(Menu):
             self.main.game_state.main_menu()
         elif self.selected == 2:
             pygame.quit()
-            exit()
+            sys.exit()
 
     def draw(self):
         """
