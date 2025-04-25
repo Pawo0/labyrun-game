@@ -17,7 +17,6 @@ class Engine:
         Checks game events.
         """
         for event in pygame.event.get():
-            print(f"Current state: {self.main.game_state.get_current_state()}")
             # Game events
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -94,6 +93,13 @@ class Engine:
             self.main.game_state.game_won(1)
         if self.main.player2.x < self.win_zone[1]:
             self.main.game_state.game_won(2)
+
+
+    def update_win_zone(self):
+        """
+        Updates the win zone based on the current screen size.
+        """
+        self.win_zone = self._calculate_win_zone()
 
 
     def run(self):

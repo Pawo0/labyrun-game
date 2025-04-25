@@ -76,3 +76,4 @@ class Settings:
         self.maze_height = height
         self._calculate_block_size()
         self.calculate_initial_positions()
+        self.main.engine.update_win_zone()
