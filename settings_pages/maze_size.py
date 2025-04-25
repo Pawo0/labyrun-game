@@ -6,8 +6,8 @@ class MazeSize(SettingsOptions):
         # Definiowanie opcji dla rozmiaru labiryntu
         options_names = ["Width", "Height"]
         options_values = [
-            [5, 11, 15, 23, 31],  # możliwe szerokości
-            [5, 11, 15, 23, 31]  # możliwe wysokości
+            [7, 11, 15, 23, 31],  # możliwe szerokości
+            [7, 11, 15, 23, 31]  # możliwe wysokości
         ]
 
         # Znajdź aktualne wartości w options_values

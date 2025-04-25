@@ -24,6 +24,7 @@ class GameOverMenu(Menu):
             self.main.game_state.main_menu()
         elif self.selected == 2:
             pygame.quit()
+            exit()
 
     def draw(self):
         """
