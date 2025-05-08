@@ -1,5 +1,5 @@
 # todo add docstrings
-from .menu import Menu
+from .menu_base import Menu
 
 
 class SettingsMenu(Menu):

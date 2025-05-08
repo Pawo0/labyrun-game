@@ -1,5 +1,5 @@
 # todo add docstrings, change comments to english
-from menu.settings_pages.settings_options import SettingsOptions
+from .settings_options import SettingsOptions
 
 
 class MazeSize(SettingsOptions):

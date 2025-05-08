@@ -4,7 +4,7 @@ This module contains the Menu class.
 
 import pygame
 
-from .menu_elements import Button
+from menu.menu_elements import Button
 
 
 # todo change comments to english

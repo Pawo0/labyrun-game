@@ -4,7 +4,7 @@ This module contains the Button class.
 
 import pygame
 
-from menu.menu_elements.menu_element import MenuElement
+from .menu_element import MenuElement
 
 
 class Button(MenuElement):

@@ -4,7 +4,7 @@ This module contains the TextInput class.
 
 import pygame
 
-from menu.menu_elements.menu_element import MenuElement
+from .menu_element import MenuElement
 
 
 class TextInput(MenuElement):

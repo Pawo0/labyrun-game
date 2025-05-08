@@ -6,7 +6,7 @@ import sys
 
 import pygame
 
-from .menu import Menu
+from .menu_base import Menu
 
 
 class MainMenu(Menu):

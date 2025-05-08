@@ -1,0 +1,5 @@
+"""
+This module provides the settings pages for the settings menu.
+"""
+
+from .maze_size import MazeSize
