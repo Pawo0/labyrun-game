@@ -9,6 +9,7 @@ from engine import Engine, GameState
 from entities import Player
 from maze import Maze, create_map
 from menu import GameOverMenu, MainMenu, MazeSize, SetNames, SettingsMenu
+from stats import StatsManager
 from util import Settings
 
 
@@ -47,6 +48,8 @@ class LabyRunGame:
 
         # ustawienia silnika
         self.engine = Engine(self)
+
+        self.stats_manager = StatsManager("data/player_stats.json")
 
     def generate_maze(self):
         """

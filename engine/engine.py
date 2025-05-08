@@ -103,9 +103,9 @@ class Engine:
 
     def _check_win_condition(self):
         if self.main.player1.x > self.win_zone[0]:
-            self.main.game_state.game_won(self.main.player1)
+            self.main.game_state.game_won(self.main.player1, self.main.player2)
         if self.main.player2.x < self.win_zone[1]:
-            self.main.game_state.game_won(self.main.player2)
+            self.main.game_state.game_won(self.main.player2, self.main.player1)
 
     def update_win_zone(self):
         """

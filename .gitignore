@@ -1,5 +1,6 @@
 .test
 maps
+data
 
 ### VisualStudioCode template
 *.code-workspace
