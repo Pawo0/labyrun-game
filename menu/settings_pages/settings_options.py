@@ -1,7 +1,7 @@
 # todo add docstrings, change comments to english
 import pygame
 
-from menu.button import Button
+from menu.menu_elements import Button
 
 
 class SettingsOptions:
