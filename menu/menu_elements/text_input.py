@@ -14,7 +14,7 @@ class TextInput(MenuElement):
 
     def __init__(self, main, text, x, y, active):
         super().__init__(main, text, x, y, active)
-        self.width = 300
+        self.width = 620
         self.height = 50
         self.max_length = 15
         self.x = x - self.width // 2
@@ -26,7 +26,6 @@ class TextInput(MenuElement):
         Handle keyboard events for text input.
         """
         if event.type == pygame.MOUSEBUTTONDOWN:
-            # Toggle active state if clicked
             self.active = self.rect.collidepoint(event.pos)
             return self.active
 
@@ -42,14 +41,11 @@ class TextInput(MenuElement):
         """
         Draw the text input field.
         """
-        # Draw the input box background
         pygame.draw.rect(self.screen, self.background_color, self.rect)
 
-        # Draw border with appropriate color
         border_color = self.outline_color_active if self.active else self.outline_color
         pygame.draw.rect(self.screen, border_color, self.rect, 2)
 
-        # Render and display the text
         text_surface = self.font.render(self.text, True, self.text_color)
         # Center the text vertically and align left with some padding
         text_pos = (

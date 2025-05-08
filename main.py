@@ -5,11 +5,10 @@ Authors: Paweł Czajczyk, Jakub Psarski
 
 import pygame
 
+from engine import Engine, GameState
 from entities import Player
-from game_engine import Engine, GameState
-from maze_components import Maze
-from maze_generation import create_map
-from menu import GameOverMenu, MainMenu, MazeSize, SettingsMenu
+from maze import Maze, create_map
+from menu import GameOverMenu, MainMenu, MazeSize, SetNames, SettingsMenu
 from util import Settings
 
 
@@ -44,6 +43,7 @@ class LabyRunGame:
         self.gameover_menu = GameOverMenu(self)
         self.settings_menu = SettingsMenu(self)
         self.maze_size_menu = MazeSize(self)
+        self.set_name_menu = SetNames(self)
 
         # ustawienia silnika
         self.engine = Engine(self)

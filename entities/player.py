@@ -29,7 +29,7 @@ class Player:
 
         self.reset()
 
-    def setname(self, name):
+    def set_name(self, name):
         """
         Sets the player's name.
         """

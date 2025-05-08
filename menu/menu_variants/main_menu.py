@@ -23,7 +23,7 @@ class MainMenu(Menu):
         Handle button press based on selection.
         """
         if self.selected == 0:
-            self.main.game_state.run_game()
+            self.main.game_state.set_names()
         elif self.selected == 1:
             self.main.game_state.open_settings_menu()
         elif self.selected == 2:
