@@ -35,7 +35,7 @@ class GameOverMenu(Menu):
         Draws the menu on the screen, with dynamically updated winner text.
         """
         self.title = (
-            f"{'Player 1' if self.main.game_state.winner == 1 else 'Player 2'} Wins!"
+            f"{self.main.game_state.winner.player_name} Wins!"
         )
         self.text_width, self.text_height = self.font.size(self.title)
         super().draw()
