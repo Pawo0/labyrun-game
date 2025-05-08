@@ -43,7 +43,7 @@ class Settings:
         """
         self.block_size = min(
             self.screen_width // (self.maze_width * 2 + 3),
-            self.screen_height // self.maze_height
+            self.screen_height // self.maze_height,
         )
 
         self.player_width = self.block_size // 2

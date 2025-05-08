@@ -1,6 +1,7 @@
 """
 This module defines the Floor class.
 """
+
 import pygame.sprite
 
 
@@ -8,6 +9,7 @@ class Floor(pygame.sprite.Sprite):
     """
     This class represents floors in the maze.
     """
+
     def __init__(self, x, y, block_size):
         super().__init__()
 

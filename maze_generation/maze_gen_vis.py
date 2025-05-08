@@ -1,10 +1,10 @@
 """
 This script provides a visual representation of the maze generation process.
 """
+
 import random
 
 import pygame
-
 
 CELL_SIZE = 20
 MAZE_WIDTH = 51
@@ -25,6 +25,7 @@ class FindUnion:
     A class that implements the Disjoint Set Union data structure with path compression and union
     by rank optimizations.
     """
+
     def __init__(self, elements):
         self.parent = {e: e for e in elements}
         self.rank = {e: 0 for e in elements}
@@ -73,9 +74,7 @@ def draw_maze(maze):
         for c in range(MAZE_WIDTH):
             if not maze[r][c]:
                 pygame.draw.rect(
-                    screen,
-                    WHITE,
-                    (c * CELL_SIZE, r * CELL_SIZE, CELL_SIZE, CELL_SIZE)
+                    screen, WHITE, (c * CELL_SIZE, r * CELL_SIZE, CELL_SIZE, CELL_SIZE)
                 )
 
     pygame.display.flip()
@@ -90,9 +89,9 @@ def generate_maze():
     :param height: The height of the maze (must be an odd integer).
 
     :returns maze: The generated maze as a 2D array.
-    
+
         1 -> wall
-    
+
         0 -> corridor
 
     :raises keyError: Raises a keyError exception if the given dimensions do not meet the criteria.

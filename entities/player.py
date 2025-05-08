@@ -1,12 +1,13 @@
 """
 This module contains the Player class.
 """
+
 import pygame
 
 
 class Player:
     """
-    This class represents the player in the game. 
+    This class represents the player in the game.
     It handles position, movement, and draws the player on the screen.
     """
 
@@ -59,15 +60,19 @@ class Player:
         if self.movements["up"]:
             new_y = self.y - self.speed if self.y - self.speed > 0 else 0
         if self.movements["down"]:
-            new_y = self.y + self.speed \
-                if self.y + self.speed < self.screen.get_height() - self.height \
+            new_y = (
+                self.y + self.speed
+                if self.y + self.speed < self.screen.get_height() - self.height
                 else self.screen.get_height() - self.height
+            )
         if self.movements["left"]:
             new_x = self.x - self.speed if self.x - self.speed > 0 else 0
         if self.movements["right"]:
-            new_x = self.x + self.speed \
-                if self.x + self.speed < self.screen.get_width() - self.width \
+            new_x = (
+                self.x + self.speed
+                if self.x + self.speed < self.screen.get_width() - self.width
                 else self.screen.get_width() - self.width
+            )
         tmp_rect_x = pygame.Rect(new_x, self.y, self.width, self.height)
         tmp_rect_y = pygame.Rect(self.x, new_y, self.width, self.height)
         if not self.main.maze.check_collision(tmp_rect_x):

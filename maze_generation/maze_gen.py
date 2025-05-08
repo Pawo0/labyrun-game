@@ -1,6 +1,7 @@
 """
 This module contains the logic utilized to generate a random maze using the Kruskal's algorithm.
 """
+
 import random
 
 
@@ -9,6 +10,7 @@ class FindUnion:
     This class implements the Disjoint Set Union data structure with path compression and union
     by rank optimizations.
     """
+
     def __init__(self, elements):
         self.parent = {e: e for e in elements}
         self.rank = {e: 0 for e in elements}
@@ -57,9 +59,9 @@ def generate_maze(width: int, height: int):
     :param height: The height of the maze (must be an odd integer).
 
     :returns maze: The generated maze as a 2D array.
-    
+
         1 -> wall
-    
+
         0 -> corridor
 
     :raises keyError: Raises a keyError exception if the given dimensions do not meet the criteria.

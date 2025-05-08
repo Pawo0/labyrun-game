@@ -1,9 +1,10 @@
 # todo add docstrings
 from .menu import Menu
 
+
 class SettingsMenu(Menu):
     def __init__(self, main):
-        items = ["Player controllers", "Enable Power-ups","Labyrun size","Back"]
+        items = ["Player controllers", "Enable Power-ups", "Labyrun size", "Back"]
         super().__init__(main, "Settings", items)
         self.main = main
         self.selected = 0

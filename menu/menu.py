@@ -1,15 +1,18 @@
 """
 This module contains the Menu class.
 """
+
 import pygame
 
 from .button import Button
+
 
 # todo change comments to english
 class Menu:
     """
     Base class for game menus.
     """
+
     def __init__(self, main, title, items):
         self.main = main
         self.screen = main.screen
@@ -17,17 +20,21 @@ class Menu:
         # zaczynamy stawiac przyciski statyczne 225 pikseli od srodka ekranu
         self.ys = [self.screen.get_height() // 2 - 225]
 
-        button_start_y = self.screen.get_height() // 2 - 100 # kazdy przycisk 100 pikseli nizej
+        button_start_y = (
+            self.screen.get_height() // 2 - 100
+        )  # kazdy przycisk 100 pikseli nizej
         button_spacing = 100
         for i in range(len(items)):
             self.ys.append(button_start_y + i * button_spacing)
 
         self.x = self.screen.get_width() // 2
         self.selected = 0
-        self.buttons = [Button(self.main, item, self.x, self.ys[i + 1], i == 0)
-                        for i, item in enumerate(self.items)]
+        self.buttons = [
+            Button(self.main, item, self.x, self.ys[i + 1], i == 0)
+            for i, item in enumerate(self.items)
+        ]
         self.background_color = (0, 0, 0)
-        self.font = pygame.font.SysFont('arialblack', 40)
+        self.font = pygame.font.SysFont("arialblack", 40)
         self.title = title
         self.text_width, self.text_height = self.font.size(title)
         self.text_color = (255, 255, 255)

@@ -1,6 +1,7 @@
 """
 This module defines the Wall class.
 """
+
 import pygame.sprite
 
 
@@ -8,6 +9,7 @@ class Wall(pygame.sprite.Sprite):
     """
     This class represents walls in the maze.
     """
+
     def __init__(self, x, y, block_size):
         super().__init__()
 

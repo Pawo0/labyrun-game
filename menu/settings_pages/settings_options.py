@@ -1,5 +1,6 @@
 # todo add docstrings, change comments to english
 import pygame
+
 from menu.button import Button
 
 
@@ -25,7 +26,7 @@ class SettingsOptions:
         self.current_values = [0] * len(options_names)  # Indeksy wybranych wartości
 
         # Ustawienia tekstu
-        self.font = pygame.font.SysFont('arialblack', 40)
+        self.font = pygame.font.SysFont("arialblack", 40)
         self.text_color = (255, 255, 255)
         self.active_color = (255, 0, 0)
         self.background_color = (0, 0, 0)
@@ -48,15 +49,12 @@ class SettingsOptions:
         self.back_text = "Back"
         self.back_width, self.back_height = self.font.size(self.back_text)
         self.back_x = self.screen.get_width() // 2
-        self.back_y = self.option_start_y + (len(options_names) + 1) * self.option_spacing
-
+        self.back_y = (
+            self.option_start_y + (len(options_names) + 1) * self.option_spacing
+        )
 
         self.back_button = Button(
-            self.main,
-            self.back_text,
-            self.back_x,
-            self.back_y,
-            False
+            self.main, self.back_text, self.back_x, self.back_y, False
         )
 
     def handle_events(self, event):
@@ -71,14 +69,16 @@ class SettingsOptions:
             elif event.key == pygame.K_LEFT and self.selected < len(self.options_names):
                 # Zmiana wartości opcji w lewo
                 self.current_values[self.selected] = (
-                                                             self.current_values[self.selected] - 1
-                                                     ) % len(self.options_values[self.selected])
+                    self.current_values[self.selected] - 1
+                ) % len(self.options_values[self.selected])
                 self._apply_setting(self.selected)
-            elif event.key == pygame.K_RIGHT and self.selected < len(self.options_names):
+            elif event.key == pygame.K_RIGHT and self.selected < len(
+                self.options_names
+            ):
                 # Zmiana wartości opcji w prawo
                 self.current_values[self.selected] = (
-                                                             self.current_values[self.selected] + 1
-                                                     ) % len(self.options_values[self.selected])
+                    self.current_values[self.selected] + 1
+                ) % len(self.options_values[self.selected])
                 self._apply_setting(self.selected)
             elif event.key == pygame.K_RETURN:
                 # Jeśli wybrano "Back"
@@ -120,18 +120,26 @@ class SettingsOptions:
             # Rysuj strzałki
             if i == self.selected:
                 # Lewa strzałka
-                pygame.draw.polygon(self.screen, option_color, [
-                    (self.value_x - 60, option_y + 30),
-                    (self.value_x - 40, option_y + 15),
-                    (self.value_x - 40, option_y + 45)
-                ])
+                pygame.draw.polygon(
+                    self.screen,
+                    option_color,
+                    [
+                        (self.value_x - 60, option_y + 30),
+                        (self.value_x - 40, option_y + 15),
+                        (self.value_x - 40, option_y + 45),
+                    ],
+                )
 
                 # Prawa strzałka
-                pygame.draw.polygon(self.screen, option_color, [
-                    (self.value_x + 60, option_y + 30),
-                    (self.value_x + 40, option_y + 15),
-                    (self.value_x + 40, option_y + 45)
-                ])
+                pygame.draw.polygon(
+                    self.screen,
+                    option_color,
+                    [
+                        (self.value_x + 60, option_y + 30),
+                        (self.value_x + 40, option_y + 15),
+                        (self.value_x + 40, option_y + 45),
+                    ],
+                )
 
         # Rysuj przycisk "Back"
         if self.selected == len(self.options_names):

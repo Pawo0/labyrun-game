@@ -8,7 +8,7 @@ class MazeSize(SettingsOptions):
         options_names = ["Width", "Height"]
         options_values = [
             [7, 11, 15, 23, 31],  # możliwe szerokości
-            [7, 11, 15, 23, 31]  # możliwe wysokości
+            [7, 11, 15, 23, 31],  # możliwe wysokości
         ]
 
         # Znajdź aktualne wartości w options_values

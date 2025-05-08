@@ -26,13 +26,12 @@ class GameState:
 
         # state settingsów
         self.settings_states = {
-            "main" : "main",
+            "main": "main",
             "maze_size": "maze_size",
             "power_ups": "power_ups",
             "player_controllers": "player_controllers",
         }
         self.settings_state = self.settings_states["main"]  # Default state is main
-
 
     def game_won(self, winner):
         """
@@ -40,7 +39,6 @@ class GameState:
         """
         self.state = self.states["game_over"]  # Set state to game_over
         self.winner = winner
-
 
     def run_game(self):
         """
@@ -72,8 +70,8 @@ class GameState:
         """
         return self.state
 
-#     state settingsow
-# todo do wyodregnienia w przyszlosci pewnie
+    #     state settingsow
+    # todo do wyodregnienia w przyszlosci pewnie
     def open_settings(self):
         """
         Sets the game state to settings.
@@ -85,7 +83,6 @@ class GameState:
         Sets the game state to maze size settings.
         """
         self.settings_state = self.settings_states["maze_size"]
-
 
     def get_current_settings_state(self):
         """

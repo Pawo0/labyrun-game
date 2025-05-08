@@ -1,6 +1,7 @@
 """
 This module contains the Engine class
 """
+
 import sys
 
 import pygame
@@ -10,6 +11,7 @@ class Engine:
     """
     This class manages the main loop and game events.
     """
+
     def __init__(self, main):
         self.main = main
         self.win_zone = self._calculate_win_zone()
@@ -33,13 +35,17 @@ class Engine:
             # Player movements
             if current_state == "running":
                 # Player 1
-                self._player_movements(self.main.player1, event,
-                                       [pygame.K_w, pygame.K_s, pygame.K_a, pygame.K_d]
-                                       )
+                self._player_movements(
+                    self.main.player1,
+                    event,
+                    [pygame.K_w, pygame.K_s, pygame.K_a, pygame.K_d],
+                )
                 # Player 2
-                self._player_movements(self.main.player2, event,
-                                       [pygame.K_UP, pygame.K_DOWN, pygame.K_LEFT, pygame.K_RIGHT]
-                                       )
+                self._player_movements(
+                    self.main.player2,
+                    event,
+                    [pygame.K_UP, pygame.K_DOWN, pygame.K_LEFT, pygame.K_RIGHT],
+                )
             # Menu events
             elif current_state == "main_menu":
                 self.main.menu.handle_events(event)
@@ -79,7 +85,6 @@ class Engine:
             if event.key == keys[3]:
                 player.movements["right"] = False
 
-
     def _calculate_win_zone(self):
         """
         Calculates the win zone for the players.
@@ -87,9 +92,10 @@ class Engine:
         mid = self.main.settings.screen_width // 2
         block_size = self.main.settings.block_size
 
-        return mid - block_size * 1.5 - self.main.settings.player_width, \
-               mid + block_size * 1.5 - self.main.settings.player_width
-
+        return (
+            mid - block_size * 1.5 - self.main.settings.player_width,
+            mid + block_size * 1.5 - self.main.settings.player_width,
+        )
 
     def _check_win_condition(self):
         if self.main.player1.x > self.win_zone[0]:
@@ -97,13 +103,11 @@ class Engine:
         if self.main.player2.x < self.win_zone[1]:
             self.main.game_state.game_won(2)
 
-
     def update_win_zone(self):
         """
         Updates the win zone based on the current screen size.
         """
         self.win_zone = self._calculate_win_zone()
-
 
     def run(self):
         """

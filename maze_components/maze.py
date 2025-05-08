@@ -1,6 +1,7 @@
 """
 This module contains the Maze class.
 """
+
 import json
 
 import pygame.sprite
@@ -13,6 +14,7 @@ class Maze:
     """
     This class is responsible for loading and rendering the maze.
     """
+
     def __init__(self, main, maze_json):
         self.screen = main.screen
         self.settings = main.settings

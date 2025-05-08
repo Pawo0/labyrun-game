@@ -1,6 +1,7 @@
 """
 This module contains the MainMenu class.
 """
+
 import sys
 
 import pygame
@@ -12,6 +13,7 @@ class MainMenu(Menu):
     """
     This class handles the main menu of the game.
     """
+
     def __init__(self, main):
         items = ["Start", "Settings", "Quit"]
         super().__init__(main, "LabyRun", items)

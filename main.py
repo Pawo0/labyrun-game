@@ -2,19 +2,22 @@
 LabyRun is a 2D maze game where two players race through a maze to reach the treasure.
 Authors: Paweł Czajczyk, Jakub Psarski
 """
+
 import pygame
 
+from entities import Player
+from game_engine import Engine, GameState
 from maze_components import Maze
 from maze_generation import create_map
-from menu import MainMenu, GameOverMenu, SettingsMenu, MazeSize
-from entities import Player
+from menu import GameOverMenu, MainMenu, MazeSize, SettingsMenu
 from util import Settings
-from game_engine import Engine, GameState
+
 
 class LabyRunGame:
     """
     Main class for the game.
     """
+
     def __init__(self):
 
         # inicjalizacja pygame
@@ -31,9 +34,8 @@ class LabyRunGame:
         self.maze = None
         self.generate_maze()
 
-
         # inicjalizacja graczy
-        self.player1 = Player(self,  1)
+        self.player1 = Player(self, 1)
         self.player2 = Player(self, 2)
 
         # inicjalizacja menu
@@ -45,7 +47,6 @@ class LabyRunGame:
 
         # ustawienia silnika
         self.engine = Engine(self)
-
 
     def generate_maze(self):
         """
