@@ -50,6 +50,10 @@ class Engine:
             elif current_state == "main_menu":
                 self.main.menu.handle_events(event)
 
+            # Name input events
+            elif current_state == "set_names":
+                self.main.set_name_menu.handle_events(event)
+
             # Game Over events
             elif current_state == "game_over":
                 self.main.gameover_menu.handle_events(event)
@@ -99,9 +103,9 @@ class Engine:
 
     def _check_win_condition(self):
         if self.main.player1.x > self.win_zone[0]:
-            self.main.game_state.game_won(1)
+            self.main.game_state.game_won(self.main.player1)
         if self.main.player2.x < self.win_zone[1]:
-            self.main.game_state.game_won(2)
+            self.main.game_state.game_won(self.main.player2)
 
     def update_win_zone(self):
         """
@@ -116,21 +120,25 @@ class Engine:
         while True:
             self._check_events()
             self.main.screen.fill((0, 0, 0))
-            if self.main.game_state.get_current_state() == "running":
-                self.main.maze.draw()
-                self.main.player1.update()
-                self.main.player2.update()
-                self._check_win_condition()
-            elif self.main.game_state.get_current_state() == "game_over":
-                self.main.gameover_menu.draw()
-            elif self.main.game_state.get_current_state() == "main_menu":
-                self.main.menu.draw()
-            elif self.main.game_state.get_current_state() == "settings_menu":
-                # zrobione na pale
-                # todo zamiast game_state lepsze bedzie w settings_menu
-                if self.main.game_state.get_current_settings_state() == "main":
-                    self.main.settings_menu.draw()
-                elif self.main.game_state.get_current_settings_state() == "maze_size":
-                    self.main.maze_size_menu.draw()
+            match self.main.game_state.get_current_state():
+                case "running":
+                    self.main.maze.draw()
+                    self.main.player1.update()
+                    self.main.player2.update()
+                    self._check_win_condition()
+                case "set_names":
+                    self.main.set_name_menu.draw()
+                case "game_over":
+                    self.main.gameover_menu.draw()
+                case "main_menu":
+                    self.main.menu.draw()
+                case "settings_menu":
+                    # zrobione na pale
+                    # todo zamiast game_state lepsze bedzie w settings_menu
+                    match self.main.game_state.get_current_settings_state():
+                        case "main":
+                            self.main.settings_menu.draw()
+                        case "maze_size":
+                            self.main.maze_size_menu.draw()
             pygame.display.flip()
             self.main.clock.tick(60)

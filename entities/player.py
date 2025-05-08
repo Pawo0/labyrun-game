@@ -11,11 +11,12 @@ class Player:
     It handles position, movement, and draws the player on the screen.
     """
 
-    def __init__(self, main, player=1):
+    def __init__(self, main, player_no=1):
         self.main = main
         self.settings = main.settings
         self.screen = main.screen
-        self.player = player
+        self.player_no = player_no
+        self.player_name = f"Player {player_no}"
 
         self.speed = None
         self.width = None
@@ -28,6 +29,12 @@ class Player:
 
         self.reset()
 
+    def set_name(self, name):
+        """
+        Sets the player's name.
+        """
+        self.player_name = name
+
     def reset(self):
         """
         Resets the player's position and movement state.
@@ -38,10 +45,10 @@ class Player:
         self.movements = {"up": False, "down": False, "left": False, "right": False}
 
         # depending on the player, set the color and initial position
-        if self.player == 1:
+        if self.player_no == 1:
             self.color = self.settings.player1_color
             self.pos = self.settings.player1_initial_position
-        elif self.player == 2:
+        elif self.player_no == 2:
             self.color = self.settings.player2_color
             self.pos = self.settings.player2_initial_position
         else:

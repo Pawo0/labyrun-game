@@ -29,7 +29,8 @@ def create_map(width, height):
     maze_json = {"maze": maze_map}
 
     directory = os.path.join(
-        os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "maps"
+        os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),
+        "maps",
     )
     os.makedirs(directory, exist_ok=True)
     file_path = os.path.join(directory, "map.json")

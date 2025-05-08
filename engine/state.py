@@ -17,6 +17,7 @@ class GameState:
         # todo : przyjrzec sie temu, sprawdzanie eventow dla poszczegolnych stanow mozna wyodrebnic
         self.states = {
             "main_menu": "main_menu",
+            "set_names": "set_names",
             "running": "running",
             "game_over": "game_over",
             "settings_menu": "settings_menu",
@@ -39,6 +40,12 @@ class GameState:
         """
         self.state = self.states["game_over"]  # Set state to game_over
         self.winner = winner
+
+    def set_names(self):
+        """
+        Sets the game state to set names.
+        """
+        self.state = self.states["set_names"]  # Set state to set_names
 
     def run_game(self):
         """
