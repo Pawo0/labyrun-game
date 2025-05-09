@@ -93,53 +93,42 @@ class Player(pygame.sprite.Sprite):  # Dziedziczenie po pygame.sprite.Sprite
 
         # Obsługa kolizji w poziomie (X)
         if new_x != self.x:
-            # Sprawdzanie czy wystąpiła kolizja dla docelowej pozycji X
             tmp_rect_x = pygame.Rect(new_x, self.y, self.width, self.height)
             if self.main.maze.check_collision(tmp_rect_x):
-                # Jeśli kolizja, znajdź maksymalną pozycję bez kolizji
-                target_x = new_x
-                start_x = self.x
+                # Jeśli wykryto kolizję, znajdź najbliższą dozwoloną pozycję
+                step = 1 if new_x > self.x else -1
+                test_x = self.x
+                while test_x != new_x:
+                    test_x += step
+                    test_rect = pygame.Rect(test_x, self.y, self.width, self.height)
+                    if self.main.maze.check_collision(test_rect):
+                        new_x = test_x - step
+                        break
 
-                # Binary search dla znalezienia maksymalnej pozycji bez kolizji
-                while abs(target_x - start_x) > 1:
-                    mid_x = (target_x + start_x) // 2
-                    mid_rect = pygame.Rect(mid_x, self.y, self.width, self.height)
-
-                    if self.main.maze.check_collision(mid_rect):
-                        target_x = mid_x
-                    else:
-                        start_x = mid_x
-
-                new_x = start_x
-
-            self.x = new_x
-            self.rect.x = new_x
+        # Aktualizacja pozycji X
+        self.x = new_x
+        self.rect.x = new_x
 
         # Obsługa kolizji w pionie (Y)
         if new_y != self.y:
-            # Sprawdzanie czy wystąpiła kolizja dla docelowej pozycji Y
             tmp_rect_y = pygame.Rect(self.x, new_y, self.width, self.height)
             if self.main.maze.check_collision(tmp_rect_y):
-                # Jeśli kolizja, znajdź maksymalną pozycję bez kolizji
-                target_y = new_y
-                start_y = self.y
+                # Jeśli wykryto kolizję, znajdź najbliższą dozwoloną pozycję
+                step = 1 if new_y > self.y else -1
+                test_y = self.y
+                while test_y != new_y:
+                    test_y += step
+                    test_rect = pygame.Rect(self.x, test_y, self.width, self.height)
+                    if self.main.maze.check_collision(test_rect):
+                        new_y = test_y - step
+                        break
 
-                # Binary search dla znalezienia maksymalnej pozycji bez kolizji
-                while abs(target_y - start_y) > 1:
-                    mid_y = (target_y + start_y) // 2
-                    mid_rect = pygame.Rect(self.x, mid_y, self.width, self.height)
-
-                    if self.main.maze.check_collision(mid_rect):
-                        target_y = mid_y
-                    else:
-                        start_y = mid_y
-
-                new_y = start_y
-
-            self.y = new_y
-            self.rect.y = new_y
+        # Aktualizacja pozycji Y
+        self.y = new_y
+        self.rect.y = new_y
 
         self.draw()
+
 
     def draw(self):
         """
