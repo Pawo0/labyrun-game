@@ -1,4 +1,3 @@
-# todo change check events logic
 """
 This module contains the Engine class
 """
@@ -7,146 +6,56 @@ import sys
 
 import pygame
 
+from .state_manager import GameStateManager
+
 
 class Engine:
-    """
-    This class manages the main loop and game events.
-    """
+    """This class manages the main loop and game events."""
 
     def __init__(self, main):
         self.main = main
         self.win_zone = self._calculate_win_zone()
+        self.state_manager = GameStateManager(main)
+
+    def check_win_condition(self):
+        """Checks if any player has won the game."""
+        left_zone, right_zone = self.win_zone
+        if self.main.player1.x > left_zone:
+            self.main.game_state.game_won(self.main.player1, self.main.player2)
+        if self.main.player2.x < right_zone:
+            self.main.game_state.game_won(self.main.player2, self.main.player1)
+
+    def update_win_zone(self):
+        """Updates the win zone based on the current screen size."""
+        self.win_zone = self._calculate_win_zone()
+
+    def run(self):
+        """Main loop of the game."""
+        while True:
+            self._check_events()
+
+            self.main.screen.fill((0, 0, 0))
+
+            self.state_manager.draw_current_state()
+
+            pygame.display.flip()
+            self.main.clock.tick(60)
 
     def _check_events(self):
-        """
-        Checks game events.
-        """
         for event in pygame.event.get():
-            # Game events
-            if event.type == pygame.QUIT:
+            if event.type == pygame.QUIT or (
+                event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE
+            ):
                 pygame.quit()
                 sys.exit()
-            elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    pygame.quit()
-                    sys.exit()
 
-            current_state = self.main.game_state.get_current_state()
-
-            # Player movements
-            if current_state == "running":
-                # Player 1
-                self._player_movements(
-                    self.main.player1,
-                    event,
-                    [pygame.K_w, pygame.K_s, pygame.K_a, pygame.K_d],
-                )
-                # Player 2
-                self._player_movements(
-                    self.main.player2,
-                    event,
-                    [pygame.K_UP, pygame.K_DOWN, pygame.K_LEFT, pygame.K_RIGHT],
-                )
-
-            # Menu events
-            elif current_state == "main_menu":
-                self.main.menu.handle_events(event)
-
-            # Name input events
-            elif current_state == "set_names":
-                self.main.set_name_menu.handle_events(event)
-
-            # Stats menu events
-            elif current_state == "stats_menu":
-                self.main.stats_menu.handle_events(event)
-
-            # Game Over events
-            elif current_state == "game_over":
-                self.main.gameover_menu.handle_events(event)
-
-            # Settings menu events
-            elif current_state == "settings_menu":
-                # todo zdecydowanie nie powinno tak byc ze musze zmieniac tu i w petli gry
-                if self.main.game_state.get_current_settings_state() == "main":
-                    self.main.settings_menu.handle_events(event)
-                elif self.main.game_state.get_current_settings_state() == "maze_size":
-                    self.main.maze_size_menu.handle_events(event)
-
-    def _player_movements(self, player, event, keys):
-        """
-        Handles player movements.
-        """
-        if event.type == pygame.KEYDOWN:
-            if event.key == keys[0]:
-                player.movements["up"] = True
-            if event.key == keys[1]:
-                player.movements["down"] = True
-            if event.key == keys[2]:
-                player.movements["left"] = True
-            if event.key == keys[3]:
-                player.movements["right"] = True
-        if event.type == pygame.KEYUP:
-            if event.key == keys[0]:
-                player.movements["up"] = False
-            if event.key == keys[1]:
-                player.movements["down"] = False
-            if event.key == keys[2]:
-                player.movements["left"] = False
-            if event.key == keys[3]:
-                player.movements["right"] = False
+            self.state_manager.handle_event(event)
 
     def _calculate_win_zone(self):
-        """
-        Calculates the win zone for the players.
-        """
         mid = self.main.settings.screen_width // 2
         block_size = self.main.settings.block_size
 
         return (
-            mid - block_size * 1.5 - self.main.settings.player_width,
-            mid + block_size * 1.5 - self.main.settings.player_width,
+            mid - block_size * 1.5 - self.main.settings.player_width // 2,
+            mid + block_size * 1.5 - self.main.settings.player_width // 2,
         )
-
-    def _check_win_condition(self):
-        if self.main.player1.x > self.win_zone[0]:
-            self.main.game_state.game_won(self.main.player1, self.main.player2)
-        if self.main.player2.x < self.win_zone[1]:
-            self.main.game_state.game_won(self.main.player2, self.main.player1)
-
-    def update_win_zone(self):
-        """
-        Updates the win zone based on the current screen size.
-        """
-        self.win_zone = self._calculate_win_zone()
-
-    def run(self):
-        """
-        Main loop of the game.
-        """
-        while True:
-            self._check_events()
-            self.main.screen.fill((0, 0, 0))
-            match self.main.game_state.get_current_state():
-                case "running":
-                    self.main.maze.draw()
-                    self.main.player1.update()
-                    self.main.player2.update()
-                    self._check_win_condition()
-                case "set_names":
-                    self.main.set_name_menu.draw()
-                case "stats_menu":
-                    self.main.stats_menu.draw()
-                case "game_over":
-                    self.main.gameover_menu.draw()
-                case "main_menu":
-                    self.main.menu.draw()
-                case "settings_menu":
-                    # zrobione na pale
-                    # todo zamiast game_state lepsze bedzie w settings_menu
-                    match self.main.game_state.get_current_settings_state():
-                        case "main":
-                            self.main.settings_menu.draw()
-                        case "maze_size":
-                            self.main.maze_size_menu.draw()
-            pygame.display.flip()
-            self.main.clock.tick(60)
