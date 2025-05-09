@@ -15,17 +15,20 @@ class MainMenu(Menu):
     """
 
     def __init__(self, main):
-        items = ["Start", "Settings", "Quit"]
+        items = ["Start", "Leaderboard", "Settings", "Quit"]
         super().__init__(main, "LabyRun", items)
 
     def _button_pressed(self):
         """
         Handle button press based on selection.
         """
-        if self.selected == 0:
-            self.main.game_state.set_names()
-        elif self.selected == 1:
-            self.main.game_state.open_settings_menu()
-        elif self.selected == 2:
-            pygame.quit()
-            sys.exit()
+        match self.selected:
+            case 0:
+                self.main.game_state.set_names()
+            case 1:
+                self.main.game_state.open_stats_menu()
+            case 2:
+                self.main.game_state.open_settings_menu()
+            case 3:
+                pygame.quit()
+                sys.exit()

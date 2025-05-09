@@ -1,3 +1,4 @@
+# todo change check events logic
 """
 This module contains the Engine class
 """
@@ -46,6 +47,7 @@ class Engine:
                     event,
                     [pygame.K_UP, pygame.K_DOWN, pygame.K_LEFT, pygame.K_RIGHT],
                 )
+
             # Menu events
             elif current_state == "main_menu":
                 self.main.menu.handle_events(event)
@@ -53,6 +55,10 @@ class Engine:
             # Name input events
             elif current_state == "set_names":
                 self.main.set_name_menu.handle_events(event)
+
+            # Stats menu events
+            elif current_state == "stats_menu":
+                self.main.stats_menu.handle_events(event)
 
             # Game Over events
             elif current_state == "game_over":
@@ -103,9 +109,9 @@ class Engine:
 
     def _check_win_condition(self):
         if self.main.player1.x > self.win_zone[0]:
-            self.main.game_state.game_won(self.main.player1)
+            self.main.game_state.game_won(self.main.player1, self.main.player2)
         if self.main.player2.x < self.win_zone[1]:
-            self.main.game_state.game_won(self.main.player2)
+            self.main.game_state.game_won(self.main.player2, self.main.player1)
 
     def update_win_zone(self):
         """
@@ -128,6 +134,8 @@ class Engine:
                     self._check_win_condition()
                 case "set_names":
                     self.main.set_name_menu.draw()
+                case "stats_menu":
+                    self.main.stats_menu.draw()
                 case "game_over":
                     self.main.gameover_menu.draw()
                 case "main_menu":

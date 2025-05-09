@@ -15,6 +15,7 @@ class Button(MenuElement):
     def __init__(self, main, text, x, y, active):
         super().__init__(main, text, x, y, active)
         self.width, self.height = self.font.size(self.text)
+        self.width += 20
         self.x = x - self.width // 2
         self.y = y - self.height // 2
         self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
@@ -41,7 +42,7 @@ class Button(MenuElement):
             (self.x, self.y, self.width, self.height),
         )
         text_render = self.font.render(self.text, True, self.text_color)
-        self.screen.blit(text_render, (self.x, self.y))
+        self.screen.blit(text_render, (self.x + 10, self.y))
 
     def is_clicked(self, mouse_pos):
         """
