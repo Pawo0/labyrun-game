@@ -18,7 +18,6 @@ class StatsManager:
         self.players: Dict[str, PlayerStats] = {}
         self.game_start_time: Optional[float] = None
 
-        # Load existing stats if file exists
         self._load_stats()
 
     def _load_stats(self) -> None:
@@ -28,7 +27,6 @@ class StatsManager:
                     data = json.load(file)
 
                 for player_name, player_data in data.items():
-                    # Create PlayerStats objects from loaded data
                     self.players[player_name] = PlayerStats(
                         player_name=player_name,
                         games_played=player_data.get("games_played", 0),
@@ -40,7 +38,6 @@ class StatsManager:
                     )
             except (json.JSONDecodeError, IOError) as e:
                 print(f"Error loading stats: {str(e)}")
-                # Create a new stats file if there was an error
                 self.players = {}
 
     def save_stats(self) -> None:
@@ -89,11 +86,10 @@ class StatsManager:
             game_time = 0.0
         else:
             game_time = datetime.now().timestamp() - self.game_start_time
-            self.game_start_time = None  # Reset timer
+            self.game_start_time = None
 
         timestamp = datetime.now().isoformat()
 
-        # Create game records
         winner_record = GameRecord(
             timestamp=timestamp,
             player_name=winner_name,
@@ -114,15 +110,12 @@ class StatsManager:
             game_time=game_time,
         )
 
-        # Get or create player stats objects
         winner_stats = self.get_player_stats(winner_name)
         loser_stats = self.get_player_stats(loser_name)
 
-        # Update stats
         winner_stats.add_game(winner_record)
         loser_stats.add_game(loser_record)
 
-        # Save to file
         self.save_stats()
 
     def get_leaderboard(self) -> list:

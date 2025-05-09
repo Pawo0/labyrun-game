@@ -5,7 +5,7 @@ This module contains the GameState class.
 
 class GameState:
     """
-    This class manages the current state of the game.
+    This class provides the current state of the game.
     """
 
     def __init__(self, main):
@@ -22,6 +22,7 @@ class GameState:
             "running": "running",
             "game_over": "game_over",
             "settings_menu": "settings_menu",
+            "stats_menu": "stats_menu",
         }
 
         self.state = self.states["main_menu"]  # Default state is main_menu
@@ -68,6 +69,12 @@ class GameState:
         self.main.player2.reset()  # Reinitialize player2
 
         self.main.stats_manager.start_game_timer()
+
+    def open_stats_menu(self):
+        """
+        Sets the game state to stats menu.
+        """
+        self.state = self.states["stats_menu"]
 
     def main_menu(self):
         """
