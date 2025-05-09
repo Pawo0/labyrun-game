@@ -32,9 +32,15 @@ class Engine:
     def run(self):
         """Main loop of the game."""
         while True:
+            print(self.main.player1.speed, self.main.player2.speed, self.main.settings.block_size)
             self._check_events()
 
             self.main.screen.fill((0, 0, 0))
+
+            if self.main.game_state.get_current_state() == "running":
+                self.main.maze.check_power_up_collision(self.main.player1)
+                self.main.maze.check_power_up_collision(self.main.player2)
+
 
             self.state_manager.draw_current_state()
 
@@ -44,10 +50,16 @@ class Engine:
     def _check_events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT or (
-                event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE
+                    event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE
             ):
                 pygame.quit()
                 sys.exit()
+
+            # Obsługa zdarzeń resetowania prędkości graczy
+            if event.type == pygame.USEREVENT + 1:  # Dla gracza 1
+                self.main.maze.reset_player_speed(1)
+            elif event.type == pygame.USEREVENT + 2:  # Dla gracza 2
+                self.main.maze.reset_player_speed(2)
 
             self.state_manager.handle_event(event)
 

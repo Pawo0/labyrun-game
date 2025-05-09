@@ -1,17 +1,14 @@
-"""
-This module contains the Player class.
-"""
-
 import pygame
 
 
-class Player:
+class Player(pygame.sprite.Sprite):  # Dziedziczenie po pygame.sprite.Sprite
     """
     This class represents the player in the game.
     It handles position, movement, and draws the player on the screen.
     """
 
     def __init__(self, main, player_no=1):
+        super().__init__()  # Wywołanie konstruktora klasy nadrzędnej
         self.main = main
         self.settings = main.settings
         self.screen = main.screen
@@ -26,6 +23,11 @@ class Player:
         self.pos = None
         self.x = None
         self.y = None
+        
+        self.rect = None  # Dodajemy atrybut rect
+        self.image = None  # Dodajemy atrybut image wymagany przez sprite
+
+        self.player_number = player_no
 
         self.reset()
 
@@ -34,6 +36,12 @@ class Player:
         Sets the player's name.
         """
         self.player_name = name
+
+    def reset_speed(self):
+        """
+        Resetuje prędkość gracza do wartości domyślnej.
+        """
+        self.speed = self.settings.player_speed
 
     def reset(self):
         """
@@ -56,6 +64,15 @@ class Player:
 
         self.x = self.pos[0]
         self.y = self.pos[1]
+        
+        # Inicjalizacja image i rect
+        self.image = pygame.Surface([self.width, self.height])
+        self.image.fill(self.color)
+        self.rect = self.image.get_rect()
+        self.rect.x = self.x
+        self.rect.y = self.y
+
+        self.reset_speed()
 
     def update(self):
         """
@@ -84,8 +101,10 @@ class Player:
         tmp_rect_y = pygame.Rect(self.x, new_y, self.width, self.height)
         if not self.main.maze.check_collision(tmp_rect_x):
             self.x = new_x
+            self.rect.x = new_x  # Aktualizujemy rect.x
         if not self.main.maze.check_collision(tmp_rect_y):
             self.y = new_y
+            self.rect.y = new_y  # Aktualizujemy rect.y
         self.draw()
 
     def draw(self):

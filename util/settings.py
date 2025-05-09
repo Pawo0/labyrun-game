@@ -23,8 +23,12 @@ class Settings:
         self.screen_height = main.screen.get_height()
 
         # players colors
-        self.player1_color = "red"
-        self.player2_color = "white"
+        self.player1_color = "magenta"
+        self.player2_color = "magenta"
+
+        # labyrinth colors
+        self.wall_color = (0, 0, 0)
+        self.floor_color = (255, 255, 255)
 
         # set initial player positions
         self.player1_initial_position = None
@@ -35,7 +39,11 @@ class Settings:
         self.player_width = None
         self.player_height = None
         self.player_speed = None
+        self.default_speed = None
         self._calculate_block_size()
+
+        # powerUps
+        self.power_up_duration = 5000
 
     def _calculate_block_size(self):
         """
@@ -77,3 +85,6 @@ class Settings:
         self._calculate_block_size()
         self.calculate_initial_positions()
         self.main.engine.update_win_zone()
+
+        self.main.player1.reset()
+        self.main.player2.reset()
