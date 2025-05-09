@@ -32,7 +32,6 @@ class Engine:
     def run(self):
         """Main loop of the game."""
         while True:
-            print(self.main.player1.speed, self.main.player2.speed, self.main.settings.block_size)
             self._check_events()
 
             self.main.screen.fill((0, 0, 0))

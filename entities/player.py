@@ -23,7 +23,7 @@ class Player(pygame.sprite.Sprite):  # Dziedziczenie po pygame.sprite.Sprite
         self.pos = None
         self.x = None
         self.y = None
-        
+
         self.rect = None  # Dodajemy atrybut rect
         self.image = None  # Dodajemy atrybut image wymagany przez sprite
 
@@ -64,7 +64,7 @@ class Player(pygame.sprite.Sprite):  # Dziedziczenie po pygame.sprite.Sprite
 
         self.x = self.pos[0]
         self.y = self.pos[1]
-        
+
         # Inicjalizacja image i rect
         self.image = pygame.Surface([self.width, self.height])
         self.image.fill(self.color)
@@ -81,30 +81,64 @@ class Player(pygame.sprite.Sprite):  # Dziedziczenie po pygame.sprite.Sprite
         new_x = self.x
         new_y = self.y
 
+        # Obliczanie nowej pozycji na podstawie wciśniętych klawiszy
         if self.movements["up"]:
             new_y = self.y - self.speed if self.y - self.speed > 0 else 0
         if self.movements["down"]:
-            new_y = (
-                self.y + self.speed
-                if self.y + self.speed < self.screen.get_height() - self.height
-                else self.screen.get_height() - self.height
-            )
+            new_y = min(self.y + self.speed, self.screen.get_height() - self.height)
         if self.movements["left"]:
             new_x = self.x - self.speed if self.x - self.speed > 0 else 0
         if self.movements["right"]:
-            new_x = (
-                self.x + self.speed
-                if self.x + self.speed < self.screen.get_width() - self.width
-                else self.screen.get_width() - self.width
-            )
-        tmp_rect_x = pygame.Rect(new_x, self.y, self.width, self.height)
-        tmp_rect_y = pygame.Rect(self.x, new_y, self.width, self.height)
-        if not self.main.maze.check_collision(tmp_rect_x):
+            new_x = min(self.x + self.speed, self.screen.get_width() - self.width)
+
+        # Obsługa kolizji w poziomie (X)
+        if new_x != self.x:
+            # Sprawdzanie czy wystąpiła kolizja dla docelowej pozycji X
+            tmp_rect_x = pygame.Rect(new_x, self.y, self.width, self.height)
+            if self.main.maze.check_collision(tmp_rect_x):
+                # Jeśli kolizja, znajdź maksymalną pozycję bez kolizji
+                target_x = new_x
+                start_x = self.x
+
+                # Binary search dla znalezienia maksymalnej pozycji bez kolizji
+                while abs(target_x - start_x) > 1:
+                    mid_x = (target_x + start_x) // 2
+                    mid_rect = pygame.Rect(mid_x, self.y, self.width, self.height)
+
+                    if self.main.maze.check_collision(mid_rect):
+                        target_x = mid_x
+                    else:
+                        start_x = mid_x
+
+                new_x = start_x
+
             self.x = new_x
-            self.rect.x = new_x  # Aktualizujemy rect.x
-        if not self.main.maze.check_collision(tmp_rect_y):
+            self.rect.x = new_x
+
+        # Obsługa kolizji w pionie (Y)
+        if new_y != self.y:
+            # Sprawdzanie czy wystąpiła kolizja dla docelowej pozycji Y
+            tmp_rect_y = pygame.Rect(self.x, new_y, self.width, self.height)
+            if self.main.maze.check_collision(tmp_rect_y):
+                # Jeśli kolizja, znajdź maksymalną pozycję bez kolizji
+                target_y = new_y
+                start_y = self.y
+
+                # Binary search dla znalezienia maksymalnej pozycji bez kolizji
+                while abs(target_y - start_y) > 1:
+                    mid_y = (target_y + start_y) // 2
+                    mid_rect = pygame.Rect(self.x, mid_y, self.width, self.height)
+
+                    if self.main.maze.check_collision(mid_rect):
+                        target_y = mid_y
+                    else:
+                        start_y = mid_y
+
+                new_y = start_y
+
             self.y = new_y
-            self.rect.y = new_y  # Aktualizujemy rect.y
+            self.rect.y = new_y
+
         self.draw()
 
     def draw(self):
