@@ -84,6 +84,10 @@ class SetNames:
                 self.active_input = 2
                 self.p1_input.active = False
                 self.p2_input.active = True
+            elif event.key == pygame.K_TAB:
+                self.active_input = 2 if self.active_input == 1 else 1
+                self.p1_input.active = not self.p1_input.active
+                self.p2_input.active = not self.p2_input.active
             elif event.key == pygame.K_RETURN:
                 self._play()
             else:
