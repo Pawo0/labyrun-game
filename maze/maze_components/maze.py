@@ -65,6 +65,10 @@ class Maze:
         """
         Generates random power-ups in the maze.
         """
+        # Jeśli power-upy są wyłączone, nie generujemy ich
+        if not hasattr(self.settings, 'power_ups_enabled') or not self.settings.power_ups_enabled:
+            return
+
         # Liczba modyfikatorów zależna od wielkości labiryntu
         num_power_ups = max(1, (self.settings.maze_width * self.settings.maze_height) // 25)
 
@@ -141,13 +145,14 @@ class Maze:
         """
         Checks if player collided with any power-up and applies its effect.
         """
+        # Jeśli power-upy są wyłączone, nie sprawdzamy kolizji
+        if not hasattr(self.settings, 'power_ups_enabled') or not self.settings.power_ups_enabled:
+            return
+
         collided_power_ups = pygame.sprite.spritecollide(player, self.power_ups, False)
         for power_up in collided_power_ups:
             if power_up.active:
                 power_up.apply_effect(player)
-                # Możemy dodać efekt dźwiękowy
-                # pygame.mixer.Sound('assets/power_up.wav').play()
-
     def reset_player_speed(self, player_number):
         """
         Resetuje prędkość gracza po upływie czasu działania modyfikatora.
@@ -173,6 +178,7 @@ class Maze:
 
                 # Rysujemy tylko jeden przezroczysty krąg zamiast gradientu
                 pygame.draw.circle(self.fog_surface, (0, 0, 0, 0), (center_x, center_y), self.fog_radius)
+
     def _create_visibility_gradient(self, center_pos):
         """
         Tworzy gradient widoczności wokół danego punktu.
@@ -209,10 +215,11 @@ class Maze:
         self.walls.draw(self.screen)
         self.floors.draw(self.screen)
 
-        # Rysujemy aktywne modyfikatory
-        for power_up in self.power_ups:
-            if power_up.active:
-                power_up.draw(self.screen)
+        # Rysujemy aktywne modyfikatory jeśli są włączone
+        if hasattr(self.settings, 'power_ups_enabled') and self.settings.power_ups_enabled:
+            for power_up in self.power_ups:
+                if power_up.active:
+                    power_up.draw(self.screen)
 
         # Aktualizujemy i rysujemy mgłę wojny, jeśli gra jest w trakcie i opcja włączona
         if (self.main.game_state.state == self.main.game_state.states["running"] and

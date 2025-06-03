@@ -45,6 +45,9 @@ class Settings:
         # Ustawienie mgły wojny
         self.fog_of_war_enabled = True  # Domyślnie włączone
 
+        # Ustawienie power-upów
+        self.power_ups_enabled = True  # Domyślnie włączone
+
         # powerUps
         self.power_up_duration = 5000
 
