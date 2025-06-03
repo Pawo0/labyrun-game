@@ -23,8 +23,8 @@ class Settings:
         self.screen_height = main.screen.get_height()
 
         # players colors
-        self.player1_color = "magenta"
-        self.player2_color = "magenta"
+        self.player1_color = (255,0,255)
+        self.player2_color = (255,0,255)
 
         # labyrinth colors
         self.wall_color = (0, 0, 0)
@@ -43,7 +43,7 @@ class Settings:
         self.player2_initial_position = self._calculate_player2_position()
 
         # Ustawienie mgły wojny
-        self.fog_of_war_enabled = True  # Domyślnie włączone
+        self.fog_of_war_enabled = False  # Domyślnie włączone
 
         # Ustawienie power-upów
         self.power_ups_enabled = True  # Domyślnie włączone
