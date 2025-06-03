@@ -42,6 +42,9 @@ class Settings:
         self.player1_initial_position = self._calculate_player1_position()
         self.player2_initial_position = self._calculate_player2_position()
 
+        # Ustawienie mgły wojny
+        self.fog_of_war_enabled = True  # Domyślnie włączone
+
         # powerUps
         self.power_up_duration = 5000
 
