@@ -30,10 +30,6 @@ class Settings:
         self.wall_color = (0, 0, 0)
         self.floor_color = (255, 255, 255)
 
-        # set initial player positions
-        self.player1_initial_position = None
-        self.player2_initial_position = None
-
         # scale the maze size to fit the screen
         self.block_size = None
         self.player_width = None
@@ -41,6 +37,10 @@ class Settings:
         self.player_speed = None
         self.default_speed = None
         self._calculate_block_size()
+
+        # Oblicz bezpośrednio pozycje początkowe graczy (bez zależności od maze)
+        self.player1_initial_position = self._calculate_player1_position()
+        self.player2_initial_position = self._calculate_player2_position()
 
         # powerUps
         self.power_up_duration = 5000
@@ -58,23 +58,48 @@ class Settings:
         self.player_height = self.block_size // 2
 
         self.player_speed = self.block_size // 8
+        self.default_speed = self.player_speed
+
+    def _calculate_player1_position(self):
+        """
+        Oblicza pozycję startową gracza 1 (lewy dolny róg labiryntu).
+        """
+        # Oblicz pozycję labiryntu
+        maze_width = self.maze_width * 2 + 3  # Szerokość po uwzględnieniu odbicia i łącznika
+        maze_height = self.maze_height
+
+        offset_x = (self.screen_width - maze_width * self.block_size) // 2
+        offset_y = (self.screen_height - maze_height * self.block_size) // 2
+
+        # Lewy dolny róg (dodaj 1.5 bloku od lewej, odejmij 2 bloki od dołu)
+        left_x = offset_x + 1.5 * self.block_size - self.player_width // 2
+        left_y = offset_y + maze_height * self.block_size - 2 * self.block_size + self.player_height // 2
+
+        return (left_x, left_y)
+
+    def _calculate_player2_position(self):
+        """
+        Oblicza pozycję startową gracza 2 (prawy dolny róg labiryntu).
+        """
+        # Oblicz pozycję labiryntu
+        maze_width = self.maze_width * 2 + 3  # Szerokość po uwzględnieniu odbicia i łącznika
+        maze_height = self.maze_height
+
+        offset_x = (self.screen_width - maze_width * self.block_size) // 2
+        offset_y = (self.screen_height - maze_height * self.block_size) // 2
+
+        # Prawy dolny róg (odejmij 2 bloki od prawej, odejmij 2 bloki od dołu)
+        right_x = offset_x + maze_width * self.block_size - 2 * self.block_size + self.player_width // 2
+        right_y = offset_y + maze_height * self.block_size - 2 * self.block_size + self.player_height // 2
+
+        return (right_x, right_y)
 
     def calculate_initial_positions(self):
         """
-        Calculates the initial positions of the players.
+        Aktualizuje pozycje początkowe graczy (np. po zmianie rozmiaru labiryntu).
         """
-        left = self.main.maze.get_lower_left()
-        right = self.main.maze.get_lower_right()
-        block_size = self.block_size
-        player_size = self.player_width
-
-        left_x = left[0] + 1.5 * block_size - player_size // 2
-        left_y = left[1] - 2 * block_size + player_size // 2
-        right_x = right[0] - 2 * block_size + player_size // 2
-        right_y = right[1] - 2 * block_size + player_size // 2
-
-        self.player1_initial_position = (left_x, left_y)
-        self.player2_initial_position = (right_x, right_y)
+        self.player1_initial_position = self._calculate_player1_position()
+        self.player2_initial_position = self._calculate_player2_position()
 
     def set_maze_size(self, width, height):
         """
@@ -84,7 +109,10 @@ class Settings:
         self.maze_height = height
         self._calculate_block_size()
         self.calculate_initial_positions()
-        self.main.engine.update_win_zone()
 
-        self.main.player1.reset()
-        self.main.player2.reset()
+        if hasattr(self.main, 'engine'):
+            self.main.engine.update_win_zone()
+
+        if hasattr(self.main, 'player1') and hasattr(self.main, 'player2'):
+            self.main.player1.reset()
+            self.main.player2.reset()
