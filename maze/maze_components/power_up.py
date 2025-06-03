@@ -8,13 +8,18 @@ class PowerUp(pygame.sprite.Sprite):
     Klasa bazowa dla modyfikatorów pojawiających się na mapie.
     """
 
-    def __init__(self,main, pos_x, pos_y, block_size):
+    def __init__(self, main, pos_x, pos_y, block_size):
         super().__init__()
         self.main = main
-        self.image = pygame.Surface((block_size, block_size))
+        # Ustawiamy rozmiar na 60% block_size
+        self.size = int(block_size * 0.6)
+        self.image = pygame.Surface((self.size, self.size))
         self.rect = self.image.get_rect()
-        self.rect.x = pos_x
-        self.rect.y = pos_y
+
+        # Centrujemy modyfikator w polu
+        self.rect.x = pos_x + (block_size - self.size) // 2
+        self.rect.y = pos_y + (block_size - self.size) // 2
+
         self.block_size = block_size
         self.duration = self.main.settings.power_up_duration  # Czas trwania efektu w ms
         self.active = True
@@ -39,21 +44,19 @@ class SpeedBoost(PowerUp):
     Modyfikator zwiększający prędkość gracza.
     """
 
-    def __init__(self,main, pos_x, pos_y, block_size):
+    def __init__(self, main, pos_x, pos_y, block_size):
         super().__init__(main, pos_x, pos_y, block_size)
         self.image.fill((0, 255, 0))  # Zielony kolor dla przyspieszenia
-        # Możesz też załadować obrazek zamiast jednolitego koloru
-        # self.image = pygame.image.load('assets/speed_boost.png')
-        # self.image = pygame.transform.scale(self.image, (block_size, block_size))
 
-        # Rysujemy symbol błyskawicy
+        # Dostosowujemy koordynaty do zmniejszonego rozmiaru
+        size = self.size  # To jest teraz 60% block_size
         pygame.draw.polygon(self.image, (255, 255, 0), [
-            (block_size // 4, block_size // 4),
-            (block_size // 2, block_size // 2),
-            (block_size // 4, block_size // 2),
-            (3 * block_size // 4, 3 * block_size // 4),
-            (3 * block_size // 4, block_size // 2),
-            (block_size // 2, block_size // 2),
+            (size // 4, size // 4),
+            (size // 2, size // 2),
+            (size // 4, size // 2),
+            (3 * size // 4, 3 * size // 4),
+            (3 * size // 4, size // 2),
+            (size // 2, size // 2),
         ])
 
     def apply_effect(self, player):
@@ -75,13 +78,14 @@ class SlowDown(PowerUp):
         super().__init__(main, pos_x, pos_y, block_size)
         self.image.fill((255, 0, 0))  # Czerwony kolor dla spowolnienia
 
-        # Rysujemy symbol spowolnienia
+        # Dostosowujemy koordynaty do zmniejszonego rozmiaru
+        size = self.size
         pygame.draw.circle(self.image, (0, 0, 0),
-                           (block_size // 2, block_size // 2),
-                           block_size // 3, 2)
+                           (size // 2, size // 2),
+                           size // 3, 2)
         pygame.draw.line(self.image, (0, 0, 0),
-                         (block_size // 2, block_size // 5),
-                         (block_size // 2, 4 * block_size // 5), 3)
+                         (size // 2, size // 5),
+                         (size // 2, 4 * size // 5), 3)
 
     def apply_effect(self, player):
         """

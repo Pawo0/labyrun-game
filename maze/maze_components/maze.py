@@ -60,39 +60,54 @@ class Maze:
         """
         # Liczba modyfikatorów zależna od wielkości labiryntu
         num_power_ups = max(1, (self.settings.maze_width * self.settings.maze_height) // 25)
-        
+
         # Lista dostępnych modyfikatorów
         power_up_types = [SpeedBoost, SlowDown]
-        
-        # Lista dostępnych pozycji (tylko podłoga, nie ściany)
-        available_positions = []
+
+        # Podział dostępnych pozycji na dwie grupy
+        player1_positions = []
+        player2_positions = []
+
         for y, row in enumerate(self.maze):
             for x, cell in enumerate(row):
-                # Pomijamy ściany (1) i pozycje startowe graczy
+                # jesli srodek labiryntu, to nie dodajemy modyfikatora
+                center_x = len(row) // 2
+                center_y = len(self.maze) // 2
+
+                if (center_x - 2 <= x <= center_x + 2) and (center_y - 2 <= y <= center_y + 2):
+                    continue
+
+                # jesli pole jest puste (0), to dodajemy je jako potencjalną pozycję modyfikatora
                 if cell == 0:
-                    # Sprawdzamy czy to nie pozycja startowa gracza
                     pos_x = self.offset_x + x * self.block_size
                     pos_y = self.offset_y + y * self.block_size
-                    
-                    # Pozycje startowe graczy (uproszczone sprawdzenie)
-                    player1_pos = self.main.settings.player1_initial_position
-                    player2_pos = self.main.settings.player2_initial_position
-                    
-                    # Dodajemy tylko jeśli to nie pozycja startowa
+
+                    # gracze na starcie sa w dolnych rogach labiryntu
+                    player1_pos = self.get_lower_left()
+                    player2_pos = self.get_lower_right()
+
+                    # Dodajemy pozycje do odpowiednich grup na podstawie odległości
                     if not ((pos_x, pos_y) == player1_pos or (pos_x, pos_y) == player2_pos):
-                        available_positions.append((pos_x, pos_y))
-        
-        # Jeśli mamy dostępne pozycje, losujemy
-        if available_positions:
-            # Losujemy pozycje bez powtórzeń
-            selected_positions = random.sample(available_positions, 
-                                             min(num_power_ups, len(available_positions)))
-            
-            # Tworzymy modyfikatory
-            for pos in selected_positions:
-                power_up_class = random.choice(power_up_types)
-                power_up = power_up_class(self.main, pos[0], pos[1], self.block_size)
-                self.power_ups.add(power_up)
+                        distance_to_player1 = abs(pos_x - player1_pos[0]) + abs(pos_y - player1_pos[1])
+                        distance_to_player2 = abs(pos_x - player2_pos[0]) + abs(pos_y - player2_pos[1])
+
+                        if distance_to_player1 < distance_to_player2:
+                            player1_positions.append((pos_x, pos_y))
+                        else:
+                            player2_positions.append((pos_x, pos_y))
+
+        # Losowanie pozycji dla obu graczy
+        selected_positions = []
+        if player1_positions:
+            selected_positions += random.sample(player1_positions, min(num_power_ups // 2, len(player1_positions)))
+        if player2_positions:
+            selected_positions += random.sample(player2_positions, min(num_power_ups // 2, len(player2_positions)))
+
+        # Tworzenie modyfikatorów
+        for pos in selected_positions:
+            power_up_class = random.choice(power_up_types)
+            power_up = power_up_class(self.main, pos[0], pos[1], self.block_size)
+            self.power_ups.add(power_up)
 
     def check_collision(self, rect):
         """
