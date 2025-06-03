@@ -162,7 +162,7 @@ class Maze:
         Aktualizuje mgłę wojny na podstawie pozycji graczy.
         """
         # Czyścimy powierzchnię mgły
-        self.fog_surface.fill((255, 0, 0))  # Półprzezroczysta czarna mgła
+        self.fog_surface.fill((0, 0, 0))  # Półprzezroczysta czarna mgła
 
         # Odkrywamy obszar wokół graczy
         if hasattr(self.main, 'player1') and hasattr(self.main, 'player2'):
@@ -216,10 +216,9 @@ class Maze:
 
         # Aktualizujemy i rysujemy mgłę wojny, jeśli gra jest w trakcie i opcja włączona
         if (self.main.game_state.state == self.main.game_state.states["running"] and
-                self.settings.fog_of_war_enabled):
+                hasattr(self.settings, 'fog_of_war_enabled') and self.settings.fog_of_war_enabled):
             self.update_fog_of_war()
             self.screen.blit(self.fog_surface, (0, 0))
-
 
     def get_lower_left(self):
         """

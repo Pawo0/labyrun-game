@@ -1,10 +1,9 @@
-# todo add docstrings
 from .menu_base import Menu
 
 
 class SettingsMenu(Menu):
     def __init__(self, main):
-        items = ["Player controllers", "Enable Power-ups", "Labyrun size", "Back"]
+        items = ["Game Settings", "Player Controllers", "Labyrun Size", "Back"]
         super().__init__(main, "Settings", items)
         self.main = main
         self.selected = 0
@@ -14,9 +13,9 @@ class SettingsMenu(Menu):
         Handle button press based on selection.
         """
         if self.selected == 0:
-            pass
+            self.main.game_state.open_game_settings()
         elif self.selected == 1:
-            pass
+            pass  # Kontrolery graczy
         elif self.selected == 2:
             self.main.game_state.open_maze_size()
         elif self.selected == 3:
