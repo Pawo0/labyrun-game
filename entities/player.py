@@ -27,9 +27,31 @@ class Player(pygame.sprite.Sprite):  # Dziedziczenie po pygame.sprite.Sprite
         self.rect = None  # Dodajemy atrybut rect
         self.image = None  # Dodajemy atrybut image wymagany przez sprite
 
+        self.alpha = 255  # Przezroczystość gracza
+        self.frozen = False  # Stan zamrożenia
+        self.old_speed = None  # Przechowuje prędkość przed zamrożeniem
+
         self.player_number = player_no
 
         self.reset()
+
+    def update_image(self):
+        """
+        Aktualizuje obraz gracza po zmianie rozmiaru
+        """
+        # Tworzy nową powierzchnię o aktualnych wymiarach
+        self.image = pygame.Surface((self.width, self.height), pygame.SRCALPHA)
+
+        # Rysuje gracza z odpowiednim kolorem
+        self.image.fill(self.color)
+
+        # Ustawia przezroczystość
+        self.image.set_alpha(self.alpha)
+
+        # Aktualizuje rect
+        self.rect = self.image.get_rect()
+        self.rect.x = self.x
+        self.rect.y = self.y
 
     def set_name(self, name):
         """
@@ -128,7 +150,6 @@ class Player(pygame.sprite.Sprite):  # Dziedziczenie po pygame.sprite.Sprite
         self.rect.y = new_y
 
         self.draw()
-
 
     def draw(self):
         """

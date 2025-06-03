@@ -7,8 +7,7 @@ import math
 
 from .floor import Floor
 from .wall import Wall
-from .power_up import SpeedBoost, SlowDown  # dodaj import
-
+from .power_up import SpeedBoost, SlowDown, Enlarge, Teleport, Freeze
 
 class Maze:
     """
@@ -73,7 +72,11 @@ class Maze:
         num_power_ups = max(1, (self.settings.maze_width * self.settings.maze_height) // 25)
 
         # Lista dostępnych modyfikatorów
-        power_up_types = [SpeedBoost, SlowDown]
+        power_up_types = [
+            SpeedBoost, SlowDown,
+             Enlarge,
+            Teleport, Freeze
+        ]
 
         # Podział dostępnych pozycji na dwie grupy
         player1_positions = []

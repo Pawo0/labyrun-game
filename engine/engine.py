@@ -60,8 +60,30 @@ class Engine:
             elif event.type == pygame.USEREVENT + 2:  # Dla gracza 2
                 self.main.maze.reset_player_speed(2)
 
-            self.state_manager.handle_event(event)
 
+            # Obsługa zdarzeń dla przywracania rozmiaru
+            elif event.type == pygame.USEREVENT + 21:  # Dla gracza 1
+                original_width = self.main.settings.player_width
+                original_height = self.main.settings.player_height
+                self.main.player1.width = original_width
+                self.main.player1.height = original_height
+                self.main.player1.update_image()
+            elif event.type == pygame.USEREVENT + 22:  # Dla gracza 2
+                original_width = self.main.settings.player_width
+                original_height = self.main.settings.player_height
+                self.main.player2.width = original_width
+                self.main.player2.height = original_height
+                self.main.player2.update_image()
+
+            # Obsługa zdarzeń dla odmrażania graczy
+            elif event.type == pygame.USEREVENT + 31:  # Dla gracza 2 (zamrożony przez gracza 1)
+                self.main.player2.frozen = False
+                self.main.player2.speed = self.main.player2.old_speed
+            elif event.type == pygame.USEREVENT + 32:  # Dla gracza 1 (zamrożony przez gracza 2)
+                self.main.player1.frozen = False
+                self.main.player1.speed = self.main.player1.old_speed
+
+            self.state_manager.handle_event(event)
     def _calculate_win_zone(self):
         mid = self.main.settings.screen_width // 2
         block_size = self.main.settings.block_size

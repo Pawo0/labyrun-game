@@ -102,4 +102,167 @@ class SlowDown(PowerUp):
         pygame.time.set_timer(pygame.USEREVENT + opponent.player_number, self.duration)
         self.active = False
 
-# Można dodać więcej typów modyfikatorów
+
+class Enlarge(PowerUp):
+    """
+    Modyfikator zwiększający rozmiar przeciwnika gracza, ale nie więcej niż rozmiar bloku.
+    """
+
+    def __init__(self, main, pos_x, pos_y, block_size):
+        super().__init__(main, pos_x, pos_y, block_size)
+        self.image.fill((255, 165, 0))  # Pomarańczowy kolor
+
+        size = self.size
+        # Rysujemy strzałki na zewnątrz
+        pygame.draw.polygon(self.image, (0, 0, 0), [
+            (size // 2, size // 4),
+            (size // 4, size // 2),
+            (size // 2, size * 3 // 4),
+            (size * 3 // 4, size // 2),
+        ])
+
+    def apply_effect(self, player):
+        """
+        Zwiększa rozmiar przeciwnika gracza na określony czas,
+        ale nie więcej niż rozmiar bloku.
+        """
+        # Znajdujemy przeciwnika
+        if player.player_number == 1:
+            opponent = self.main.player2
+        else:
+            opponent = self.main.player1
+
+        original_width = opponent.width
+        original_height = opponent.height
+        block_size = self.main.settings.block_size
+
+        # Powiększamy rozmiar o 50%, ale nie więcej niż 90% rozmiaru bloku
+        new_width = min(int(opponent.width * 1.5), int(block_size * 0.9))
+        new_height = min(int(opponent.height * 1.5), int(block_size * 0.9))
+
+        # Obliczamy zmianę rozmiaru
+        width_diff = new_width - original_width
+        height_diff = new_height - original_height
+
+        # Aktualizujemy wymiary
+        opponent.width = new_width
+        opponent.height = new_height
+        opponent.update_image()
+
+        # Przesuwamy przeciwnika, aby był nadal wyśrodkowany
+        opponent.x -= width_diff // 2
+        opponent.y -= height_diff // 2
+
+        # Aktualizujemy pozycję prostokąta
+        opponent.rect.x = opponent.x
+        opponent.rect.y = opponent.y
+
+        # Sprawdzamy, czy nowa pozycja nie koliduje ze ścianami
+        rect = pygame.Rect(opponent.x, opponent.y, opponent.width, opponent.height)
+        if self.main.maze.check_collision(rect):
+            # Jeśli koliduje, przywracamy oryginalny rozmiar
+            opponent.width = original_width
+            opponent.height = original_height
+            opponent.x += width_diff // 2
+            opponent.y += height_diff // 2
+            opponent.update_image()
+        else:
+            # Ustawiamy timer na przywrócenie normalnego rozmiaru
+            player_num = 2 if player.player_number == 1 else 1
+            pygame.time.set_timer(pygame.USEREVENT + 20 + player_num, self.duration, loops=1)
+
+        self.active = False
+
+
+class Teleport(PowerUp):
+    """
+    Modyfikator teleportujący gracza losowo w dostępne miejsce.
+    """
+
+    def __init__(self, main, pos_x, pos_y, block_size):
+        super().__init__(main, pos_x, pos_y, block_size)
+        self.image.fill((148, 0, 211))  # Fioletowy kolor dla teleportu
+
+        size = self.size
+        # Rysujemy spiralę
+        for i in range(0, size, 2):
+            radius = i // 2
+            pos = (size // 2, size // 2)
+            pygame.draw.circle(self.image, (255, 255, 255), pos, radius, 1)
+
+    def apply_effect(self, player):
+        """
+        Teleportuje gracza w losowe miejsce w labiryncie, z wyjątkiem strefy wygranej.
+        """
+        # Pobieramy wszystkie dostępne podłogi
+        available_floors = []
+
+        # Pobieranie stref wygranej
+        left_zone, right_zone = self.main.engine.win_zone
+        mid_x = self.main.settings.screen_width // 2
+        safe_margin = self.main.settings.block_size * 2
+
+        for floor in self.main.maze.floors:
+            rect = pygame.Rect(floor.rect.x, floor.rect.y,
+                               player.width, player.height)
+
+            # Sprawdzanie czy podłoga jest poza strefą wygranej i nie koliduje ze ścianami
+            is_in_win_zone = (
+                    (player.player_number == 1 and floor.rect.x > mid_x - safe_margin) or
+                    (player.player_number == 2 and floor.rect.x < mid_x + safe_margin)
+            )
+
+            if not is_in_win_zone and not self.main.maze.check_collision(rect):
+                available_floors.append(floor)
+
+        if available_floors:
+            # Losujemy podłogę
+            new_floor = random.choice(available_floors)
+            player.x = new_floor.rect.x
+            player.y = new_floor.rect.y
+            player.rect.x = player.x
+            player.rect.y = player.y
+
+        self.active = False
+
+
+class Freeze(PowerUp):
+    """
+    Modyfikator zamrażający przeciwnika na chwilę.
+    """
+
+    def __init__(self, main, pos_x, pos_y, block_size):
+        super().__init__(main, pos_x, pos_y, block_size)
+        self.image.fill((173, 216, 230))  # Jasnoniebieski kolor dla lodu
+
+        size = self.size
+        # Rysujemy płatek śniegu
+        pygame.draw.line(self.image, (255, 255, 255),
+                         (size // 2, 0), (size // 2, size), 2)
+        pygame.draw.line(self.image, (255, 255, 255),
+                         (0, size // 2), (size, size // 2), 2)
+        pygame.draw.line(self.image, (255, 255, 255),
+                         (size // 4, size // 4), (3 * size // 4, 3 * size // 4), 2)
+        pygame.draw.line(self.image, (255, 255, 255),
+                         (size // 4, 3 * size // 4), (3 * size // 4, size // 4), 2)
+
+    def apply_effect(self, player):
+        """
+        Zamraża przeciwnika gracza na określony czas.
+        """
+        # Znajdujemy przeciwnika
+        if player.player_number == 1:
+            opponent = player.main.player2
+        else:
+            opponent = player.main.player1
+
+        opponent.frozen = True
+        opponent.old_speed = opponent.speed
+        opponent.speed = 0
+
+        def unfreeze():
+            opponent.frozen = False
+            opponent.speed = opponent.old_speed
+
+        pygame.time.set_timer(pygame.USEREVENT + 30 + player.player_number, self.duration, loops=1)
+        self.active = False
