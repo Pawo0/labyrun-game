@@ -70,6 +70,16 @@ class GameState:
 
         self.main.stats_manager.start_game_timer()
 
+    def open_game_settings(self):
+        """
+        Otwiera stronę ustawień gry.
+        """
+        from menu.settings_pages.game_settings_page import GameSettingsPage
+
+        self.state = "settings_menu"
+        self.settings_state = "game"
+        self.main.current_menu = GameSettingsPage(self.main)
+
     def open_stats_menu(self):
         """
         Sets the game state to stats menu.

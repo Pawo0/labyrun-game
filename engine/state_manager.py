@@ -48,6 +48,15 @@ class GameStateManager:
             ],
         }
 
+    def open_game_settings(self):
+        """
+        Opens the game settings page.
+        """
+        from menu.settings_pages.game_settings_page import GameSettingsPage
+
+        self.state = self.states["settings"]
+        self.main.current_menu = GameSettingsPage(self.main)
+
     def handle_event(self, event):
         """Handle event for the current state"""
         current_state = self.main.game_state.get_current_state()
@@ -79,11 +88,16 @@ class GameStateManager:
                     player.movements[direction_map[event.key]] = action_value
 
     def _handle_settings_events(self, event):
-        settings_state = self.main.game_state.get_current_settings_state()
+        """
+        Handles events in the settings menu.
+        """
+        settings_state = self.main.game_state.settings_state
         if settings_state == "main":
             self.main.settings_menu.handle_events(event)
         elif settings_state == "maze_size":
             self.main.maze_size_menu.handle_events(event)
+        elif settings_state == "game":
+            self.main.current_menu.handle_events(event)
 
     def _draw_running_state(self):
         self.main.maze.draw()
@@ -91,9 +105,16 @@ class GameStateManager:
         self.main.player2.update()
         self.main.engine.check_win_condition()
 
+    # engine/state_manager.py
+
     def _draw_settings_state(self):
-        settings_state = self.main.game_state.get_current_settings_state()
+        """
+        Draws the settings menu.
+        """
+        settings_state = self.main.game_state.settings_state
         if settings_state == "main":
             self.main.settings_menu.draw()
         elif settings_state == "maze_size":
             self.main.maze_size_menu.draw()
+        elif settings_state == "game":
+            self.main.current_menu.draw()
