@@ -151,11 +151,17 @@ class Maze:
 
     def check_collision(self, rect):
         """
-        Checks for collisions with walls in the maze.
+        Sprawdza kolizje ze ścianami labiryntu.
         """
         temp_sprite = pygame.sprite.Sprite()
         temp_sprite.rect = rect
-        return pygame.sprite.spritecollide(temp_sprite, self.walls, False)
+        collisions = pygame.sprite.spritecollide(temp_sprite, self.walls, False)
+
+        # Dodaj debugowanie
+        if collisions:
+            print(f"Wykryto kolizję: {rect} z {[wall.rect for wall in collisions]}")
+
+        return collisions
 
     def check_power_up_collision(self, player):
         """

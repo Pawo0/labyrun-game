@@ -105,7 +105,7 @@ class SlowDown(PowerUp):
 
 class Enlarge(PowerUp):
     """
-    Modyfikator zwiększający rozmiar przeciwnika gracza, ale nie więcej niż rozmiar bloku.
+    Modyfikator zwiększający rozmiar przeciwnika gracza dokładnie do rozmiaru bloku.
     """
 
     def __init__(self, main, pos_x, pos_y, block_size):
@@ -123,8 +123,7 @@ class Enlarge(PowerUp):
 
     def apply_effect(self, player):
         """
-        Zwiększa rozmiar przeciwnika gracza na określony czas,
-        ale nie więcej niż rozmiar bloku.
+        Zwiększa rozmiar przeciwnika gracza dokładnie do rozmiaru bloku.
         """
         # Znajdujemy przeciwnika
         if player.player_number == 1:
@@ -132,47 +131,38 @@ class Enlarge(PowerUp):
         else:
             opponent = self.main.player1
 
+        # Zapisujemy oryginalne wymiary
         original_width = opponent.width
         original_height = opponent.height
         block_size = self.main.settings.block_size
 
-        # Powiększamy rozmiar o 50%, ale nie więcej niż 90% rozmiaru bloku
-        new_width = min(int(opponent.width * 1.5), int(block_size * 0.9))
-        new_height = min(int(opponent.height * 1.5), int(block_size * 0.9))
+        # Zapisujemy oryginalne położenie środka gracza
+        center_x = opponent.x + original_width / 2
+        center_y = opponent.y + original_height / 2
 
-        # Obliczamy zmianę rozmiaru
-        width_diff = new_width - original_width
-        height_diff = new_height - original_height
+        # Ustawiamy nowy rozmiar dokładnie na rozmiar bloku
+        new_width = int(block_size*0.99)
+        new_height = int(block_size*0.99)
 
-        # Aktualizujemy wymiary
+        # Obliczamy nowe położenie gracza, aby pozostał wyśrodkowany
+        new_x = int(center_x - new_width / 2)
+        new_y = int(center_y - new_height / 2)
+
+        # ustawiamy nowe wymiary
         opponent.width = new_width
         opponent.height = new_height
+        opponent.x = new_x
+        opponent.y = new_y
+
+        # Aktualizujemy obrazek i prostokąt kolizji
         opponent.update_image()
 
-        # Przesuwamy przeciwnika, aby był nadal wyśrodkowany
-        opponent.x -= width_diff // 2
-        opponent.y -= height_diff // 2
+        # Ustawiamy timer na przywrócenie normalnego rozmiaru
+        player_num = 2 if player.player_number == 1 else 1
+        pygame.time.set_timer(pygame.USEREVENT + 20 + player_num, self.duration, loops=1)
 
-        # Aktualizujemy pozycję prostokąta
-        opponent.rect.x = opponent.x
-        opponent.rect.y = opponent.y
-
-        # Sprawdzamy, czy nowa pozycja nie koliduje ze ścianami
-        rect = pygame.Rect(opponent.x, opponent.y, opponent.width, opponent.height)
-        if self.main.maze.check_collision(rect):
-            # Jeśli koliduje, przywracamy oryginalny rozmiar
-            opponent.width = original_width
-            opponent.height = original_height
-            opponent.x += width_diff // 2
-            opponent.y += height_diff // 2
-            opponent.update_image()
-        else:
-            # Ustawiamy timer na przywrócenie normalnego rozmiaru
-            player_num = 2 if player.player_number == 1 else 1
-            pygame.time.set_timer(pygame.USEREVENT + 20 + player_num, self.duration, loops=1)
-
+        # Niezależnie od wyniku sprawdzenia kolizji, dezaktywujemy power-up
         self.active = False
-
 
 class Teleport(PowerUp):
     """
