@@ -8,7 +8,7 @@ from menu.menu_elements import Button, TextInput
 class SettingsOptions:
     """Klasa bazowa dla stron ustawień w grze."""
 
-    def __init__(self, main, title, options_names, options_values):
+    def __init__(self, main, title, options_names, options_values, title_offset=225, options_offset_y=100, options_offset_x=(150, 150)):
         """Inicjalizacja strony z opcjami ustawień."""
         self.main = main
         self.screen = main.screen
@@ -26,13 +26,13 @@ class SettingsOptions:
         # Pozycja tytułu
         self.title_width, self.title_height = self.font.size(title)
         self.title_x = self.screen.get_width() // 2 - self.title_width // 2
-        self.title_y = self.screen.get_height() // 2 - 225
+        self.title_y = self.screen.get_height() // 2 - title_offset
 
         # Pozycje opcji
         self.option_spacing = 100
-        self.option_start_y = self.screen.get_height() // 2 - 100
-        self.option_x = self.screen.get_width() // 2 - 150
-        self.value_x = self.screen.get_width() // 2 + 150
+        self.option_start_y = self.screen.get_height() // 2 - options_offset_y
+        self.option_x = self.screen.get_width() // 2 - options_offset_x[0]
+        self.value_x = self.screen.get_width() // 2 + options_offset_x[1]
 
         # Aktualnie wybrana opcja
         self.selected = 0
@@ -192,6 +192,63 @@ class GameMenu(SettingsOptions):
             self.main.settings.fog_of_war_enabled = self.current_values[0] == 0
         elif index == 1:  # Power-upy
             self.main.settings.power_ups_enabled = self.current_values[1] == 0
+
+
+class EventMenu(SettingsOptions):
+    """Settings page for configuring random events."""
+
+    def __init__(self, main):
+        options_names = [
+            "Events Enabled",
+            "Shortcut Reveal",
+            "Teleportation",
+            "Fatigue",
+            "Event Frequency",
+        ]
+
+        options_values = [
+            ["On", "Off"],
+            ["On", "Off"],
+            ["On", "Off"],
+            ["On", "Off"],
+            ["L", "N", "H"],
+        ]
+
+        super().__init__(main, "Event Settings", options_names, options_values, 425, 300, (300, 300))
+
+        self.current_values[0] = 0 if main.settings.events_enabled else 1
+        self.current_values[1] = 0 if main.settings.shortcutreveal_enabled else 1
+        self.current_values[2] = 0 if main.settings.teleportation_enabled else 1
+        self.current_values[3] = 0 if main.settings.fatigue_enabled else 1
+
+        if main.settings.event_max_interval >= 20000:
+            self.current_values[4] = 0  # Low
+        elif main.settings.event_max_interval >= 10000:
+            self.current_values[4] = 1  # Normal
+        else:
+            self.current_values[4] = 2  # High
+
+    def _apply_setting(self, index):
+        """Apply the selected event settings."""
+        if index == 0:  # Events master switch
+            self.main.settings.events_enabled = self.current_values[0] == 0
+        elif index == 1:  # Shortcut reveal
+            self.main.settings.shortcutreveal_enabled = self.current_values[1] == 0
+        elif index == 2:  # Teleportation
+            self.main.settings.teleportation_enabled = self.current_values[2] == 0
+        elif index == 3:  # Fatigue
+            self.main.settings.fatigue_enabled = self.current_values[3] == 0
+        elif index == 4:  # Event frequency
+            frequency = self.current_values[4]
+            if frequency == 0:  # Low frequency
+                self.main.settings.event_min_interval = 20000
+                self.main.settings.event_max_interval = 40000
+            elif frequency == 1:  # Normal frequency
+                self.main.settings.event_min_interval = 10000
+                self.main.settings.event_max_interval = 20000
+            else:  # High frequency
+                self.main.settings.event_min_interval = 5000
+                self.main.settings.event_max_interval = 10000
 
 
 class SetNames:

@@ -50,6 +50,16 @@ class Settings:
 
         # powerUps
         self.power_up_duration = 5000
+        
+        # Event system settings
+        self.events_enabled = True  # Master switch for all events
+        self.event_min_interval = 3000  # Minimum time between events (3 seconds)
+        self.event_max_interval = 8000  # Maximum time between events (8 seconds)
+        
+        # Individual event settings
+        self.shortcutreveal_enabled = True  # Shortcut Reveal event
+        self.teleportation_enabled = True  # Teleportation event  
+        self.fatigue_enabled = True  # Fatigue event
 
     def _calculate_block_size(self):
         """

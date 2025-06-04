@@ -34,6 +34,7 @@ class GameState:
             "power_ups": "power_ups",
             "player_controllers": "player_controllers",
             "game": "game",
+            "events": "events",
         }
         self.settings_state = self.settings_states["main"]  # Default state is main
 
@@ -113,6 +114,12 @@ class GameState:
         Sets the game state to game settings.
         """
         self.settings_state = self.settings_states["game"]
+
+    def open_event_settings(self):
+        """
+        Sets the game state to event settings.
+        """
+        self.settings_state = self.settings_states["events"]
 
     def get_current_settings_state(self):
         """
