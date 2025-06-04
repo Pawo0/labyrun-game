@@ -174,10 +174,23 @@ class GameMenu(SettingsOptions):
     """Strona ustawień gry."""
 
     def __init__(self, main):
-        options_names = ["Fog of War", "Power-ups"]
+        options_names = [
+            "Fog of War",
+            "Power-ups",
+            "Speed Boost",
+            "Slow Down",
+            "Enlarge",
+            "Teleport",
+            "Freeze"
+        ]
         options_values = [
             ["On", "Off"],  # Opcje mgły wojny
-            ["On", "Off"],  # Opcje power-upów
+            ["On", "Off"],  # Opcje power-upów (ogólnie)
+            ["On", "Off"],  # Speed Boost
+            ["On", "Off"],  # Slow Down
+            ["On", "Off"],  # Enlarge
+            ["On", "Off"],  # Teleport
+            ["On", "Off"],  # Freeze
         ]
 
         super().__init__(main, "Ustawienia gry", options_names, options_values)
@@ -186,13 +199,28 @@ class GameMenu(SettingsOptions):
         self.current_values[0] = 0 if main.settings.fog_of_war_enabled else 1
         self.current_values[1] = 0 if main.settings.power_ups_enabled else 1
 
+        self.current_values[2] = 0 if main.settings.speed_boost_enabled else 1
+        self.current_values[3] = 0 if main.settings.slow_down_enabled else 1
+        self.current_values[4] = 0 if main.settings.enlarge_enabled else 1
+        self.current_values[5] = 0 if main.settings.teleport_enabled else 1
+        self.current_values[6] = 0 if main.settings.freeze_enabled else 1
+
     def _apply_setting(self, index):
         """Aplikuje wybrane ustawienie do gry."""
         if index == 0:  # Mgła wojny
             self.main.settings.fog_of_war_enabled = self.current_values[0] == 0
-        elif index == 1:  # Power-upy
+        elif index == 1:  # Power-upy (ogólnie)
             self.main.settings.power_ups_enabled = self.current_values[1] == 0
-
+        elif index == 2:  # Speed Boost
+            self.main.settings.speed_boost_enabled = self.current_values[2] == 0
+        elif index == 3:  # Slow Down
+            self.main.settings.slow_down_enabled = self.current_values[3] == 0
+        elif index == 4:  # Enlarge
+            self.main.settings.enlarge_enabled = self.current_values[4] == 0
+        elif index == 5:  # Teleport
+            self.main.settings.teleport_enabled = self.current_values[5] == 0
+        elif index == 6:  # Freeze
+            self.main.settings.freeze_enabled = self.current_values[6] == 0
 
 class SetNames:
     """This class handles the player name input menu."""
