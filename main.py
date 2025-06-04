@@ -7,9 +7,9 @@ import pygame
 
 from engine import Engine, GameState
 from entities import Player
-from maze import Maze, create_map
+from maze import Maze, MazeGenerator
 from menu import (GameOverMenu, MainMenu, MazeSize, SetNames, SettingsMenu,
-                  StatsMenu)
+                  StatsMenu, GameMenu)
 from stats import StatsManager
 from util import Settings
 
@@ -47,18 +47,19 @@ class LabyRunGame:
         self.maze_size_menu = MazeSize(self)
         self.set_name_menu = SetNames(self)
         self.stats_menu = StatsMenu(self)
+        self.game_menu = GameMenu(self)
 
         # ustawienia silnika
         self.engine = Engine(self)
 
-        self.stats_manager = StatsManager("data/player_stats.json")
+        self.stats_manager = StatsManager(".data/player_stats.json")
 
     def generate_maze(self):
         """
         Generates the maze.
         """
-        create_map(self.settings.maze_width, self.settings.maze_height)
-        self.maze = Maze(self, "maps/map.json")
+        MazeGenerator.create_map(self.settings.maze_width, self.settings.maze_height)
+        self.maze = Maze(self, ".maps/map.json")
         self.settings.calculate_initial_positions()
 
     def run(self):

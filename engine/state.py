@@ -15,7 +15,7 @@ class GameState:
 
         # Here we define all possible states of the game for easier management
         # something like enum // for future improvements
-        # todo : przyjrzec sie temu, sprawdzanie eventow dla poszczegolnych stanow mozna wyodrebnic
+        # TODO : przyjrzec sie temu, sprawdzanie eventow dla poszczegolnych stanow mozna wyodrebnic
         self.states = {
             "main_menu": "main_menu",
             "set_names": "set_names",
@@ -33,6 +33,7 @@ class GameState:
             "maze_size": "maze_size",
             "power_ups": "power_ups",
             "player_controllers": "player_controllers",
+            "game": "game",
         }
         self.settings_state = self.settings_states["main"]  # Default state is main
 
@@ -48,7 +49,7 @@ class GameState:
             winner_name=self.winner.player_name,
             loser_name=self.loser.player_name,
             maze_width=self.main.settings.maze_width,
-            maze_height=self.main.settings.maze_height
+            maze_height=self.main.settings.maze_height,
         )
 
     def set_names(self):
@@ -69,16 +70,6 @@ class GameState:
         self.main.player2.reset()  # Reinitialize player2
 
         self.main.stats_manager.start_game_timer()
-
-    def open_game_settings(self):
-        """
-        Otwiera stronę ustawień gry.
-        """
-        from menu.settings_pages.game_settings_page import GameSettingsPage
-
-        self.state = "settings_menu"
-        self.settings_state = "game"
-        self.main.current_menu = GameSettingsPage(self.main)
 
     def open_stats_menu(self):
         """
@@ -105,8 +96,6 @@ class GameState:
         """
         return self.state
 
-    #     state settingsow
-    # todo do wyodregnienia w przyszlosci pewnie
     def open_settings(self):
         """
         Sets the game state to settings.
@@ -118,6 +107,12 @@ class GameState:
         Sets the game state to maze size settings.
         """
         self.settings_state = self.settings_states["maze_size"]
+
+    def open_game_settings(self):
+        """
+        Sets the game state to game settings.
+        """
+        self.settings_state = self.settings_states["game"]
 
     def get_current_settings_state(self):
         """

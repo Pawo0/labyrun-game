@@ -13,7 +13,7 @@ from .player_stats import GameRecord, PlayerStats
 class StatsManager:
     """This class manages player statistics and persists them to a JSON file."""
 
-    def __init__(self, stats_file: str = "data/player_stats.json"):
+    def __init__(self, stats_file: str = ".data/player_stats.json"):
         self.stats_file = stats_file
         self.players: Dict[str, PlayerStats] = {}
         self.game_start_time: Optional[float] = None

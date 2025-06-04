@@ -17,18 +17,6 @@ class Engine:
         self.win_zone = self._calculate_win_zone()
         self.state_manager = GameStateManager(main)
 
-    def check_win_condition(self):
-        """Checks if any player has won the game."""
-        left_zone, right_zone = self.win_zone
-        if self.main.player1.x > left_zone:
-            self.main.game_state.game_won(self.main.player1, self.main.player2)
-        if self.main.player2.x < right_zone:
-            self.main.game_state.game_won(self.main.player2, self.main.player1)
-
-    def update_win_zone(self):
-        """Updates the win zone based on the current screen size."""
-        self.win_zone = self._calculate_win_zone()
-
     def run(self):
         """Main loop of the game."""
         while True:
@@ -39,7 +27,7 @@ class Engine:
             if self.main.game_state.get_current_state() == "running":
                 self.main.maze.check_power_up_collision(self.main.player1)
                 self.main.maze.check_power_up_collision(self.main.player2)
-
+                self.check_win_condition()
 
             self.state_manager.draw_current_state()
 
@@ -49,7 +37,7 @@ class Engine:
     def _check_events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT or (
-                    event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE
+                event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE
             ):
                 pygame.quit()
                 sys.exit()
@@ -59,7 +47,6 @@ class Engine:
                 self.main.maze.reset_player_speed(1)
             elif event.type == pygame.USEREVENT + 2:  # Dla gracza 2
                 self.main.maze.reset_player_speed(2)
-
 
             # Obsługa zdarzeń dla przywracania rozmiaru
             elif event.type == pygame.USEREVENT + 21:  # Dla gracza 1
@@ -76,14 +63,31 @@ class Engine:
                 self.main.player2.update_image()
 
             # Obsługa zdarzeń dla odmrażania graczy
-            elif event.type == pygame.USEREVENT + 31:  # Dla gracza 2 (zamrożony przez gracza 1)
+            elif (
+                event.type == pygame.USEREVENT + 31
+            ):  # Dla gracza 2 (zamrożony przez gracza 1)
                 self.main.player2.frozen = False
                 self.main.player2.speed = self.main.player2.old_speed
-            elif event.type == pygame.USEREVENT + 32:  # Dla gracza 1 (zamrożony przez gracza 2)
+            elif (
+                event.type == pygame.USEREVENT + 32
+            ):  # Dla gracza 1 (zamrożony przez gracza 2)
                 self.main.player1.frozen = False
                 self.main.player1.speed = self.main.player1.old_speed
 
             self.state_manager.handle_event(event)
+
+    def check_win_condition(self):
+        """Checks if any player has won the game."""
+        left_zone, right_zone = self.win_zone
+        if self.main.player1.x > left_zone:
+            self.main.game_state.game_won(self.main.player1, self.main.player2)
+        if self.main.player2.x < right_zone:
+            self.main.game_state.game_won(self.main.player2, self.main.player1)
+
+    def update_win_zone(self):
+        """Updates the win zone based on the current screen size."""
+        self.win_zone = self._calculate_win_zone()
+
     def _calculate_win_zone(self):
         mid = self.main.settings.screen_width // 2
         block_size = self.main.settings.block_size
