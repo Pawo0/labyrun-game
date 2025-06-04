@@ -5,11 +5,11 @@ Authors: Paweł Czajczyk, Jakub Psarski
 
 import pygame
 
-from engine import Engine, GameState, EventManager
+from engine import Engine, EventManager, GameState
 from entities import Player
 from maze import Maze, MazeGenerator
-from menu import (GameOverMenu, MainMenu, MazeSize, SetNames, SettingsMenu,
-                  StatsMenu, GameMenu, EventMenu)
+from menu import (EventMenu, GameMenu, GameOverMenu, MainMenu, MazeSize,
+                  SetNames, SettingsMenu, StatsMenu)
 from stats import StatsManager
 from util import Settings
 

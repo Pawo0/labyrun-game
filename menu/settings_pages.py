@@ -8,7 +8,16 @@ from menu.menu_elements import Button, TextInput
 class SettingsOptions:
     """Klasa bazowa dla stron ustawień w grze."""
 
-    def __init__(self, main, title, options_names, options_values, title_offset=225, options_offset_y=100, options_offset_x=(150, 150)):
+    def __init__(
+        self,
+        main,
+        title,
+        options_names,
+        options_values,
+        title_offset=225,
+        options_offset_y=100,
+        options_offset_x=(150, 150),
+    ):
         """Inicjalizacja strony z opcjami ustawień."""
         self.main = main
         self.screen = main.screen
@@ -214,7 +223,9 @@ class EventMenu(SettingsOptions):
             ["L", "N", "H"],
         ]
 
-        super().__init__(main, "Event Settings", options_names, options_values, 425, 300, (300, 300))
+        super().__init__(
+            main, "Event Settings", options_names, options_values, 425, 300, (300, 300)
+        )
 
         self.current_values[0] = 0 if main.settings.events_enabled else 1
         self.current_values[1] = 0 if main.settings.shortcutreveal_enabled else 1
