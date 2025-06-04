@@ -1,13 +1,11 @@
-# W pliku maze/maze_components/maze.py
-
 import json
-import random
-import pygame.sprite
 import math
+import random
 
-from .floor import Floor
-from .wall import Wall
-from .power_up import SpeedBoost, SlowDown, Enlarge, Teleport, Freeze
+import pygame.sprite
+
+from .power_up import Enlarge, Freeze, SlowDown, SpeedBoost, Teleport
+
 
 class Maze:
     """
@@ -33,7 +31,9 @@ class Maze:
         self.offset_y = (self.screen.get_height() - self.maze_height) // 2
 
         # Tworzenie powierzchni dla mgły wojny
-        self.fog_surface = pygame.Surface((self.screen.get_width(), self.screen.get_height()), pygame.SRCALPHA)
+        self.fog_surface = pygame.Surface(
+            (self.screen.get_width(), self.screen.get_height()), pygame.SRCALPHA
+        )
         # Zasięg widoczności w blokach
         self.fog_radius = 4 * self.block_size
 
@@ -56,27 +56,32 @@ class Maze:
                 pos_x = self.offset_x + x * self.block_size
                 pos_y = self.offset_y + y * self.block_size
                 if cell == 1:
-                    self.walls.add(Wall(self.settings.wall_color, pos_x, pos_y, self.block_size))
+                    self.walls.add(
+                        Wall(self.settings.wall_color, pos_x, pos_y, self.block_size)
+                    )
                 else:
-                    self.floors.add(Floor(self.settings.floor_color, pos_x, pos_y, self.block_size))
+                    self.floors.add(
+                        Floor(self.settings.floor_color, pos_x, pos_y, self.block_size)
+                    )
 
     def generate_power_ups(self):
         """
         Generates random power-ups in the maze.
         """
         # Jeśli power-upy są wyłączone, nie generujemy ich
-        if not hasattr(self.settings, 'power_ups_enabled') or not self.settings.power_ups_enabled:
+        if (
+            not hasattr(self.settings, "power_ups_enabled")
+            or not self.settings.power_ups_enabled
+        ):
             return
 
         # Liczba modyfikatorów zależna od wielkości labiryntu
-        num_power_ups = max(1, (self.settings.maze_width * self.settings.maze_height) // 25)
+        num_power_ups = max(
+            1, (self.settings.maze_width * self.settings.maze_height) // 25
+        )
 
         # Lista dostępnych modyfikatorów
-        power_up_types = [
-            SpeedBoost, SlowDown,
-             Enlarge,
-            Teleport, Freeze
-        ]
+        power_up_types = [SpeedBoost, SlowDown, Enlarge, Teleport, Freeze]
 
         # Podział dostępnych pozycji na dwie grupy
         player1_positions = []
@@ -88,7 +93,9 @@ class Maze:
                 center_x = len(row) // 2
                 center_y = len(self.maze) // 2
 
-                if (center_x - 2 <= x <= center_x + 2) and (center_y - 2 <= y <= center_y + 2):
+                if (center_x - 2 <= x <= center_x + 2) and (
+                    center_y - 2 <= y <= center_y + 2
+                ):
                     continue
 
                 # jesli pole jest puste (0), to dodajemy je jako potencjalną pozycję modyfikatora
@@ -101,9 +108,15 @@ class Maze:
                     player2_pos = self.main.settings.player2_initial_position
 
                     # Dodajemy pozycje do odpowiednich grup na podstawie odległości
-                    if not ((pos_x, pos_y) == player1_pos or (pos_x, pos_y) == player2_pos):
-                        distance_to_player1 = abs(pos_x - player1_pos[0]) + abs(pos_y - player1_pos[1])
-                        distance_to_player2 = abs(pos_x - player2_pos[0]) + abs(pos_y - player2_pos[1])
+                    if not (
+                        (pos_x, pos_y) == player1_pos or (pos_x, pos_y) == player2_pos
+                    ):
+                        distance_to_player1 = abs(pos_x - player1_pos[0]) + abs(
+                            pos_y - player1_pos[1]
+                        )
+                        distance_to_player2 = abs(pos_x - player2_pos[0]) + abs(
+                            pos_y - player2_pos[1]
+                        )
 
                         if distance_to_player1 < distance_to_player2:
                             player1_positions.append((pos_x, pos_y))
@@ -149,13 +162,17 @@ class Maze:
         Checks if player collided with any power-up and applies its effect.
         """
         # Jeśli power-upy są wyłączone, nie sprawdzamy kolizji
-        if not hasattr(self.settings, 'power_ups_enabled') or not self.settings.power_ups_enabled:
+        if (
+            not hasattr(self.settings, "power_ups_enabled")
+            or not self.settings.power_ups_enabled
+        ):
             return
 
         collided_power_ups = pygame.sprite.spritecollide(player, self.power_ups, False)
         for power_up in collided_power_ups:
             if power_up.active:
                 power_up.apply_effect(player)
+
     def reset_player_speed(self, player_number):
         """
         Resetuje prędkość gracza po upływie czasu działania modyfikatora.
@@ -173,14 +190,19 @@ class Maze:
         self.fog_surface.fill((0, 0, 0))  # Półprzezroczysta czarna mgła
 
         # Odkrywamy obszar wokół graczy
-        if hasattr(self.main, 'player1') and hasattr(self.main, 'player2'):
+        if hasattr(self.main, "player1") and hasattr(self.main, "player2"):
             for player in [self.main.player1, self.main.player2]:
                 # Centrum gracza
                 center_x = int(player.x + player.width // 2)
                 center_y = int(player.y + player.height // 2)
 
                 # Rysujemy tylko jeden przezroczysty krąg zamiast gradientu
-                pygame.draw.circle(self.fog_surface, (0, 0, 0, 0), (center_x, center_y), self.fog_radius)
+                pygame.draw.circle(
+                    self.fog_surface,
+                    (0, 0, 0, 0),
+                    (center_x, center_y),
+                    self.fog_radius,
+                )
 
     def _create_visibility_gradient(self, center_pos):
         """
@@ -219,14 +241,20 @@ class Maze:
         self.floors.draw(self.screen)
 
         # Rysujemy aktywne modyfikatory jeśli są włączone
-        if hasattr(self.settings, 'power_ups_enabled') and self.settings.power_ups_enabled:
+        if (
+            hasattr(self.settings, "power_ups_enabled")
+            and self.settings.power_ups_enabled
+        ):
             for power_up in self.power_ups:
                 if power_up.active:
                     power_up.draw(self.screen)
 
         # Aktualizujemy i rysujemy mgłę wojny, jeśli gra jest w trakcie i opcja włączona
-        if (self.main.game_state.state == self.main.game_state.states["running"] and
-                hasattr(self.settings, 'fog_of_war_enabled') and self.settings.fog_of_war_enabled):
+        if (
+            self.main.game_state.state == self.main.game_state.states["running"]
+            and hasattr(self.settings, "fog_of_war_enabled")
+            and self.settings.fog_of_war_enabled
+        ):
             self.update_fog_of_war()
             self.screen.blit(self.fog_surface, (0, 0))
 
@@ -241,3 +269,29 @@ class Maze:
         Returns the lower right corner of the maze.
         """
         return self.offset_x + self.maze_width, self.offset_y + self.maze_height
+
+
+class Floor(pygame.sprite.Sprite):
+    """
+    This class represents floors in the maze.
+    """
+
+    def __init__(self, color, x, y, block_size):
+        super().__init__()
+
+        self.image = pygame.Surface([block_size, block_size])
+        self.image.fill(color)
+        self.rect = self.image.get_rect(topleft=(x, y))
+
+
+class Wall(pygame.sprite.Sprite):
+    """
+    This class represents walls in the maze.
+    """
+
+    def __init__(self, color, x, y, block_size):
+        super().__init__()
+
+        self.image = pygame.Surface([block_size, block_size])
+        self.image.fill(color)
+        self.rect = self.image.get_rect(topleft=(x, y))

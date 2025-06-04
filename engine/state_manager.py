@@ -4,6 +4,8 @@ This module contains the GameStateManager class for handling different game stat
 
 import pygame
 
+from menu import GameSettingsPage
+
 
 class GameStateManager:
     """This class manages the different game states and their respective handlers."""
@@ -52,7 +54,6 @@ class GameStateManager:
         """
         Opens the game settings page.
         """
-        from menu.settings_pages.game_settings_page import GameSettingsPage
 
         self.state = self.states["settings"]
         self.main.current_menu = GameSettingsPage(self.main)

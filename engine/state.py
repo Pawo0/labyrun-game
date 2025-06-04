@@ -2,6 +2,8 @@
 This module contains the GameState class.
 """
 
+from menu import GameSettingsPage
+
 
 class GameState:
     """
@@ -15,7 +17,7 @@ class GameState:
 
         # Here we define all possible states of the game for easier management
         # something like enum // for future improvements
-        # todo : przyjrzec sie temu, sprawdzanie eventow dla poszczegolnych stanow mozna wyodrebnic
+        # TODO : przyjrzec sie temu, sprawdzanie eventow dla poszczegolnych stanow mozna wyodrebnic
         self.states = {
             "main_menu": "main_menu",
             "set_names": "set_names",
@@ -48,7 +50,7 @@ class GameState:
             winner_name=self.winner.player_name,
             loser_name=self.loser.player_name,
             maze_width=self.main.settings.maze_width,
-            maze_height=self.main.settings.maze_height
+            maze_height=self.main.settings.maze_height,
         )
 
     def set_names(self):
@@ -74,7 +76,6 @@ class GameState:
         """
         Otwiera stronę ustawień gry.
         """
-        from menu.settings_pages.game_settings_page import GameSettingsPage
 
         self.state = "settings_menu"
         self.settings_state = "game"
@@ -106,7 +107,7 @@ class GameState:
         return self.state
 
     #     state settingsow
-    # todo do wyodregnienia w przyszlosci pewnie
+    # TODO: do wyodregnienia w przyszlosci pewnie
     def open_settings(self):
         """
         Sets the game state to settings.

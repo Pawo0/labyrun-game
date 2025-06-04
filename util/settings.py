@@ -23,8 +23,8 @@ class Settings:
         self.screen_height = main.screen.get_height()
 
         # players colors
-        self.player1_color = (255,0,255)
-        self.player2_color = (255,0,255)
+        self.player1_color = (255, 0, 255)
+        self.player2_color = (255, 0, 255)
 
         # labyrinth colors
         self.wall_color = (0, 0, 0)
@@ -71,7 +71,9 @@ class Settings:
         Oblicza pozycję startową gracza 1 (lewy dolny róg labiryntu).
         """
         # Oblicz pozycję labiryntu
-        maze_width = self.maze_width * 2 + 3  # Szerokość po uwzględnieniu odbicia i łącznika
+        maze_width = (
+            self.maze_width * 2 + 3
+        )  # Szerokość po uwzględnieniu odbicia i łącznika
         maze_height = self.maze_height
 
         offset_x = (self.screen_width - maze_width * self.block_size) // 2
@@ -79,7 +81,12 @@ class Settings:
 
         # Lewy dolny róg (dodaj 1.5 bloku od lewej, odejmij 2 bloki od dołu)
         left_x = offset_x + 1.5 * self.block_size - self.player_width // 2
-        left_y = offset_y + maze_height * self.block_size - 2 * self.block_size + self.player_height // 2
+        left_y = (
+            offset_y
+            + maze_height * self.block_size
+            - 2 * self.block_size
+            + self.player_height // 2
+        )
 
         return (left_x, left_y)
 
@@ -88,15 +95,27 @@ class Settings:
         Oblicza pozycję startową gracza 2 (prawy dolny róg labiryntu).
         """
         # Oblicz pozycję labiryntu
-        maze_width = self.maze_width * 2 + 3  # Szerokość po uwzględnieniu odbicia i łącznika
+        maze_width = (
+            self.maze_width * 2 + 3
+        )  # Szerokość po uwzględnieniu odbicia i łącznika
         maze_height = self.maze_height
 
         offset_x = (self.screen_width - maze_width * self.block_size) // 2
         offset_y = (self.screen_height - maze_height * self.block_size) // 2
 
         # Prawy dolny róg (odejmij 2 bloki od prawej, odejmij 2 bloki od dołu)
-        right_x = offset_x + maze_width * self.block_size - 2 * self.block_size + self.player_width // 2
-        right_y = offset_y + maze_height * self.block_size - 2 * self.block_size + self.player_height // 2
+        right_x = (
+            offset_x
+            + maze_width * self.block_size
+            - 2 * self.block_size
+            + self.player_width // 2
+        )
+        right_y = (
+            offset_y
+            + maze_height * self.block_size
+            - 2 * self.block_size
+            + self.player_height // 2
+        )
 
         return (right_x, right_y)
 
@@ -116,9 +135,9 @@ class Settings:
         self._calculate_block_size()
         self.calculate_initial_positions()
 
-        if hasattr(self.main, 'engine'):
+        if hasattr(self.main, "engine"):
             self.main.engine.update_win_zone()
 
-        if hasattr(self.main, 'player1') and hasattr(self.main, 'player2'):
+        if hasattr(self.main, "player1") and hasattr(self.main, "player2"):
             self.main.player1.reset()
             self.main.player2.reset()
