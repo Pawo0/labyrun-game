@@ -5,8 +5,9 @@ Authors: Paweł Czajczyk, Jakub Psarski
 
 import pygame
 
-from engine import Engine, EventManager, GameState
+from engine import Engine, GameState
 from entities import Player
+from events import EventManager
 from maze import Maze, MazeGenerator
 from menu import (EventMenu, GameMenu, GameOverMenu, MainMenu, MazeSize,
                   SetNames, SettingsMenu, StatsMenu)

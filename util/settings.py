@@ -60,6 +60,7 @@ class Settings:
         self.shortcutreveal_enabled = True  # Shortcut Reveal event
         self.teleportation_enabled = True  # Teleportation event
         self.fatigue_enabled = True  # Fatigue event
+        self.invisiblewalls_enabled = True  # Invisible Walls event
 
     def _calculate_block_size(self):
         """
