@@ -170,7 +170,7 @@ class MazeSize(SettingsOptions):
         self.main.settings.set_maze_size(width, height)
 
 
-class GameSettingsPage(SettingsOptions):
+class GameMenu(SettingsOptions):
     """Strona ustawień gry."""
 
     def __init__(self, main):

@@ -4,8 +4,6 @@ This module contains the GameStateManager class for handling different game stat
 
 import pygame
 
-from menu import GameSettingsPage
-
 
 class GameStateManager:
     """This class manages the different game states and their respective handlers."""
@@ -34,6 +32,10 @@ class GameStateManager:
                 "handle_events": self.main.gameover_menu.handle_events,
                 "draw": self.main.gameover_menu.draw,
             },
+            "game_settings": {
+                "handle_events": self.main.game_menu.handle_events,
+                "draw": self.main.game_menu.draw,
+            },
             "settings_menu": {
                 "handle_events": self._handle_settings_events,
                 "draw": self._draw_settings_state,
@@ -49,14 +51,6 @@ class GameStateManager:
                 pygame.K_RIGHT,
             ],
         }
-
-    def open_game_settings(self):
-        """
-        Opens the game settings page.
-        """
-
-        self.state = self.states["settings"]
-        self.main.current_menu = GameSettingsPage(self.main)
 
     def handle_event(self, event):
         """Handle event for the current state"""
@@ -98,15 +92,12 @@ class GameStateManager:
         elif settings_state == "maze_size":
             self.main.maze_size_menu.handle_events(event)
         elif settings_state == "game":
-            self.main.current_menu.handle_events(event)
+            self.main.game_menu.handle_events(event)
 
     def _draw_running_state(self):
         self.main.maze.draw()
         self.main.player1.update()
         self.main.player2.update()
-        self.main.engine.check_win_condition()
-
-    # engine/state_manager.py
 
     def _draw_settings_state(self):
         """
@@ -118,4 +109,4 @@ class GameStateManager:
         elif settings_state == "maze_size":
             self.main.maze_size_menu.draw()
         elif settings_state == "game":
-            self.main.current_menu.draw()
+            self.main.game_menu.draw()

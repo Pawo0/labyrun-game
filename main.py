@@ -9,7 +9,7 @@ from engine import Engine, GameState
 from entities import Player
 from maze import Maze, MazeGenerator
 from menu import (GameOverMenu, MainMenu, MazeSize, SetNames, SettingsMenu,
-                  StatsMenu)
+                  StatsMenu, GameMenu)
 from stats import StatsManager
 from util import Settings
 
@@ -47,6 +47,7 @@ class LabyRunGame:
         self.maze_size_menu = MazeSize(self)
         self.set_name_menu = SetNames(self)
         self.stats_menu = StatsMenu(self)
+        self.game_menu = GameMenu(self)
 
         # ustawienia silnika
         self.engine = Engine(self)

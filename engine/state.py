@@ -2,8 +2,6 @@
 This module contains the GameState class.
 """
 
-from menu import GameSettingsPage
-
 
 class GameState:
     """
@@ -35,6 +33,7 @@ class GameState:
             "maze_size": "maze_size",
             "power_ups": "power_ups",
             "player_controllers": "player_controllers",
+            "game": "game",
         }
         self.settings_state = self.settings_states["main"]  # Default state is main
 
@@ -72,15 +71,6 @@ class GameState:
 
         self.main.stats_manager.start_game_timer()
 
-    def open_game_settings(self):
-        """
-        Otwiera stronę ustawień gry.
-        """
-
-        self.state = "settings_menu"
-        self.settings_state = "game"
-        self.main.current_menu = GameSettingsPage(self.main)
-
     def open_stats_menu(self):
         """
         Sets the game state to stats menu.
@@ -106,8 +96,6 @@ class GameState:
         """
         return self.state
 
-    #     state settingsow
-    # TODO: do wyodregnienia w przyszlosci pewnie
     def open_settings(self):
         """
         Sets the game state to settings.
@@ -119,6 +107,12 @@ class GameState:
         Sets the game state to maze size settings.
         """
         self.settings_state = self.settings_states["maze_size"]
+
+    def open_game_settings(self):
+        """
+        Sets the game state to game settings.
+        """
+        self.settings_state = self.settings_states["game"]
 
     def get_current_settings_state(self):
         """
