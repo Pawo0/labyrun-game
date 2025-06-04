@@ -156,6 +156,7 @@ class Enlarge(PowerUp):
 
         # Aktualizujemy obrazek i prostokąt kolizji
         opponent.update_image()
+        opponent.push_out_of_wall()
 
         # Ustawiamy timer na przywrócenie normalnego rozmiaru
         player_num = 2 if player.player_number == 1 else 1
@@ -247,12 +248,15 @@ class Freeze(PowerUp):
             opponent = player.main.player1
 
         opponent.frozen = True
-        opponent.old_speed = opponent.speed
+        opponent.old_speed = opponent.speed if opponent.speed is not None else opponent.settings.player_speed
         opponent.speed = 0
 
-        def unfreeze():
-            opponent.frozen = False
-            opponent.speed = opponent.old_speed
+        # Zapisujemy oryginalny kolor i zmieniamy na niebieski
+        opponent.original_color = opponent.color
+        opponent.color = self.main.settings.freeze_color
+        opponent.update_image()  # Aktualizujemy obraz przeciwnika
 
-        pygame.time.set_timer(pygame.USEREVENT + 30 + player.player_number, self.duration, loops=1)
+        # Ustawiam timer na odmrożenie
+        player_num = 2 if player.player_no == 1 else 1
+        pygame.time.set_timer(pygame.USEREVENT + 30 + player_num, self.duration, loops=1)
         self.active = False

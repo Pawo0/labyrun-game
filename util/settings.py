@@ -47,6 +47,7 @@ class Settings:
 
         # Ustawienie power-upów
         self.power_ups_enabled = True  # Domyślnie włączone
+        self.freeze_color = (173, 216, 230)  # Jasnoniebieski kolor dla zamrożenia
 
         # powerUps
         self.power_up_duration = 5000

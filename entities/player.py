@@ -8,7 +8,7 @@ class Player(pygame.sprite.Sprite):  # Dziedziczenie po pygame.sprite.Sprite
     """
 
     def __init__(self, main, player_no=1):
-        super().__init__()  # Wywołanie konstruktora klasy nadrzędnej
+        super().__init__()
         self.main = main
         self.settings = main.settings
         self.screen = main.screen
@@ -20,6 +20,7 @@ class Player(pygame.sprite.Sprite):  # Dziedziczenie po pygame.sprite.Sprite
         self.height = None
         self.movements = None
         self.color = None
+        self.original_color = None
         self.pos = None
         self.x = None
         self.y = None
@@ -53,7 +54,6 @@ class Player(pygame.sprite.Sprite):  # Dziedziczenie po pygame.sprite.Sprite
         self.rect.x = self.x
         self.rect.y = self.y
 
-        self.push_out_of_wall()
 
     def set_name(self, name):
         """
@@ -86,6 +86,7 @@ class Player(pygame.sprite.Sprite):  # Dziedziczenie po pygame.sprite.Sprite
         else:
             raise ValueError("Player must be 1 or 2")
 
+        self.original_color = self.color  # Zapisujemy oryginalny kolor
         self.x = self.pos[0]
         self.y = self.pos[1]
 
@@ -146,6 +147,15 @@ class Player(pygame.sprite.Sprite):  # Dziedziczenie po pygame.sprite.Sprite
         """
         Updates the player's position based on the current movement state.
         """
+        # Jeśli gracz jest zamrożony, nie aktualizuj pozycji
+        if self.frozen:
+            self.draw()
+            return
+
+        # Sprawdź, czy speed nie jest None
+        if self.speed is None:
+            self.speed = self.settings.player_speed
+
         new_x = self.x
         new_y = self.y
 
@@ -196,10 +206,7 @@ class Player(pygame.sprite.Sprite):  # Dziedziczenie po pygame.sprite.Sprite
         self.rect.y = new_y
 
 
-        self.push_out_of_wall()
-
         self.draw()
-
     def draw(self):
         """
         Draws the player on the screen.
