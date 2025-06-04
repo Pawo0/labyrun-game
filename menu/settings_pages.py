@@ -212,10 +212,12 @@ class EventMenu(SettingsOptions):
             "Shortcut Reveal",
             "Teleportation",
             "Fatigue",
+            "Invisible Walls",
             "Event Frequency",
         ]
 
         options_values = [
+            ["On", "Off"],
             ["On", "Off"],
             ["On", "Off"],
             ["On", "Off"],
@@ -231,13 +233,14 @@ class EventMenu(SettingsOptions):
         self.current_values[1] = 0 if main.settings.shortcutreveal_enabled else 1
         self.current_values[2] = 0 if main.settings.teleportation_enabled else 1
         self.current_values[3] = 0 if main.settings.fatigue_enabled else 1
+        self.current_values[4] = 0 if main.settings.invisiblewalls_enabled else 1
 
         if main.settings.event_max_interval >= 20000:
-            self.current_values[4] = 0  # Low
+            self.current_values[5] = 0  # Low
         elif main.settings.event_max_interval >= 10000:
-            self.current_values[4] = 1  # Normal
+            self.current_values[5] = 1  # Normal
         else:
-            self.current_values[4] = 2  # High
+            self.current_values[5] = 2  # High
 
     def _apply_setting(self, index):
         """Apply the selected event settings."""
@@ -249,8 +252,10 @@ class EventMenu(SettingsOptions):
             self.main.settings.teleportation_enabled = self.current_values[2] == 0
         elif index == 3:  # Fatigue
             self.main.settings.fatigue_enabled = self.current_values[3] == 0
-        elif index == 4:  # Event frequency
-            frequency = self.current_values[4]
+        elif index == 4:  # Invisible walls
+            self.main.settings.invisiblewalls_enabled = self.current_values[4] == 0
+        elif index == 5:  # Event frequency
+            frequency = self.current_values[5]
             if frequency == 0:  # Low frequency
                 self.main.settings.event_min_interval = 20000
                 self.main.settings.event_max_interval = 40000

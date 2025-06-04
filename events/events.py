@@ -52,12 +52,12 @@ class InvisibleWallsEvent(GameEvent):
     def _apply_effect(self, main):
         """Make all walls invisible by changing their color to white."""
         for wall in main.maze.walls:
-            wall.image.fill((255, 255, 255))
+            wall.image.fill(main.settings.invis_wall_color)
 
     def _restore_effect(self, main):
         """Restore the recolored walls."""
         for wall in main.maze.walls:
-            wall.image.fill((0, 0, 0))
+            wall.image.fill(main.settings.wall_color)
 
 
 class ShortcutRevealEvent(GameEvent):
@@ -109,7 +109,7 @@ class ShortcutRevealEvent(GameEvent):
                             main.maze.maze[grid_y][grid_x] = 0
 
                             floor = Floor(
-                                (209, 183, 151),
+                                (main.settings.shortcut_color),
                                 pixel_x,
                                 pixel_y,
                                 main.settings.block_size,
