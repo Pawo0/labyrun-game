@@ -32,6 +32,13 @@ class PowerUp(pygame.sprite.Sprite):
         """
         pass
 
+    def remove_effect(self, player):
+        """
+        Usuwa efekt modyfikatora z gracza.
+        Metoda do nadpisania przez klasy potomne.
+        """
+        pass
+
     def draw(self, screen):
         """
         Rysuje modyfikator na ekranie, jeśli jest aktywny.
@@ -69,9 +76,20 @@ class SpeedBoost(PowerUp):
         Zwiększa prędkość gracza na określony czas.
         """
         player.speed *= 1.5
+
+        # Rejestrujemy power-up w menedżerze
+        self.main.powerup_manager.register_powerup("speed", player.player_number, self)
+
         # Po określonym czasie przywracamy normalną prędkość
         pygame.time.set_timer(pygame.USEREVENT + player.player_number, self.duration)
         self.active = False
+
+    def remove_effect(self, player_num):
+        """
+        Przywraca normalną prędkość gracza.
+        """
+        player = self.main.player1 if player_num == 1 else self.main.player2
+        player.reset_speed()
 
 
 class SlowDown(PowerUp):
@@ -97,13 +115,26 @@ class SlowDown(PowerUp):
         # Znajdujemy przeciwnika
         if player.player_number == 1:
             opponent = player.main.player2
+            opponent_num = 2
         else:
             opponent = player.main.player1
+            opponent_num = 1
 
         opponent.speed *= 0.5
+
+        # Rejestrujemy power-up w menedżerze
+        self.main.powerup_manager.register_powerup("speed", opponent_num, self)
+
         # Po określonym czasie przywracamy normalną prędkość
-        pygame.time.set_timer(pygame.USEREVENT + opponent.player_number, self.duration)
+        pygame.time.set_timer(pygame.USEREVENT + opponent_num, self.duration)
         self.active = False
+
+    def remove_effect(self, player_num):
+        """
+        Przywraca normalną prędkość gracza.
+        """
+        player = self.main.player1 if player_num == 1 else self.main.player2
+        player.reset_speed()
 
 
 class Enlarge(PowerUp):
@@ -135,8 +166,10 @@ class Enlarge(PowerUp):
         # Znajdujemy przeciwnika
         if player.player_number == 1:
             opponent = self.main.player2
+            opponent_num = 2
         else:
             opponent = self.main.player1
+            opponent_num = 1
 
         # Zapisujemy oryginalne wymiary
         original_width = opponent.width
@@ -165,14 +198,39 @@ class Enlarge(PowerUp):
         opponent.update_image()
         opponent.push_out_of_wall()
 
+        # Rejestrujemy power-up w menedżerze
+        self.main.powerup_manager.register_powerup("enlarge", opponent_num, self)
+
         # Ustawiamy timer na przywrócenie normalnego rozmiaru
-        player_num = 2 if player.player_number == 1 else 1
         pygame.time.set_timer(
-            pygame.USEREVENT + 20 + player_num, self.duration, loops=1
+            pygame.USEREVENT + 20 + opponent_num, self.duration, loops=1
         )
 
-        # Niezależnie od wyniku sprawdzenia kolizji, dezaktywujemy power-up
+        # Dezaktywujemy power-up
         self.active = False
+
+    def remove_effect(self, player_num):
+        """
+        Przywraca normalny rozmiar gracza.
+        """
+        player = self.main.player1 if player_num == 1 else self.main.player2
+
+        original_width = self.main.settings.player_width
+        original_height = self.main.settings.player_height
+
+        # Zapisujemy środek gracza
+        center_x = player.x + player.width / 2
+        center_y = player.y + player.height / 2
+
+        # Przywracamy oryginalny rozmiar
+        player.width = original_width
+        player.height = original_height
+
+        # Aktualizujemy położenie, zachowując środek
+        player.x = int(center_x - original_width / 2)
+        player.y = int(center_y - original_height / 2)
+
+        player.update_image()
 
 
 class Teleport(PowerUp):
@@ -263,9 +321,11 @@ class Freeze(PowerUp):
         """
         # Znajdujemy przeciwnika
         if player.player_number == 1:
-            opponent = player.main.player2
+            opponent = self.main.player2
+            opponent_num = 2
         else:
-            opponent = player.main.player1
+            opponent = self.main.player1
+            opponent_num = 1
 
         opponent.frozen = True
         opponent.old_speed = (
@@ -275,12 +335,26 @@ class Freeze(PowerUp):
         )
         opponent.speed = 0
 
+        # Rejestrujemy power-up w menedżerze
+        self.main.powerup_manager.register_powerup("freeze", opponent_num, self)
+
         # Ustawiam timer na odmrożenie
-        player_num = 2 if player.player_no == 1 else 1
         pygame.time.set_timer(
-            pygame.USEREVENT + 30 + player_num, self.duration, loops=1
+            pygame.USEREVENT + 30 + opponent_num, self.duration, loops=1
         )
         self.active = False
+
+    def remove_effect(self, player_num):
+        """
+        Odmraża gracza.
+        """
+        player = self.main.player1 if player_num == 1 else self.main.player2
+        player.frozen = False
+
+        if hasattr(player, 'old_speed') and player.old_speed is not None:
+            player.speed = player.old_speed
+        else:
+            player.reset_speed()
 
 
 class ReverseControls(PowerUp):
@@ -308,21 +382,105 @@ class ReverseControls(PowerUp):
         pygame.draw.line(self.image, (0, 0, 0),
                          (3 * size // 4, 3 * size // 4), (7 * size // 8, 2 * size // 3), 2)
 
+        # Zapisujemy przeciwnika, na którym efekt będzie działał
+        self.affected_player = None
+
     def apply_effect(self, player):
         """
         Odwraca sterowanie przeciwnika gracza na określony czas.
         """
         # Znajdujemy przeciwnika
         if player.player_number == 1:
-            opponent = player.main.player2
+            self.affected_player = player.main.player2
         else:
-            opponent = player.main.player1
+            self.affected_player = player.main.player1
 
         # Odwracamy sterowanie
-        opponent.reversed_controls = True
+        self.affected_player.reversed_controls = True
 
         # Dodajemy timer do przywrócenia normalnego sterowania
         player_num = 2 if player.player_number == 1 else 1
         pygame.time.set_timer(pygame.USEREVENT + 40 + player_num, self.duration, loops=1)
 
         self.active = False
+
+    def remove_effect(self, player_num):
+        """
+        Usuwa efekt odwróconego sterowania z gracza.
+        """
+        if player_num == 1:
+            player = self.main.player1
+        else:
+            player = self.main.player2
+        player.reversed_controls = False
+
+
+
+
+class PowerUpManager:
+    """
+    Klasa zarządzająca aktywne power-upy w grze.
+    """
+
+    def __init__(self, main):
+        self.main = main
+        self.active_powerups = {}  # Słownik zawierający aktywne power-upy
+
+    def register_powerup(self, powerup_type, player_num, powerup_instance):
+        """
+        Rejestruje aktywny power-up dla danego gracza.
+        """
+        key = (powerup_type, player_num)
+        self.active_powerups[key] = powerup_instance
+
+    def handle_event(self, event):
+        """
+        Obsługuje zdarzenia związane z power-upami.
+        """
+        # Obsługa zdarzeń resetowania prędkości graczy
+        if event.type == pygame.USEREVENT + 1:  # player 1
+            key = ("speed", 1)
+            if key in self.active_powerups:
+                self.active_powerups[key].remove_effect(1)
+                del self.active_powerups[key]
+        elif event.type == pygame.USEREVENT + 2:  # player 2
+            key = ("speed", 2)
+            if key in self.active_powerups:
+                self.active_powerups[key].remove_effect(2)
+                del self.active_powerups[key]
+
+        # Obsługa zdarzeń dla przywracania rozmiaru
+        elif event.type == pygame.USEREVENT + 21:  # player 1
+            key = ("enlarge", 1)
+            if key in self.active_powerups:
+                self.active_powerups[key].remove_effect(1)
+                del self.active_powerups[key]
+        elif event.type == pygame.USEREVENT + 22:  # player 2
+            key = ("enlarge", 2)
+            if key in self.active_powerups:
+                self.active_powerups[key].remove_effect(2)
+                del self.active_powerups[key]
+
+        # Obsługa zdarzeń dla odmrażania graczy
+        elif event.type == pygame.USEREVENT + 31:  # player 1
+            key = ("freeze", 1)
+            if key in self.active_powerups:
+                self.active_powerups[key].remove_effect(1)
+                del self.active_powerups[key]
+        elif event.type == pygame.USEREVENT + 32:  # player 2
+            key = ("freeze", 2)
+            if key in self.active_powerups:
+                self.active_powerups[key].remove_effect(2)
+                del self.active_powerups[key]
+
+        # Obsługa zdarzeń dla odwróconego sterowania
+        elif event.type == pygame.USEREVENT + 41:  # player 1
+            key = ("reverse_controls", 1)
+            if key in self.active_powerups:
+                self.active_powerups[key].remove_effect(1)
+                del self.active_powerups[key]
+        elif event.type == pygame.USEREVENT + 42:  # player 2
+            key = ("reverse_controls", 2)
+            if key in self.active_powerups:
+                self.active_powerups[key].remove_effect(2)
+                del self.active_powerups[key]
