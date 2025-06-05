@@ -30,10 +30,8 @@ class GameState:
         # state settingsów
         self.settings_states = {
             "main": "main",
-            "maze_size": "maze_size",
-            "power_ups": "power_ups",
-            "player_controllers": "player_controllers",
             "game": "game",
+            "power_ups": "power_ups",
             "events": "events",
         }
         self.settings_state = self.settings_states["main"]  # Default state is main
@@ -103,17 +101,17 @@ class GameState:
         """
         self.settings_state = self.settings_states["main"]
 
-    def open_maze_size(self):
+    def open_game_settings(self):
         """
         Sets the game state to maze size settings.
         """
-        self.settings_state = self.settings_states["maze_size"]
+        self.settings_state = self.settings_states["game"]
 
-    def open_game_settings(self):
+    def open_powerup_settings(self):
         """
         Sets the game state to game settings.
         """
-        self.settings_state = self.settings_states["game"]
+        self.settings_state = self.settings_states["power_ups"]
 
     def open_event_settings(self):
         """

@@ -86,20 +86,14 @@ class GameStateManager:
         Handles events in the settings menu.
         """
         settings_state = self.main.game_state.settings_state
-        # if settings_state == "main":
-        #     self.main.settings_menu.handle_events(event)
-        # elif settings_state == "maze_size":
-        #     self.main.maze_size_menu.handle_events(event)
-        # elif settings_state == "game":
-        #     self.main.game_menu.handle_events(event)
 
         match settings_state:
             case "main":
                 self.main.settings_menu.handle_events(event)
-            case "maze_size":
-                self.main.maze_size_menu.handle_events(event)
             case "game":
                 self.main.game_menu.handle_events(event)
+            case "power_ups":
+                self.main.powerup_menu.handle_events(event)
             case "events":
                 self.main.event_menu.handle_events(event)
             case _:
@@ -115,19 +109,13 @@ class GameStateManager:
         Draws the settings menu.
         """
         settings_state = self.main.game_state.settings_state
-        # if settings_state == "main":
-        #     self.main.settings_menu.draw()
-        # elif settings_state == "maze_size":
-        #     self.main.maze_size_menu.draw()
-        # elif settings_state == "game":
-        #     self.main.game_menu.draw()
 
         match settings_state:
             case "main":
                 self.main.settings_menu.draw()
-            case "maze_size":
-                self.main.maze_size_menu.draw()
             case "game":
                 self.main.game_menu.draw()
+            case "power_ups":
+                self.main.powerup_menu.draw()
             case "events":
                 self.main.event_menu.draw()

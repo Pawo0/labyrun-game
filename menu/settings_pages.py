@@ -8,16 +8,7 @@ from menu.menu_elements import Button, TextInput
 class SettingsOptions:
     """Klasa bazowa dla stron ustawień w grze."""
 
-    def __init__(
-        self,
-        main,
-        title,
-        options_names,
-        options_values,
-        title_offset=225,
-        options_offset_y=100,
-        options_offset_x=(150, 150),
-    ):
+    def __init__(self, main, title, options_names, options_values):
         """Inicjalizacja strony z opcjami ustawień."""
         self.main = main
         self.screen = main.screen
@@ -84,7 +75,7 @@ class SettingsOptions:
 
     def set_option_dependency(self, dependent_option, parent_option, condition_func):
         """ustaw opcje zalezna od innej"""
-        if not hasattr(self, 'dependencies'):
+        if not hasattr(self, "dependencies"):
             self.dependencies = {}
 
         if parent_option not in self.dependencies:
@@ -118,17 +109,19 @@ class SettingsOptions:
                 # Zmiana wartości opcji w lewo tylko dla aktywnych opcji
                 if self.selected not in self.disabled_options:
                     self.current_values[self.selected] = (
-                                                                 self.current_values[self.selected] - 1
-                                                         ) % len(self.options_values[self.selected])
+                        self.current_values[self.selected] - 1
+                    ) % len(self.options_values[self.selected])
                     self._apply_setting(self.selected)
                     # Aktualizuj zależności po zmianie opcji
                     self.update_dependencies()
-            elif event.key == pygame.K_RIGHT and self.selected < len(self.options_names):
+            elif event.key == pygame.K_RIGHT and self.selected < len(
+                self.options_names
+            ):
                 # Zmiana wartości opcji w prawo tylko dla aktywnych opcji
                 if self.selected not in self.disabled_options:
                     self.current_values[self.selected] = (
-                                                                 self.current_values[self.selected] + 1
-                                                         ) % len(self.options_values[self.selected])
+                        self.current_values[self.selected] + 1
+                    ) % len(self.options_values[self.selected])
                     self._apply_setting(self.selected)
                     # Aktualizuj zależności po zmianie opcji
                     self.update_dependencies()
@@ -157,7 +150,7 @@ class SettingsOptions:
                     self.option_x - 100,
                     option_y - 20,
                     self.value_x - self.option_x + 200,
-                    40
+                    40,
                 )
 
                 if option_rect.collidepoint(event.pos):
@@ -172,14 +165,18 @@ class SettingsOptions:
 
                 if left_arrow.collidepoint(event.pos):
                     self.selected = i
-                    self.current_values[i] = (self.current_values[i] - 1) % len(self.options_values[i])
+                    self.current_values[i] = (self.current_values[i] - 1) % len(
+                        self.options_values[i]
+                    )
                     self._apply_setting(i)
                     self.update_dependencies()
                     return
 
                 if right_arrow.collidepoint(event.pos):
                     self.selected = i
-                    self.current_values[i] = (self.current_values[i] + 1) % len(self.options_values[i])
+                    self.current_values[i] = (self.current_values[i] + 1) % len(
+                        self.options_values[i]
+                    )
                     self._apply_setting(i)
                     self.update_dependencies()
                     return
@@ -200,7 +197,7 @@ class SettingsOptions:
                     self.option_x - 100,
                     option_y - 20,
                     self.value_x - self.option_x + 200,
-                    40
+                    40,
                 )
 
                 if option_rect.collidepoint(event.pos):
@@ -221,11 +218,15 @@ class SettingsOptions:
             if i in self.disabled_options:
                 option_color = self.disabled_color  # Szary kolor dla wyłączonych opcji
             else:
-                option_color = self.active_color if i == self.selected else self.text_color
+                option_color = (
+                    self.active_color if i == self.selected else self.text_color
+                )
 
             # Nazwa opcji
             option_render = self.font.render(option_name, True, option_color)
-            self.screen.blit(option_render, (self.option_x - option_render.get_width(), option_y))
+            self.screen.blit(
+                option_render, (self.option_x - option_render.get_width(), option_y)
+            )
 
             # Wartość opcji
             current_value = self.options_values[i][self.current_values[i]]
@@ -267,15 +268,16 @@ class SettingsOptions:
         self.back_button.draw()
 
 
-class MazeSize(SettingsOptions):
+class GameMenu(SettingsOptions):
     """Strona ustawień rozmiaru labiryntu."""
 
     def __init__(self, main):
         # Definiowanie opcji dla rozmiaru labiryntu
-        options_names = ["Width", "Height"]
+        options_names = ["Width", "Height", "Fog of War"]
         options_values = [
             [7, 11, 15, 23, 31, 79],  # możliwe szerokości
             [7, 11, 15, 23, 31, 79],  # możliwe wysokości
+            ["On", "Off"],  # Opcje mgły wojny
         ]
 
         # Znajdź aktualne wartości w options_values
@@ -295,19 +297,21 @@ class MazeSize(SettingsOptions):
                 self.current_values[1] = i
                 break
 
+        self.current_values[2] = 0 if main.settings.fog_of_war_enabled else 1
+
     def _apply_setting(self, index):
         """Aplikuje wybrane ustawienie rozmiaru labiryntu."""
         width = self.options_values[0][self.current_values[0]]
         height = self.options_values[1][self.current_values[1]]
         self.main.settings.set_maze_size(width, height)
+        self.main.settings.fog_of_war_enabled = self.current_values[2] == 0
 
 
-class GameMenu(SettingsOptions):
+class PowerupMenu(SettingsOptions):
     """Strona ustawień gry."""
 
     def __init__(self, main):
         options_names = [
-            "Fog of War",
             "Power-ups",
             "Speed Boost",
             "Slow Down",
@@ -317,56 +321,52 @@ class GameMenu(SettingsOptions):
             "Reverse Controls"
         ]
         options_values = [
-            ["On", "Off"],  # Opcje mgły wojny
             ["On", "Off"],  # Opcje power-upów (ogólnie)
             ["On", "Off"],  # Speed Boost
             ["On", "Off"],  # Slow Down
             ["On", "Off"],  # Enlarge
             ["On", "Off"],  # Teleport
-            ["On", "Off"] , # Freeze
+            ["On", "Off"], # Freeze
             ["On", "Off"]  # Reverse
         ]
 
         super().__init__(main, "Game Settings", options_names, options_values)
 
         # Ustawiamy aktualne wartości
-        self.current_values[0] = 0 if main.settings.fog_of_war_enabled else 1
-        self.current_values[1] = 0 if main.settings.power_ups_enabled else 1
-        self.current_values[2] = 0 if main.settings.speed_boost_enabled else 1
-        self.current_values[3] = 0 if main.settings.slow_down_enabled else 1
-        self.current_values[4] = 0 if main.settings.enlarge_enabled else 1
-        self.current_values[5] = 0 if main.settings.teleport_enabled else 1
-        self.current_values[6] = 0 if main.settings.freeze_enabled else 1
-        self.current_values[7] = 0 if main.settings.reverse_controls_enabled else 1
+        self.current_values[0] = 0 if main.settings.power_ups_enabled else 1
+        self.current_values[1] = 0 if main.settings.speed_boost_enabled else 1
+        self.current_values[2] = 0 if main.settings.slow_down_enabled else 1
+        self.current_values[3] = 0 if main.settings.enlarge_enabled else 1
+        self.current_values[4] = 0 if main.settings.teleport_enabled else 1
+        self.current_values[5] = 0 if main.settings.freeze_enabled else 1
+        self.current_values[6] = 0 if main.settings.reverse_controls_enabled else 1
 
         # Ustaw zależności - opcje power-upów są aktywne tylko gdy główna opcja jest włączona (value=0)
         def powerups_enabled(values, parent_idx):
             return values[parent_idx] == 0  # "On"
 
-        for powerup_idx in range(2, 8):  # Indeksy dla Speed Boost, Slow Down, Enlarge, Teleport, Freeze, Reverse
-            self.set_option_dependency(powerup_idx, 1, powerups_enabled)
+        for powerup_idx in range(1, 7):  # Indeksy dla Speed Boost, Slow Down, Enlarge, Teleport, Freeze
+            self.set_option_dependency(powerup_idx, 0, powerups_enabled)
 
         # Aktualizuj zależności na początku
         self.update_dependencies()
 
     def _apply_setting(self, index):
         """Aplikuje wybrane ustawienie do gry."""
-        if index == 0:  # Mgła wojny
-            self.main.settings.fog_of_war_enabled = self.current_values[0] == 0
-        elif index == 1:  # Power-upy (ogólnie)
-            self.main.settings.power_ups_enabled = self.current_values[1] == 0
-        elif index == 2:  # Speed Boost
-            self.main.settings.speed_boost_enabled = self.current_values[2] == 0
-        elif index == 3:  # Slow Down
-            self.main.settings.slow_down_enabled = self.current_values[3] == 0
-        elif index == 4:  # Enlarge
-            self.main.settings.enlarge_enabled = self.current_values[4] == 0
-        elif index == 5:  # Teleport
-            self.main.settings.teleport_enabled = self.current_values[5] == 0
-        elif index == 6:  # Freeze
-            self.main.settings.freeze_enabled = self.current_values[6] == 0
-        elif index == 7:  # Reverse Controls
-            self.main.settings.reverse_controls_enabled = self.current_values[7] == 0
+        if index == 0:  # Power-upy (ogólnie)
+            self.main.settings.power_ups_enabled = self.current_values[0] == 0
+        elif index == 1:  # Speed Boost
+            self.main.settings.speed_boost_enabled = self.current_values[1] == 0
+        elif index == 2:  # Slow Down
+            self.main.settings.slow_down_enabled = self.current_values[2] == 0
+        elif index == 3:  # Enlarge
+            self.main.settings.enlarge_enabled = self.current_values[3] == 0
+        elif index == 4:  # Teleport
+            self.main.settings.teleport_enabled = self.current_values[4] == 0
+        elif index == 5:  # Freeze
+            self.main.settings.freeze_enabled = self.current_values[5] == 0
+        elif index == 6:  # Reverse Controls
+            self.main.settings.reverse_controls_enabled = self.current_values[6] == 0
 
 
 class EventMenu(SettingsOptions):
@@ -391,9 +391,7 @@ class EventMenu(SettingsOptions):
             ["L", "N", "H"],
         ]
 
-        super().__init__(
-            main, "Event Settings", options_names, options_values
-        )
+        super().__init__(main, "Event Settings", options_names, options_values)
 
         self.current_values[0] = 0 if main.settings.events_enabled else 1
         self.current_values[1] = 0 if main.settings.shortcutreveal_enabled else 1
@@ -407,6 +405,14 @@ class EventMenu(SettingsOptions):
             self.current_values[5] = 1  # Normal
         else:
             self.current_values[5] = 2  # High
+
+        def events_enabled(values, parent_idx):
+            return values[parent_idx] == 0  # "On"
+
+        for event_idx in range(
+            1, 6
+        ):  # Indeksy dla Speed Boost, Slow Down, Enlarge, Teleport, Freeze
+            self.set_option_dependency(event_idx, 0, events_enabled)
 
     def _apply_setting(self, index):
         """Apply the selected event settings."""

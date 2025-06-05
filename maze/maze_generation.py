@@ -54,6 +54,7 @@ class FindUnion:
 
 class MazeGenerator:
     """This class contains the logic to generate a random maze using Kruskal's algorithm."""
+
     @staticmethod
     def generate_maze(width: int, height: int):
         """
@@ -82,7 +83,9 @@ class MazeGenerator:
             raise ValueError("Maze dimensions must be equal to a multiple of 4 - 1.")
 
         maze = [[1 for _ in range(width)] for _ in range(height)]
-        cells = [(row, col) for row in range(1, height, 2) for col in range(1, width, 2)]
+        cells = [
+            (row, col) for row in range(1, height, 2) for col in range(1, width, 2)
+        ]
         walls = []
 
         for row, col in cells:
@@ -105,7 +108,6 @@ class MazeGenerator:
                 fu.union(cell1, cell2)
 
         return maze
-
 
     @staticmethod
     def create_map(width, height):

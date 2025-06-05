@@ -4,8 +4,8 @@ import random
 
 import pygame
 
-from .events import (
-    ShortcutRevealEvent, TeleportationEvent, FatigueEvent, InvisibleWallsEvent)
+from .events import (FatigueEvent, InvisibleWallsEvent, ShortcutRevealEvent,
+                     TeleportationEvent)
 
 
 class EventManager:
@@ -13,7 +13,12 @@ class EventManager:
 
     def __init__(self, main):
         self.main = main
-        self.events = [ShortcutRevealEvent, TeleportationEvent, FatigueEvent, InvisibleWallsEvent]
+        self.events = [
+            ShortcutRevealEvent,
+            TeleportationEvent,
+            FatigueEvent,
+            InvisibleWallsEvent,
+        ]
         self.active_events = []
         self.last_event_time = 0
         self.next_event_time = 0

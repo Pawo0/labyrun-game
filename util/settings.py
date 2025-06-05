@@ -59,7 +59,6 @@ class Settings:
         self.reverse_controls_enabled = True
         self.freeze_color = (173, 216, 230)  # Jasnoniebieski kolor dla zamrożenia
 
-
         # Event system settings
         self.events_enabled = True  # Master switch for all events
         self.event_min_interval = 3000  # Minimum time between events (3 seconds)

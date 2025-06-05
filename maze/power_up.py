@@ -1,6 +1,7 @@
 # W nowym pliku maze/maze_components/power_up.py
-import pygame
 import random
+
+import pygame
 
 
 class PowerUp(pygame.sprite.Sprite):
@@ -50,14 +51,18 @@ class SpeedBoost(PowerUp):
 
         # Dostosowujemy koordynaty do zmniejszonego rozmiaru
         size = self.size  # To jest teraz 60% block_size
-        pygame.draw.polygon(self.image, (255, 255, 0), [
-            (size // 4, size // 4),
-            (size // 2, size // 2),
-            (size // 4, size // 2),
-            (3 * size // 4, 3 * size // 4),
-            (3 * size // 4, size // 2),
-            (size // 2, size // 2),
-        ])
+        pygame.draw.polygon(
+            self.image,
+            (255, 255, 0),
+            [
+                (size // 4, size // 4),
+                (size // 2, size // 2),
+                (size // 4, size // 2),
+                (3 * size // 4, 3 * size // 4),
+                (3 * size // 4, size // 2),
+                (size // 2, size // 2),
+            ],
+        )
 
     def apply_effect(self, player):
         """
@@ -80,12 +85,10 @@ class SlowDown(PowerUp):
 
         # Dostosowujemy koordynaty do zmniejszonego rozmiaru
         size = self.size
-        pygame.draw.circle(self.image, (0, 0, 0),
-                           (size // 2, size // 2),
-                           size // 3, 2)
-        pygame.draw.line(self.image, (0, 0, 0),
-                         (size // 2, size // 5),
-                         (size // 2, 4 * size // 5), 3)
+        pygame.draw.circle(self.image, (0, 0, 0), (size // 2, size // 2), size // 3, 2)
+        pygame.draw.line(
+            self.image, (0, 0, 0), (size // 2, size // 5), (size // 2, 4 * size // 5), 3
+        )
 
     def apply_effect(self, player):
         """
@@ -114,12 +117,16 @@ class Enlarge(PowerUp):
 
         size = self.size
         # Rysujemy strzałki na zewnątrz
-        pygame.draw.polygon(self.image, (0, 0, 0), [
-            (size // 2, size // 4),
-            (size // 4, size // 2),
-            (size // 2, size * 3 // 4),
-            (size * 3 // 4, size // 2),
-        ])
+        pygame.draw.polygon(
+            self.image,
+            (0, 0, 0),
+            [
+                (size // 2, size // 4),
+                (size // 4, size // 2),
+                (size // 2, size * 3 // 4),
+                (size * 3 // 4, size // 2),
+            ],
+        )
 
     def apply_effect(self, player):
         """
@@ -141,8 +148,8 @@ class Enlarge(PowerUp):
         center_y = opponent.y + original_height / 2
 
         # Ustawiamy nowy rozmiar dokładnie na rozmiar bloku
-        new_width = int(block_size*0.99)
-        new_height = int(block_size*0.99)
+        new_width = int(block_size * 0.99)
+        new_height = int(block_size * 0.99)
 
         # Obliczamy nowe położenie gracza, aby pozostał wyśrodkowany
         new_x = int(center_x - new_width / 2)
@@ -160,10 +167,13 @@ class Enlarge(PowerUp):
 
         # Ustawiamy timer na przywrócenie normalnego rozmiaru
         player_num = 2 if player.player_number == 1 else 1
-        pygame.time.set_timer(pygame.USEREVENT + 20 + player_num, self.duration, loops=1)
+        pygame.time.set_timer(
+            pygame.USEREVENT + 20 + player_num, self.duration, loops=1
+        )
 
         # Niezależnie od wyniku sprawdzenia kolizji, dezaktywujemy power-up
         self.active = False
+
 
 class Teleport(PowerUp):
     """
@@ -194,14 +204,12 @@ class Teleport(PowerUp):
         safe_margin = self.main.settings.block_size * 2
 
         for floor in self.main.maze.floors:
-            rect = pygame.Rect(floor.rect.x, floor.rect.y,
-                               player.width, player.height)
+            rect = pygame.Rect(floor.rect.x, floor.rect.y, player.width, player.height)
 
             # Sprawdzanie czy podłoga jest poza strefą wygranej i nie koliduje ze ścianami
             is_in_win_zone = (
-                    (player.player_number == 1 and floor.rect.x > mid_x - safe_margin) or
-                    (player.player_number == 2 and floor.rect.x < mid_x + safe_margin)
-            )
+                player.player_number == 1 and floor.rect.x > mid_x - safe_margin
+            ) or (player.player_number == 2 and floor.rect.x < mid_x + safe_margin)
 
             if not is_in_win_zone and not self.main.maze.check_collision(rect):
                 available_floors.append(floor)
@@ -228,14 +236,26 @@ class Freeze(PowerUp):
 
         size = self.size
         # Rysujemy płatek śniegu
-        pygame.draw.line(self.image, (255, 255, 255),
-                         (size // 2, 0), (size // 2, size), 2)
-        pygame.draw.line(self.image, (255, 255, 255),
-                         (0, size // 2), (size, size // 2), 2)
-        pygame.draw.line(self.image, (255, 255, 255),
-                         (size // 4, size // 4), (3 * size // 4, 3 * size // 4), 2)
-        pygame.draw.line(self.image, (255, 255, 255),
-                         (size // 4, 3 * size // 4), (3 * size // 4, size // 4), 2)
+        pygame.draw.line(
+            self.image, (255, 255, 255), (size // 2, 0), (size // 2, size), 2
+        )
+        pygame.draw.line(
+            self.image, (255, 255, 255), (0, size // 2), (size, size // 2), 2
+        )
+        pygame.draw.line(
+            self.image,
+            (255, 255, 255),
+            (size // 4, size // 4),
+            (3 * size // 4, 3 * size // 4),
+            2,
+        )
+        pygame.draw.line(
+            self.image,
+            (255, 255, 255),
+            (size // 4, 3 * size // 4),
+            (3 * size // 4, size // 4),
+            2,
+        )
 
     def apply_effect(self, player):
         """
@@ -248,7 +268,11 @@ class Freeze(PowerUp):
             opponent = player.main.player1
 
         opponent.frozen = True
-        opponent.old_speed = opponent.speed if opponent.speed is not None else opponent.settings.player_speed
+        opponent.old_speed = (
+            opponent.speed
+            if opponent.speed is not None
+            else opponent.settings.player_speed
+        )
         opponent.speed = 0
 
         # Zapisujemy oryginalny kolor i zmieniamy na niebieski
@@ -258,7 +282,9 @@ class Freeze(PowerUp):
 
         # Ustawiam timer na odmrożenie
         player_num = 2 if player.player_no == 1 else 1
-        pygame.time.set_timer(pygame.USEREVENT + 30 + player_num, self.duration, loops=1)
+        pygame.time.set_timer(
+            pygame.USEREVENT + 30 + player_num, self.duration, loops=1
+        )
         self.active = False
 
 

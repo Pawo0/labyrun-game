@@ -96,7 +96,7 @@ class SettingsMenu(Menu):
     """This class handles the settings menu of the game."""
 
     def __init__(self, main):
-        items = ["Game Settings", "Event Settings", "Labyrun Size", "Back"]
+        items = ["Game Settings", "Powerup Settings", "Event Settings", "Back"]
         super().__init__(main, "Settings", items)
         self.main = main
         self.selected = 0
@@ -106,9 +106,9 @@ class SettingsMenu(Menu):
         if self.selected == 0:
             self.main.game_state.open_game_settings()
         elif self.selected == 1:
-            self.main.game_state.open_event_settings()
+            self.main.game_state.open_powerup_settings()
         elif self.selected == 2:
-            self.main.game_state.open_maze_size()
+            self.main.game_state.open_event_settings()
         elif self.selected == 3:
             self.main.game_state.main_menu()
 
