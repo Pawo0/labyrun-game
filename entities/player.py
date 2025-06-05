@@ -54,6 +54,31 @@ class Player(pygame.sprite.Sprite):  # Dziedziczenie po pygame.sprite.Sprite
         self.rect.x = self.x
         self.rect.y = self.y
 
+    def handle_key_event(self, event, key_up, key_right, key_left, key_down):
+        """
+        Obsługuje zdarzenia klawiatury dla tego gracza.
+        """
+        key_actions = {pygame.KEYDOWN: True, pygame.KEYUP: False}
+
+        if event.type in key_actions:
+            action_value = key_actions[event.type]
+
+            # Mapowanie klawiszy na kierunki z uwzględnieniem odwróconego sterowania
+            if self.reversed_controls:
+                # Odwrócona kontrola - zamieniamy klawisze miejscami
+                key_up, key_down = key_down, key_up
+                key_left, key_right = key_right, key_left
+
+            # Sprawdzamy który klawisz został naciśnięty/puszczony i aktualizujemy ruchy
+            if event.key == key_up:
+                self.movements["up"] = action_value
+            elif event.key == key_right:
+                self.movements["right"] = action_value
+            elif event.key == key_left:
+                self.movements["left"] = action_value
+            elif event.key == key_down:
+                self.movements["down"] = action_value
+
     def set_name(self, name):
         """
         Sets the player's name.
