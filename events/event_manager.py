@@ -4,8 +4,8 @@ import random
 
 import pygame
 
-from .events import (
-    ShortcutRevealEvent, TeleportationEvent, FatigueEvent, InvisibleWallsEvent)
+from .events import (FatigueEvent, InvisibleWallsEvent, ShortcutRevealEvent,
+                     TeleportationEvent)
 
 
 class EventManager:
@@ -13,7 +13,12 @@ class EventManager:
 
     def __init__(self, main):
         self.main = main
-        self.events = [ShortcutRevealEvent, TeleportationEvent, FatigueEvent, InvisibleWallsEvent]
+        self.events = [
+            ShortcutRevealEvent,
+            TeleportationEvent,
+            FatigueEvent,
+            InvisibleWallsEvent,
+        ]
         self.active_events = []
         self.last_event_time = 0
         self.next_event_time = 0
@@ -87,14 +92,12 @@ class EventManager:
         event.activate(self.main)
         self.active_events.append(event)
 
-        print(f"Event triggered: {event.name}")
-
     def get_active_events(self):
         """Get list of currently active events."""
         return [event.name for event in self.active_events]
 
     def draw_active_events(self, screen):
-        """Draw active events on screen as visual indicators."""
+        """Draw the currently active events on the screen."""
         if not self.active_events:
             return
 

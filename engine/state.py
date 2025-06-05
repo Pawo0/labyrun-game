@@ -13,36 +13,14 @@ class GameState:
         self.loser = None
         self.main = main
 
-        # Here we define all possible states of the game for easier management
-        # something like enum // for future improvements
-        # TODO : przyjrzec sie temu, sprawdzanie eventow dla poszczegolnych stanow mozna wyodrebnic
-        self.states = {
-            "main_menu": "main_menu",
-            "set_names": "set_names",
-            "running": "running",
-            "game_over": "game_over",
-            "settings_menu": "settings_menu",
-            "stats_menu": "stats_menu",
-        }
-
-        self.state = self.states["main_menu"]  # Default state is main_menu
-
-        # state settingsów
-        self.settings_states = {
-            "main": "main",
-            "maze_size": "maze_size",
-            "power_ups": "power_ups",
-            "player_controllers": "player_controllers",
-            "game": "game",
-            "events": "events",
-        }
-        self.settings_state = self.settings_states["main"]  # Default state is main
+        self.state = "main_menu"  # Default state is main_menu
+        self.settings_state = "main"  # Default state is main
 
     def game_won(self, winner, loser):
         """
         Sets the game state to game over.
         """
-        self.state = self.states["game_over"]  # Set state to game_over
+        self.state = "game_over"  # Set state to game_over
         self.winner = winner
         self.loser = loser
 
@@ -57,13 +35,13 @@ class GameState:
         """
         Sets the game state to set names.
         """
-        self.state = self.states["set_names"]  # Set state to set_names
+        self.state = "set_names"  # Set state to set_names
 
     def run_game(self):
         """
         Sets the game state to running.
         """
-        self.state = self.states["running"]  # Set state to running
+        self.state = "running"  # Set state to running
 
         self.winner = None
         self.main.generate_maze()
@@ -76,20 +54,20 @@ class GameState:
         """
         Sets the game state to stats menu.
         """
-        self.state = self.states["stats_menu"]
+        self.state = "stats_menu"
 
     def main_menu(self):
         """
         Sets the game state to main menu.
         """
-        self.state = self.states["main_menu"]  # Set state to main_menu
+        self.state = "main_menu"  # Set state to main_menu
         self.winner = None
 
     def open_settings_menu(self):
         """
         Sets the game state to settings.
         """
-        self.state = self.states["settings_menu"]  # Set state to settings
+        self.state = "settings_menu"  # Set state to settings
 
     def get_current_state(self):
         """
@@ -101,25 +79,25 @@ class GameState:
         """
         Sets the game state to settings.
         """
-        self.settings_state = self.settings_states["main"]
-
-    def open_maze_size(self):
-        """
-        Sets the game state to maze size settings.
-        """
-        self.settings_state = self.settings_states["maze_size"]
+        self.settings_state = "main"
 
     def open_game_settings(self):
         """
+        Sets the game state to maze size settings.
+        """
+        self.settings_state = "game"
+
+    def open_powerup_settings(self):
+        """
         Sets the game state to game settings.
         """
-        self.settings_state = self.settings_states["game"]
+        self.settings_state = "power_ups"
 
     def open_event_settings(self):
         """
         Sets the game state to event settings.
         """
-        self.settings_state = self.settings_states["events"]
+        self.settings_state = "events"
 
     def get_current_settings_state(self):
         """

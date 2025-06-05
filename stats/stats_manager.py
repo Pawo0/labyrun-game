@@ -54,14 +54,7 @@ class StatsManager:
             print(f"Error saving stats: {str(e)}")
 
     def get_player_stats(self, player_name: str) -> PlayerStats:
-        """Get statistics for a specific player.
-
-        Args:
-            player_name (str): Name of the player
-
-        Returns:
-            PlayerStats: PlayerStats object for the player
-        """
+        """Get statistics for a specific player."""
         if player_name not in self.players:
             self.players[player_name] = PlayerStats(player_name=player_name)
         return self.players[player_name]
@@ -73,14 +66,7 @@ class StatsManager:
     def record_game_result(
         self, winner_name: str, loser_name: str, maze_width: int, maze_height: int
     ) -> None:
-        """Record the result of a completed game.
-
-        Args:
-            winner_name (str): Name of the winning player
-            loser_name (str): Name of the losing player
-            maze_width (int): Width of the maze
-            maze_height (int): Height of the maze
-        """
+        """Record the result of a completed game."""
         if self.game_start_time is None:
             print("Warning: Game timer was not started")
             game_time = 0.0

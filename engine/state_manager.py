@@ -63,43 +63,29 @@ class GameStateManager:
             state["draw"]()
 
     def _handle_running_events(self, event):
-        for player, keys in self.player_keys.items():
-            key_actions = {pygame.KEYDOWN: True, pygame.KEYUP: False}
-            reversed_controls = player.reversed_controls
-
-            if event.type in key_actions:
-                action_value = key_actions[event.type]
-                if reversed_controls:
-                    keys = keys[::-1]
-                direction_map = {
-                    keys[0]: "up",
-                    keys[1]: "right",
-                    keys[2]: "left",
-                    keys[3]: "down",
-                }
-
-                if event.key in direction_map:
-                    player.movements[direction_map[event.key]] = action_value
+        """Passes keyboard event handling to the appropriate players."""
+        if event.type in (pygame.KEYDOWN, pygame.KEYUP):
+            # Pass key handling to players
+            self.main.player1.handle_key_event(
+                event, pygame.K_w, pygame.K_d, pygame.K_a, pygame.K_s
+            )
+            self.main.player2.handle_key_event(
+                event, pygame.K_UP, pygame.K_RIGHT, pygame.K_LEFT, pygame.K_DOWN
+            )
 
     def _handle_settings_events(self, event):
         """
         Handles events in the settings menu.
         """
         settings_state = self.main.game_state.settings_state
-        # if settings_state == "main":
-        #     self.main.settings_menu.handle_events(event)
-        # elif settings_state == "maze_size":
-        #     self.main.maze_size_menu.handle_events(event)
-        # elif settings_state == "game":
-        #     self.main.game_menu.handle_events(event)
 
         match settings_state:
             case "main":
                 self.main.settings_menu.handle_events(event)
-            case "maze_size":
-                self.main.maze_size_menu.handle_events(event)
             case "game":
                 self.main.game_menu.handle_events(event)
+            case "power_ups":
+                self.main.powerup_menu.handle_events(event)
             case "events":
                 self.main.event_menu.handle_events(event)
             case _:
@@ -111,23 +97,14 @@ class GameStateManager:
         self.main.player2.update()
 
     def _draw_settings_state(self):
-        """
-        Draws the settings menu.
-        """
+        """Draws the settings menu."""
         settings_state = self.main.game_state.settings_state
-        # if settings_state == "main":
-        #     self.main.settings_menu.draw()
-        # elif settings_state == "maze_size":
-        #     self.main.maze_size_menu.draw()
-        # elif settings_state == "game":
-        #     self.main.game_menu.draw()
-
         match settings_state:
             case "main":
                 self.main.settings_menu.draw()
-            case "maze_size":
-                self.main.maze_size_menu.draw()
             case "game":
                 self.main.game_menu.draw()
+            case "power_ups":
+                self.main.powerup_menu.draw()
             case "events":
                 self.main.event_menu.draw()

@@ -6,9 +6,7 @@ import pygame
 
 
 class MenuElement:
-    """
-    Base class for all menu elements.
-    """
+    """Base class for all menu elements."""
 
     def __init__(self, main, text, active):
         self.main = main
@@ -22,22 +20,16 @@ class MenuElement:
         self.outline_color_active = (255, 0, 0)
 
     def draw(self):
-        """
-        Draws the element on the screen.
-        """
+        """Draw the element on the screen."""
         raise NotImplementedError("This method should be overridden by subclasses.")
 
     def is_hovered(self, mouse_pos):
-        """
-        Checks if the mouse is hovering over the element.
-        """
+        """Check if the mouse is hovering over the element."""
         return self.rect.collidepoint(mouse_pos)
 
 
 class Button(MenuElement):
-    """
-    This class creates buttons in the game menu.
-    """
+    """This class creates buttons in the game menu."""
 
     def __init__(self, main, text, x, y, active):
         super().__init__(main, text, active)
@@ -48,9 +40,7 @@ class Button(MenuElement):
         self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
 
     def draw(self):
-        """
-        Draws the button on the screen.
-        """
+        """Draw the button on the screen."""
         if self.active:
             pygame.draw.rect(
                 self.screen,
@@ -72,16 +62,12 @@ class Button(MenuElement):
         self.screen.blit(text_render, (self.x + 10, self.y))
 
     def is_clicked(self, mouse_pos):
-        """
-        Checks if the button is clicked.
-        """
+        """Check if the button is clicked."""
         return self.rect.collidepoint(mouse_pos)
 
 
 class TextInput(MenuElement):
-    """
-    This class creates a text input field.
-    """
+    """This class creates a text input field."""
 
     def __init__(self, main, text, x, y, active):
         super().__init__(main, text, active)
@@ -93,9 +79,7 @@ class TextInput(MenuElement):
         self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
 
     def handle_event(self, event):
-        """
-        Handle keyboard events for text input.
-        """
+        """Handle keyboard and mouse events for text input."""
         if event.type == pygame.MOUSEBUTTONDOWN:
             self.active = self.rect.collidepoint(event.pos)
             return self.active
@@ -109,9 +93,7 @@ class TextInput(MenuElement):
         return False
 
     def draw(self):
-        """
-        Draw the text input field.
-        """
+        """Draw the text input field."""
         pygame.draw.rect(self.screen, self.background_color, self.rect)
 
         border_color = self.outline_color_active if self.active else self.outline_color
@@ -126,7 +108,5 @@ class TextInput(MenuElement):
         self.screen.blit(text_surface, text_pos)
 
     def get_text(self):
-        """
-        Get the current input text.
-        """
+        """Get the current input text."""
         return self.text

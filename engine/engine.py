@@ -51,53 +51,8 @@ class Engine:
                 pygame.quit()
                 sys.exit()
 
-            # Obsługa zdarzeń resetowania prędkości graczy
-            if event.type == pygame.USEREVENT + 1:  # player 1
-                self.main.maze.reset_player_speed(1)
-            elif event.type == pygame.USEREVENT + 2:  # player 2
-                self.main.maze.reset_player_speed(2)
-
-            # Obsługa zdarzeń dla przywracania rozmiaru
-            elif event.type == pygame.USEREVENT + 21:  # player 1
-                original_width = self.main.settings.player_width
-                original_height = self.main.settings.player_height
-                self.main.player1.width = original_width
-                self.main.player1.height = original_height
-                self.main.player1.update_image()
-            elif event.type == pygame.USEREVENT + 22:  # player 2
-                original_width = self.main.settings.player_width
-                original_height = self.main.settings.player_height
-                self.main.player2.width = original_width
-                self.main.player2.height = original_height
-                self.main.player2.update_image()
-
-            elif event.type == pygame.USEREVENT + 31:  # player 1
-                self.main.player1.frozen = False
-                self.main.player1.speed = self.main.player1.old_speed
-                # Przywracamy oryginalny kolor
-                if hasattr(self.main.player1, 'original_color') and self.main.player1.original_color:
-                    self.main.player1.color = self.main.player1.original_color
-                    self.main.player1.update_image()
-            elif event.type == pygame.USEREVENT + 32:  # player 2
-                self.main.player2.frozen = False
-                self.main.player2.speed = self.main.player2.old_speed
-                # Przywracamy oryginalny kolor
-                if hasattr(self.main.player2, 'original_color') and self.main.player2.original_color:
-                    self.main.player2.color = self.main.player2.original_color
-                    self.main.player2.update_image()
-
-            elif event.type == pygame.USEREVENT + 41:  # player 1
-                self.main.player1.reversed_controls = False
-                # Przywracamy oryginalny kolor
-                if hasattr(self.main.player1, 'original_color') and self.main.player1.original_color:
-                    self.main.player1.color = self.main.player1.original_color
-                    self.main.player1.update_image()
-            elif event.type == pygame.USEREVENT + 42:  # player 2
-                self.main.player2.reversed_controls = False
-                # Przywracamy oryginalny kolor
-                if hasattr(self.main.player2, 'original_color') and self.main.player2.original_color:
-                    self.main.player2.color = self.main.player2.original_color
-                    self.main.player2.update_image()
+            if hasattr(self.main, "powerup_manager"):
+                self.main.powerup_manager.handle_event(event)
 
             self.state_manager.handle_event(event)
 

@@ -21,10 +21,6 @@ class FindUnion:
         """
         Finds the root of the set that contains the given item.
         Applies path compression to flatten the structure for faster future queries.
-
-        :param item: The element to find.
-
-        :returns parent: The root of the set containing 'item'.
         """
         if self.parent[item] != item:
             self.parent[item] = self.find(self.parent[item])  # Path compression
@@ -34,11 +30,6 @@ class FindUnion:
         """
         Merges the sets containing 'set1' and 'set2'.
         Uses union by rank to keep the tree shallow.
-
-        :param set1: An element in the first set.
-        :param set2: An element in the second set.
-
-        :returns: None
         """
         root1 = self.find(set1)
         root2 = self.find(set2)
@@ -54,22 +45,11 @@ class FindUnion:
 
 class MazeGenerator:
     """This class contains the logic to generate a random maze using Kruskal's algorithm."""
+
     @staticmethod
     def generate_maze(width: int, height: int):
         """
         Generates a maze with given dimensions.
-
-        :param width: The width of the maze (must be an odd integer).
-
-        :param height: The height of the maze (must be an odd integer).
-
-        :returns maze: The generated maze as a 2D array.
-
-            1 -> wall
-
-            0 -> corridor
-
-        :raises keyError: Raises a keyError exception if the given dimensions do not meet the criteria.
         """
 
         if not (isinstance(width, int) and isinstance(height, int)):
@@ -82,7 +62,9 @@ class MazeGenerator:
             raise ValueError("Maze dimensions must be equal to a multiple of 4 - 1.")
 
         maze = [[1 for _ in range(width)] for _ in range(height)]
-        cells = [(row, col) for row in range(1, height, 2) for col in range(1, width, 2)]
+        cells = [
+            (row, col) for row in range(1, height, 2) for col in range(1, width, 2)
+        ]
         walls = []
 
         for row, col in cells:
@@ -106,16 +88,10 @@ class MazeGenerator:
 
         return maze
 
-
     @staticmethod
     def create_map(width, height):
         """
         Create a 2-player maze map consisting of two mazes with the given dimensions.
-
-        :param width: The width of the maze (must be an odd integer).
-        :param height: The height of the maze (must be an odd integer).
-
-        :returns: The generated map as a 2D array.
         """
         maze = MazeGenerator.generate_maze(width, height)
 
@@ -125,7 +101,6 @@ class MazeGenerator:
         maze_map[height // 2][width - 1 : width + 4] = [0] * 5
         maze_map[height // 2 + 1][width : width + 3] = [0] * 3
 
-        # todo change the file format to txt
         maze_json = {"maze": maze_map}
 
         directory = os.path.join(

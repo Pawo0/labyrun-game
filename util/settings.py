@@ -45,7 +45,7 @@ class Settings:
         self.player2_initial_position = self._calculate_player2_position()
 
         # Ustawienie mgły wojny
-        self.fog_of_war_enabled = True  # Domyślnie włączone
+        self.fog_of_war_enabled = False
 
         # Ustawienie power-upów
         self.power_up_duration = 5000
@@ -54,14 +54,15 @@ class Settings:
         self.speed_boost_enabled = True
         self.slow_down_enabled = True
         self.enlarge_enabled = True
-        self.teleport_enabled = True
+        self.teleport_enabled = False
         self.freeze_enabled = True
         self.reverse_controls_enabled = True
-        self.freeze_color = (173, 216, 230)  # Jasnoniebieski kolor dla zamrożenia
-
+        self.freeze_color = (173, 216, 230)
+        self.reverse_controls_color = (255, 0, 0)
+        self.freeze_and_reverse_colors = (255, 105, 180)
 
         # Event system settings
-        self.events_enabled = True  # Master switch for all events
+        self.events_enabled = False
         self.event_min_interval = 3000  # Minimum time between events (3 seconds)
         self.event_max_interval = 8000  # Maximum time between events (8 seconds)
 
@@ -88,7 +89,7 @@ class Settings:
 
     def _calculate_player1_position(self):
         """
-        Oblicza pozycję startową gracza 1 (lewy dolny róg labiryntu).
+        Calculates the starting position of player 1 (bottom left corner of the maze).
         """
         # Oblicz pozycję labiryntu
         maze_width = (
