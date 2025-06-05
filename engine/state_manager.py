@@ -43,12 +43,12 @@ class GameStateManager:
         }
 
         self.player_keys = {
-            self.main.player1: [pygame.K_w, pygame.K_s, pygame.K_a, pygame.K_d],
+            self.main.player1: [pygame.K_w, pygame.K_d, pygame.K_a, pygame.K_s],
             self.main.player2: [
                 pygame.K_UP,
-                pygame.K_DOWN,
-                pygame.K_LEFT,
                 pygame.K_RIGHT,
+                pygame.K_LEFT,
+                pygame.K_DOWN,
             ],
         }
 
@@ -69,14 +69,17 @@ class GameStateManager:
     def _handle_running_events(self, event):
         for player, keys in self.player_keys.items():
             key_actions = {pygame.KEYDOWN: True, pygame.KEYUP: False}
+            reversed_controls = player.reversed_controls
 
             if event.type in key_actions:
                 action_value = key_actions[event.type]
+                if reversed_controls:
+                    keys = keys[::-1]
                 direction_map = {
                     keys[0]: "up",
-                    keys[1]: "down",
+                    keys[1]: "right",
                     keys[2]: "left",
-                    keys[3]: "right",
+                    keys[3]: "down",
                 }
 
                 if event.key in direction_map:

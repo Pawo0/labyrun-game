@@ -260,3 +260,48 @@ class Freeze(PowerUp):
         player_num = 2 if player.player_no == 1 else 1
         pygame.time.set_timer(pygame.USEREVENT + 30 + player_num, self.duration, loops=1)
         self.active = False
+
+
+class ReverseControls(PowerUp):
+    """
+    Modyfikator odwracający sterowanie przeciwnika gracza.
+    """
+
+    def __init__(self, main, pos_x, pos_y, block_size):
+        super().__init__(main, pos_x, pos_y, block_size)
+        self.image.fill((255, 215, 0))  # Złoty kolor dla odwrócenia sterowania
+
+        size = self.size
+        # Rysujemy strzałki wskazujące przeciwne kierunki
+        pygame.draw.line(self.image, (0, 0, 0),
+                         (size // 4, size // 4), (size // 4, 3 * size // 4), 2)
+        pygame.draw.line(self.image, (0, 0, 0),
+                         (size // 4, size // 4), (size // 8, size // 3), 2)
+        pygame.draw.line(self.image, (0, 0, 0),
+                         (size // 4, size // 4), (3 * size // 8, size // 3), 2)
+
+        pygame.draw.line(self.image, (0, 0, 0),
+                         (3 * size // 4, 3 * size // 4), (3 * size // 4, size // 4), 2)
+        pygame.draw.line(self.image, (0, 0, 0),
+                         (3 * size // 4, 3 * size // 4), (5 * size // 8, 2 * size // 3), 2)
+        pygame.draw.line(self.image, (0, 0, 0),
+                         (3 * size // 4, 3 * size // 4), (7 * size // 8, 2 * size // 3), 2)
+
+    def apply_effect(self, player):
+        """
+        Odwraca sterowanie przeciwnika gracza na określony czas.
+        """
+        # Znajdujemy przeciwnika
+        if player.player_number == 1:
+            opponent = player.main.player2
+        else:
+            opponent = player.main.player1
+
+        # Odwracamy sterowanie
+        opponent.reversed_controls = True
+
+        # Dodajemy timer do przywrócenia normalnego sterowania
+        player_num = 2 if player.player_number == 1 else 1
+        pygame.time.set_timer(pygame.USEREVENT + 40 + player_num, self.duration, loops=1)
+
+        self.active = False

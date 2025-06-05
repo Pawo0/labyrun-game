@@ -31,8 +31,11 @@ class Player(pygame.sprite.Sprite):  # Dziedziczenie po pygame.sprite.Sprite
         self.alpha = 255  # Przezroczystość gracza
         self.frozen = False  # Stan zamrożenia
         self.old_speed = None  # Przechowuje prędkość przed zamrożeniem
+        self.reversed_controls = False
 
         self.player_number = player_no
+
+
 
         self.reset()
 
