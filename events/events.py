@@ -133,6 +133,9 @@ class ShortcutRevealEvent(GameEvent):
         self.revealed_walls.clear()
         self.original_wall_positions.clear()
 
+        for player in [main.player1, main.player2]:
+            player.push_out_of_wall()
+
 
 class TeleportationEvent(GameEvent):
     """Event that teleports both players to random mirrored locations."""

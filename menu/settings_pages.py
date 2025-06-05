@@ -275,8 +275,8 @@ class GameMenu(SettingsOptions):
         # Definiowanie opcji dla rozmiaru labiryntu
         options_names = ["Width", "Height", "Fog of War"]
         options_values = [
-            [7, 11, 15, 23, 31, 79],  # możliwe szerokości
-            [7, 11, 15, 23, 31, 79],  # możliwe wysokości
+            [7, 11, 15, 23, 31, 55],  # możliwe szerokości
+            [7, 11, 15, 23, 31, 55],  # możliwe wysokości
             ["On", "Off"],  # Opcje mgły wojny
         ]
 
@@ -284,7 +284,7 @@ class GameMenu(SettingsOptions):
         current_width = main.settings.maze_width
         current_height = main.settings.maze_height
 
-        super().__init__(main, "Maze Size Settings", options_names, options_values)
+        super().__init__(main, "Game Settings", options_names, options_values)
 
         # Ustaw aktualne indeksy dla wartości
         for i, value in enumerate(options_values[0]):
@@ -330,7 +330,7 @@ class PowerupMenu(SettingsOptions):
             ["On", "Off"]  # Reverse
         ]
 
-        super().__init__(main, "Game Settings", options_names, options_values)
+        super().__init__(main, "Powerup Settings", options_names, options_values)
 
         # Ustawiamy aktualne wartości
         self.current_values[0] = 0 if main.settings.power_ups_enabled else 1
