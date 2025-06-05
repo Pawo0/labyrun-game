@@ -15,8 +15,8 @@ class Settings:
     def __init__(self, main):
         self.main = main
         # default maze size
-        self.maze_width = 15
-        self.maze_height = 15
+        self.maze_width = 31
+        self.maze_height = 31
 
         # set screen size
         self.screen_width = main.screen.get_width()
@@ -28,7 +28,9 @@ class Settings:
 
         # labyrinth colors
         self.wall_color = (0, 0, 0)
-        self.floor_color = (255, 255, 255)
+        self.floor_color = (210, 210, 210)
+        self.invis_wall_color = (208, 208, 208)
+        self.shortcut_color = (190, 190, 190)
 
         # scale the maze size to fit the screen
         self.block_size = None
@@ -43,7 +45,7 @@ class Settings:
         self.player2_initial_position = self._calculate_player2_position()
 
         # Ustawienie mgły wojny
-        self.fog_of_war_enabled = False  # Domyślnie włączone
+        self.fog_of_war_enabled = True  # Domyślnie włączone
 
         # Ustawienie power-upów
         self.power_up_duration = 5000
@@ -55,6 +57,18 @@ class Settings:
         self.teleport_enabled = True
         self.freeze_enabled = True
         self.freeze_color = (173, 216, 230)  # Jasnoniebieski kolor dla zamrożenia
+
+
+        # Event system settings
+        self.events_enabled = True  # Master switch for all events
+        self.event_min_interval = 3000  # Minimum time between events (3 seconds)
+        self.event_max_interval = 8000  # Maximum time between events (8 seconds)
+
+        # Individual event settings
+        self.shortcutreveal_enabled = True  # Shortcut Reveal event
+        self.teleportation_enabled = True  # Teleportation event
+        self.fatigue_enabled = True  # Fatigue event
+        self.invisiblewalls_enabled = True  # Invisible Walls event
 
     def _calculate_block_size(self):
         """

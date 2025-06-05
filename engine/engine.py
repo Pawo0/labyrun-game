@@ -29,7 +29,16 @@ class Engine:
                 self.main.maze.check_power_up_collision(self.main.player2)
                 self.check_win_condition()
 
+                if hasattr(self.main, "event_manager"):
+                    self.main.event_manager.update()
+
             self.state_manager.draw_current_state()
+
+            if (
+                hasattr(self.main, "event_manager")
+                and self.main.game_state.get_current_state() == "running"
+            ):
+                self.main.event_manager.draw_active_events(self.main.screen)
 
             pygame.display.flip()
             self.main.clock.tick(60)

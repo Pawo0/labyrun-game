@@ -7,9 +7,10 @@ import pygame
 
 from engine import Engine, GameState
 from entities import Player
+from events import EventManager
 from maze import Maze, MazeGenerator
-from menu import (GameOverMenu, MainMenu, MazeSize, SetNames, SettingsMenu,
-                  StatsMenu, GameMenu)
+from menu import (EventMenu, GameMenu, GameOverMenu, MainMenu, MazeSize,
+                  SetNames, SettingsMenu, StatsMenu)
 from stats import StatsManager
 from util import Settings
 
@@ -20,26 +21,20 @@ class LabyRunGame:
     """
 
     def __init__(self):
-
-        # inicjalizacja pygame
         pygame.init()
 
-        # ustawienia okna
         self.screen = pygame.display.set_mode()
         self.settings = Settings(self)
 
         self.clock = pygame.time.Clock()
         pygame.display.set_caption("LabyRun")
 
-        # generacja mapy labiryntu
         self.maze = None
         self.generate_maze()
 
-        # inicjalizacja graczy
         self.player1 = Player(self, 1)
         self.player2 = Player(self, 2)
 
-        # inicjalizacja menu
         self.game_state = GameState(self)
         self.menu = MainMenu(self)
         self.gameover_menu = GameOverMenu(self)
@@ -48,10 +43,10 @@ class LabyRunGame:
         self.set_name_menu = SetNames(self)
         self.stats_menu = StatsMenu(self)
         self.game_menu = GameMenu(self)
+        self.event_menu = EventMenu(self)
 
-        # ustawienia silnika
         self.engine = Engine(self)
-
+        self.event_manager = EventManager(self)
         self.stats_manager = StatsManager(".data/player_stats.json")
 
     def generate_maze(self):
