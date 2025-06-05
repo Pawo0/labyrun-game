@@ -8,7 +8,7 @@ class Player(pygame.sprite.Sprite):  # Dziedziczenie po pygame.sprite.Sprite
     """
 
     def __init__(self, main, player_no=1):
-        super().__init__()  # Wywołanie konstruktora klasy nadrzędnej
+        super().__init__()
         self.main = main
         self.settings = main.settings
         self.screen = main.screen
@@ -20,6 +20,7 @@ class Player(pygame.sprite.Sprite):  # Dziedziczenie po pygame.sprite.Sprite
         self.height = None
         self.movements = None
         self.color = None
+        self.original_color = None
         self.pos = None
         self.x = None
         self.y = None
@@ -53,6 +54,7 @@ class Player(pygame.sprite.Sprite):  # Dziedziczenie po pygame.sprite.Sprite
         self.rect.x = self.x
         self.rect.y = self.y
 
+
     def set_name(self, name):
         """
         Sets the player's name.
@@ -84,6 +86,7 @@ class Player(pygame.sprite.Sprite):  # Dziedziczenie po pygame.sprite.Sprite
         else:
             raise ValueError("Player must be 1 or 2")
 
+        self.original_color = self.color  # Zapisujemy oryginalny kolor
         self.x = self.pos[0]
         self.y = self.pos[1]
 
@@ -96,10 +99,63 @@ class Player(pygame.sprite.Sprite):  # Dziedziczenie po pygame.sprite.Sprite
 
         self.reset_speed()
 
+    def push_out_of_wall(self):
+        """
+        Wypycha gracza ze ściany, jeśli się w niej znajduje, na najbliższe wolne pole.
+        """
+        # Sprawdzamy, czy gracz koliduje ze ścianą
+        if self.main.maze.check_collision(self.rect):
+            # Lista kierunków do sprawdzenia (prawo, lewo, dół, góra, prawo-dół, prawo-góra, lewo-dół, lewo-góra)
+            directions = [
+                (1, 0), (-1, 0), (0, 1), (0, -1),
+                (1, 1), (1, -1), (-1, 1), (-1, -1)
+            ]
+
+            # Maksymalna odległość przeszukiwania (np. połowa bloku)
+            max_distance = self.main.settings.block_size // 2
+
+            # Szukamy najbliższego wolnego miejsca
+            best_distance = float('inf')
+            best_position = (self.x, self.y)
+
+            for distance in range(1, max_distance + 1):
+                for dx, dy in directions:
+                    new_x = self.x + dx * distance
+                    new_y = self.y + dy * distance
+
+                    # Sprawdzamy, czy nowa pozycja mieści się na ekranie
+                    if (new_x < 0 or new_x + self.width > self.screen.get_width() or
+                            new_y < 0 or new_y + self.height > self.screen.get_height()):
+                        continue
+
+                    # Sprawdzamy, czy na nowej pozycji nie ma kolizji
+                    test_rect = pygame.Rect(new_x, new_y, self.width, self.height)
+                    if not self.main.maze.check_collision(test_rect):
+                        # Obliczamy odległość od oryginalnej pozycji
+                        dist = abs(new_x - self.x) + abs(new_y - self.y)
+                        if dist < best_distance:
+                            best_distance = dist
+                            best_position = (new_x, new_y)
+
+            # Ustawiamy gracza na znalezionej pozycji
+            if best_distance < float('inf'):
+                self.x, self.y = best_position
+                self.rect.x, self.rect.y = best_position
+                self.update_image()
+
     def update(self):
         """
         Updates the player's position based on the current movement state.
         """
+        # Jeśli gracz jest zamrożony, nie aktualizuj pozycji
+        if self.frozen:
+            self.draw()
+            return
+
+        # Sprawdź, czy speed nie jest None
+        if self.speed is None:
+            self.speed = self.settings.player_speed
+
         new_x = self.x
         new_y = self.y
 
@@ -149,8 +205,8 @@ class Player(pygame.sprite.Sprite):  # Dziedziczenie po pygame.sprite.Sprite
         self.y = new_y
         self.rect.y = new_y
 
-        self.draw()
 
+        self.draw()
     def draw(self):
         """
         Draws the player on the screen.

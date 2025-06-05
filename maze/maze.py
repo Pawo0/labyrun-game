@@ -81,8 +81,20 @@ class Maze:
         )
 
         # Lista dostępnych modyfikatorów
-        power_up_types = [SpeedBoost, SlowDown, Enlarge, Teleport, Freeze]
+        power_up_types = []
+        if hasattr(self.settings, "speed_boost_enabled") and self.settings.speed_boost_enabled:
+            power_up_types.append(SpeedBoost)
+        if hasattr(self.settings, "slow_down_enabled") and self.settings.slow_down_enabled:
+            power_up_types.append(SlowDown)
+        if hasattr(self.settings, "enlarge_enabled") and self.settings.enlarge_enabled:
+            power_up_types.append(Enlarge)
+        if hasattr(self.settings, "teleport_enabled") and self.settings.teleport_enabled:
+            power_up_types.append(Teleport)
+        if hasattr(self.settings, "freeze_enabled") and self.settings.freeze_enabled:
+            power_up_types.append(Freeze)
 
+        if not power_up_types:
+            return
         # Podział dostępnych pozycji na dwie grupy
         player1_positions = []
         player2_positions = []
@@ -151,11 +163,17 @@ class Maze:
 
     def check_collision(self, rect):
         """
-        Checks for collisions with walls in the maze.
+        Sprawdza kolizje ze ścianami labiryntu.
         """
         temp_sprite = pygame.sprite.Sprite()
         temp_sprite.rect = rect
-        return pygame.sprite.spritecollide(temp_sprite, self.walls, False)
+        collisions = pygame.sprite.spritecollide(temp_sprite, self.walls, False)
+
+        # Dodaj debugowanie
+        if collisions:
+            print(f"Wykryto kolizję: {rect} z {[wall.rect for wall in collisions]}")
+
+        return collisions
 
     def check_power_up_collision(self, player):
         """

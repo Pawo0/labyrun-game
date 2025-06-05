@@ -46,10 +46,15 @@ class Settings:
         self.fog_of_war_enabled = False  # Domyślnie włączone
 
         # Ustawienie power-upów
-        self.power_ups_enabled = True  # Domyślnie włączone
-
-        # powerUps
         self.power_up_duration = 5000
+
+        self.power_ups_enabled = True  # Domyślnie włączone
+        self.speed_boost_enabled = True
+        self.slow_down_enabled = True
+        self.enlarge_enabled = True
+        self.teleport_enabled = True
+        self.freeze_enabled = True
+        self.freeze_color = (173, 216, 230)  # Jasnoniebieski kolor dla zamrożenia
 
     def _calculate_block_size(self):
         """
