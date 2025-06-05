@@ -71,7 +71,6 @@ class Engine:
                 self.main.player2.height = original_height
                 self.main.player2.update_image()
 
-            # Dodaj print dla debugowania
             elif event.type == pygame.USEREVENT + 31:  # player 1
                 self.main.player1.frozen = False
                 self.main.player1.speed = self.main.player1.old_speed
@@ -82,6 +81,19 @@ class Engine:
             elif event.type == pygame.USEREVENT + 32:  # player 2
                 self.main.player2.frozen = False
                 self.main.player2.speed = self.main.player2.old_speed
+                # Przywracamy oryginalny kolor
+                if hasattr(self.main.player2, 'original_color') and self.main.player2.original_color:
+                    self.main.player2.color = self.main.player2.original_color
+                    self.main.player2.update_image()
+
+            elif event.type == pygame.USEREVENT + 41:  # player 1
+                self.main.player1.reversed_controls = False
+                # Przywracamy oryginalny kolor
+                if hasattr(self.main.player1, 'original_color') and self.main.player1.original_color:
+                    self.main.player1.color = self.main.player1.original_color
+                    self.main.player1.update_image()
+            elif event.type == pygame.USEREVENT + 42:  # player 2
+                self.main.player2.reversed_controls = False
                 # Przywracamy oryginalny kolor
                 if hasattr(self.main.player2, 'original_color') and self.main.player2.original_color:
                     self.main.player2.color = self.main.player2.original_color

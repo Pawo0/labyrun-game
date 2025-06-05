@@ -56,6 +56,7 @@ class Settings:
         self.enlarge_enabled = True
         self.teleport_enabled = True
         self.freeze_enabled = True
+        self.reverse_controls_enabled = True
         self.freeze_color = (173, 216, 230)  # Jasnoniebieski kolor dla zamrożenia
 
 

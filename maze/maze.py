@@ -4,7 +4,7 @@ import random
 
 import pygame.sprite
 
-from .power_up import Enlarge, Freeze, SlowDown, SpeedBoost, Teleport
+from .power_up import Enlarge, Freeze, SlowDown, SpeedBoost, Teleport, ReverseControls
 
 
 class Maze:
@@ -92,6 +92,8 @@ class Maze:
             power_up_types.append(Teleport)
         if hasattr(self.settings, "freeze_enabled") and self.settings.freeze_enabled:
             power_up_types.append(Freeze)
+        if hasattr(self.settings, "reverse_controls_enabled") and self.settings.reverse_controls_enabled:
+            power_up_types.append(ReverseControls)
 
         if not power_up_types:
             return
@@ -171,7 +173,8 @@ class Maze:
 
         # Dodaj debugowanie
         if collisions:
-            print(f"Wykryto kolizję: {rect} z {[wall.rect for wall in collisions]}")
+            # print(f"Wykryto kolizję: {rect} z {[wall.rect for wall in collisions]}")
+            pass
 
         return collisions
 

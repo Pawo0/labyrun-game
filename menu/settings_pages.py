@@ -313,7 +313,8 @@ class GameMenu(SettingsOptions):
             "Slow Down",
             "Enlarge",
             "Teleport",
-            "Freeze"
+            "Freeze",
+            "Reverse Controls"
         ]
         options_values = [
             ["On", "Off"],  # Opcje mgły wojny
@@ -322,10 +323,11 @@ class GameMenu(SettingsOptions):
             ["On", "Off"],  # Slow Down
             ["On", "Off"],  # Enlarge
             ["On", "Off"],  # Teleport
-            ["On", "Off"]  # Freeze
+            ["On", "Off"] , # Freeze
+            ["On", "Off"]  # Reverse
         ]
 
-        super().__init__(main, "Ustawienia gry", options_names, options_values)
+        super().__init__(main, "Game Settings", options_names, options_values)
 
         # Ustawiamy aktualne wartości
         self.current_values[0] = 0 if main.settings.fog_of_war_enabled else 1
@@ -335,12 +337,13 @@ class GameMenu(SettingsOptions):
         self.current_values[4] = 0 if main.settings.enlarge_enabled else 1
         self.current_values[5] = 0 if main.settings.teleport_enabled else 1
         self.current_values[6] = 0 if main.settings.freeze_enabled else 1
+        self.current_values[7] = 0 if main.settings.reverse_controls_enabled else 1
 
         # Ustaw zależności - opcje power-upów są aktywne tylko gdy główna opcja jest włączona (value=0)
         def powerups_enabled(values, parent_idx):
             return values[parent_idx] == 0  # "On"
 
-        for powerup_idx in range(2, 7):  # Indeksy dla Speed Boost, Slow Down, Enlarge, Teleport, Freeze
+        for powerup_idx in range(2, 8):  # Indeksy dla Speed Boost, Slow Down, Enlarge, Teleport, Freeze, Reverse
             self.set_option_dependency(powerup_idx, 1, powerups_enabled)
 
         # Aktualizuj zależności na początku
@@ -362,6 +365,8 @@ class GameMenu(SettingsOptions):
             self.main.settings.teleport_enabled = self.current_values[5] == 0
         elif index == 6:  # Freeze
             self.main.settings.freeze_enabled = self.current_values[6] == 0
+        elif index == 7:  # Reverse Controls
+            self.main.settings.reverse_controls_enabled = self.current_values[7] == 0
 
 
 class EventMenu(SettingsOptions):
