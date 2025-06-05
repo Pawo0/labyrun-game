@@ -1,3 +1,5 @@
+"""This module defines classes for various game events that can occur during gameplay."""
+
 import random
 
 import pygame
@@ -122,7 +124,7 @@ class ShortcutRevealEvent(GameEvent):
                             break
 
     def _restore_effect(self, main):
-        """Restore the removed walls."""
+        """Restore the removed walls after the event ends."""
         for grid_x, grid_y, wall, floor in self.original_wall_positions:
             main.maze.floors.remove(floor)
 

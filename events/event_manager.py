@@ -92,13 +92,12 @@ class EventManager:
         event.activate(self.main)
         self.active_events.append(event)
 
-
     def get_active_events(self):
         """Get list of currently active events."""
         return [event.name for event in self.active_events]
 
     def draw_active_events(self, screen):
-        """Draw active events on screen as visual indicators."""
+        """Draw the currently active events on the screen."""
         if not self.active_events:
             return
 

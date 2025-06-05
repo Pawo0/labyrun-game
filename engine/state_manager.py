@@ -63,9 +63,9 @@ class GameStateManager:
             state["draw"]()
 
     def _handle_running_events(self, event):
-        """Przekazuje obsługę zdarzeń klawiatury do odpowiednich graczy"""
+        """Passes keyboard event handling to the appropriate players."""
         if event.type in (pygame.KEYDOWN, pygame.KEYUP):
-            # Przekazanie obsługi klawiszy do graczy
+            # Pass key handling to players
             self.main.player1.handle_key_event(
                 event, pygame.K_w, pygame.K_d, pygame.K_a, pygame.K_s
             )
@@ -97,11 +97,8 @@ class GameStateManager:
         self.main.player2.update()
 
     def _draw_settings_state(self):
-        """
-        Draws the settings menu.
-        """
+        """Draws the settings menu."""
         settings_state = self.main.game_state.settings_state
-
         match settings_state:
             case "main":
                 self.main.settings_menu.draw()

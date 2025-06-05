@@ -1,3 +1,8 @@
+"""
+This module provides the Maze class and related components for loading, rendering,
+and managing the maze, including fog of war and power-ups.
+"""
+
 import json
 import math
 import random
@@ -17,11 +22,11 @@ class Maze:
         self.screen = main.screen
         self.settings = main.settings
         self.block_size = self.settings.block_size
-        self.main = main  # Zapisujemy referencję do main
+        self.main = main  # Save a reference to main
 
         self.walls = pygame.sprite.Group()
         self.floors = pygame.sprite.Group()
-        self.power_ups = pygame.sprite.Group()  # Nowa grupa dla modyfikatorów
+        self.power_ups = pygame.sprite.Group()  # New group for power-ups
 
         self.maze = []
         self.load_maze(maze_json)
@@ -31,15 +36,15 @@ class Maze:
         self.offset_x = (self.screen.get_width() - self.maze_width) // 2
         self.offset_y = (self.screen.get_height() - self.maze_height) // 2
 
-        # Tworzenie powierzchni dla mgły wojny
+        # Creating surface for the fog of war
         self.fog_surface = pygame.Surface(
             (self.screen.get_width(), self.screen.get_height()), pygame.SRCALPHA
         )
-        # Zasięg widoczności w blokach
+        # Visibility range in blocks
         self.fog_radius = 4 * self.block_size
 
         self.create_sprites()
-        self.generate_power_ups()  # Generowanie modyfikatorów
+        self.generate_power_ups()  # Generate power-ups
 
     def load_maze(self, maze_json):
         """
@@ -69,19 +74,19 @@ class Maze:
         """
         Generates random power-ups in the maze.
         """
-        # Jeśli power-upy są wyłączone, nie generujemy ich
+        # If power-ups are disabled, do not generate them
         if (
             not hasattr(self.settings, "power_ups_enabled")
             or not self.settings.power_ups_enabled
         ):
             return
 
-        # Liczba modyfikatorów zależna od wielkości labiryntu
+        # Number of power-ups depends on maze size
         num_power_ups = max(
             1, (self.settings.maze_width * self.settings.maze_height) // 25
         )
 
-        # Lista dostępnych modyfikatorów
+        # List of available power-ups
         power_up_types = []
         if (
             hasattr(self.settings, "speed_boost_enabled")
@@ -110,13 +115,13 @@ class Maze:
 
         if not power_up_types:
             return
-        # Podział dostępnych pozycji na dwie grupy
+        # Divide available positions into two groups
         player1_positions = []
         player2_positions = []
 
         for y, row in enumerate(self.maze):
             for x, cell in enumerate(row):
-                # jesli srodek labiryntu, to nie dodajemy modyfikatora
+                # if center of the maze, do not add a modifier
                 center_x = len(row) // 2
                 center_y = len(self.maze) // 2
 
@@ -125,16 +130,16 @@ class Maze:
                 ):
                     continue
 
-                # jesli pole jest puste (0), to dodajemy je jako potencjalną pozycję modyfikatora
+                # if the field is empty (0), add it as a potential modifier position
                 if cell == 0:
                     pos_x = self.offset_x + x * self.block_size
                     pos_y = self.offset_y + y * self.block_size
 
-                    # Pobierz pozycje startowe graczy
+                    # Get the starting positions of the players
                     player1_pos = self.main.settings.player1_initial_position
                     player2_pos = self.main.settings.player2_initial_position
 
-                    # Dodajemy pozycje do odpowiednich grup na podstawie odległości
+                    # Add positions to the appropriate group based on distance
                     if not (
                         (pos_x, pos_y) == player1_pos or (pos_x, pos_y) == player2_pos
                     ):
@@ -150,7 +155,7 @@ class Maze:
                         else:
                             player2_positions.append((pos_x, pos_y))
 
-        # Losowanie pozycji dla obu graczy
+        # Randomly select positions for both players
         selected_positions = []
         p1_count = min(num_power_ups // 2, len(player1_positions))
         p2_count = min(num_power_ups // 2, len(player2_positions))
@@ -160,7 +165,7 @@ class Maze:
         if player2_positions and p2_count > 0:
             selected_positions += random.sample(player2_positions, p2_count)
 
-        # Tworzenie modyfikatorów
+        # Create power-ups
         for pos in selected_positions:
             power_up_class = random.choice(power_up_types)
             power_up = power_up_class(self.main, pos[0], pos[1], self.block_size)
@@ -168,7 +173,7 @@ class Maze:
 
     def check_collision(self, rect):
         """
-        Sprawdza kolizje ze ścianami labiryntu.
+        Checks collisions with the maze walls.
         """
         temp_sprite = pygame.sprite.Sprite()
         temp_sprite.rect = rect
@@ -180,7 +185,7 @@ class Maze:
         """
         Checks if player collided with any power-up and applies its effect.
         """
-        # Jeśli power-upy są wyłączone, nie sprawdzamy kolizji
+        # If power-ups are disabled, do not check collisions
         if (
             not hasattr(self.settings, "power_ups_enabled")
             or not self.settings.power_ups_enabled
@@ -194,7 +199,7 @@ class Maze:
 
     def reset_player_speed(self, player_number):
         """
-        Resetuje prędkość gracza po upływie czasu działania modyfikatora.
+        Resets player speed after the power-up effect duration.
         """
         if player_number == 1:
             self.main.player1.reset_speed()
@@ -203,19 +208,19 @@ class Maze:
 
     def update_fog_of_war(self):
         """
-        Aktualizuje mgłę wojny na podstawie pozycji graczy.
+        Updates the fog of war based on player positions.
         """
-        # Czyścimy powierzchnię mgły
-        self.fog_surface.fill((0, 0, 0))  # Półprzezroczysta czarna mgła
+        # Clear the fog surface
+        self.fog_surface.fill((0, 0, 0))  # Semi-transparent black fog
 
-        # Odkrywamy obszar wokół graczy
+        # Reveal the area around players
         if hasattr(self.main, "player1") and hasattr(self.main, "player2"):
             for player in [self.main.player1, self.main.player2]:
-                # Centrum gracza
+                # Player center
                 center_x = int(player.x + player.width // 2)
                 center_y = int(player.y + player.height // 2)
 
-                # Rysujemy tylko jeden przezroczysty krąg zamiast gradientu
+                # Draw only one transparent circle instead of a gradient
                 pygame.draw.circle(
                     self.fog_surface,
                     (0, 0, 0, 0),
@@ -225,9 +230,9 @@ class Maze:
 
     def _create_visibility_gradient(self, center_pos):
         """
-        Tworzy gradient widoczności wokół danego punktu.
+        Creates a visibility gradient around a given point.
         """
-        # Konwersja do int przed użyciem w range()
+        # Convert to int before using in range()
         start_x = max(0, int(center_pos[0] - self.fog_radius))
         end_x = min(self.screen.get_width(), int(center_pos[0] + self.fog_radius) + 1)
         start_y = max(0, int(center_pos[1] - self.fog_radius))
@@ -235,21 +240,21 @@ class Maze:
 
         for x in range(start_x, end_x):
             for y in range(start_y, end_y):
-                # Obliczanie odległości od centrum
+                # Calculate distance from the center
                 dist = math.sqrt((x - center_pos[0]) ** 2 + (y - center_pos[1]) ** 2)
 
-                # Sprawdzamy czy punkt jest w zasięgu mgły
+                # Check if the point is within the fog range
                 if dist <= self.fog_radius:
-                    # Obliczamy przezroczystość mgły (im dalej od centrum, tym bardziej nieprzezroczysta)
+                    # Calculate fog transparency (the further from the center, the more opaque)
                     alpha = int((dist / self.fog_radius) * 200)
 
-                    # Pobieramy aktualny kolor piksela
+                    # Get the current pixel color
                     current_alpha = self.fog_surface.get_at((x, y))[3]
 
-                    # Ustawiamy nową przezroczystość, biorąc mniejszą z dwóch wartości
+                    # Set the new transparency, taking the lesser of the two values
                     new_alpha = min(current_alpha, alpha)
 
-                    # Ustawiamy nowy kolor piksela
+                    # Set the new pixel color
                     self.fog_surface.set_at((x, y), (0, 0, 0, new_alpha))
 
     def draw(self):
@@ -259,7 +264,7 @@ class Maze:
         self.walls.draw(self.screen)
         self.floors.draw(self.screen)
 
-        # Rysujemy aktywne modyfikatory jeśli są włączone
+        # Draw active modifiers if enabled
         if (
             hasattr(self.settings, "power_ups_enabled")
             and self.settings.power_ups_enabled
@@ -268,7 +273,7 @@ class Maze:
                 if power_up.active:
                     power_up.draw(self.screen)
 
-        # Aktualizujemy i rysujemy mgłę wojny, jeśli gra jest w trakcie i opcja włączona
+        # Update and draw the fog of war if the game is running and the option is enabled
         if (
             self.main.game_state.state == "running"
             and hasattr(self.settings, "fog_of_war_enabled")

@@ -13,8 +13,8 @@ class GameState:
         self.loser = None
         self.main = main
 
-        self.state = "main_menu" # Default state is main_menu
-        self.settings_state = "main" # Default state is main
+        self.state = "main_menu"  # Default state is main_menu
+        self.settings_state = "main"  # Default state is main
 
     def game_won(self, winner, loser):
         """

@@ -1,27 +1,29 @@
+"""This module defines the PowerUpManager class, which manages active power-ups in the game."""
+
 import pygame
 
 
 class PowerUpManager:
     """
-    Klasa zarządzająca aktywne power-upy w grze.
+    This class manages active power-ups in the game.
     """
 
     def __init__(self, main):
         self.main = main
-        self.active_powerups = {}  # Słownik zawierający aktywne power-upy
+        self.active_powerups = {}  # Dictionary containing active power-ups
 
     def register_powerup(self, powerup_type, player_num, powerup_instance):
         """
-        Rejestruje aktywny power-up dla danego gracza.
+        Register an active power-up for a given player.
         """
         key = (powerup_type, player_num)
         self.active_powerups[key] = powerup_instance
 
     def handle_event(self, event):
         """
-        Obsługuje zdarzenia związane z power-upami.
+        Handle events related to power-ups.
         """
-        # Obsługa zdarzeń resetowania prędkości graczy
+        # Handle events for resetting player speed
         if event.type == pygame.USEREVENT + 1:  # player 1
             key = ("speed", 1)
             if key in self.active_powerups:
@@ -33,7 +35,7 @@ class PowerUpManager:
                 self.active_powerups[key].remove_effect(2)
                 del self.active_powerups[key]
 
-        # Obsługa zdarzeń dla przywracania rozmiaru
+        # Handle events for restoring size
         elif event.type == pygame.USEREVENT + 21:  # player 1
             key = ("enlarge", 1)
             if key in self.active_powerups:
@@ -45,7 +47,7 @@ class PowerUpManager:
                 self.active_powerups[key].remove_effect(2)
                 del self.active_powerups[key]
 
-        # Obsługa zdarzeń dla odmrażania graczy
+        # Handle events for unfreezing players
         elif event.type == pygame.USEREVENT + 31:  # player 1
             key = ("freeze", 1)
             if key in self.active_powerups:
@@ -57,7 +59,7 @@ class PowerUpManager:
                 self.active_powerups[key].remove_effect(2)
                 del self.active_powerups[key]
 
-        # Obsługa zdarzeń dla odwróconego sterowania
+        # Handle events for reversing controls
         elif event.type == pygame.USEREVENT + 41:  # player 1
             key = ("reverse_controls", 1)
             if key in self.active_powerups:

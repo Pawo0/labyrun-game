@@ -89,7 +89,7 @@ class Settings:
 
     def _calculate_player1_position(self):
         """
-        Oblicza pozycję startową gracza 1 (lewy dolny róg labiryntu).
+        Calculates the starting position of player 1 (bottom left corner of the maze).
         """
         # Oblicz pozycję labiryntu
         maze_width = (

@@ -1,4 +1,5 @@
-# W nowym pliku maze/maze_components/power_up.py
+"""This module contains classes for different power-ups in the game."""
+
 import random
 
 import pygame
@@ -6,40 +7,40 @@ import pygame
 
 class PowerUp(pygame.sprite.Sprite):
     """
-    Klasa bazowa dla modyfikatorów pojawiających się na mapie.
+    Base class for power-ups appearing on the map.
     """
 
     def __init__(self, main, pos_x, pos_y, block_size):
         super().__init__()
         self.main = main
-        # Ustawiamy rozmiar na 60% block_size
+        # Set size to 60% of block_size
         self.size = int(block_size * 0.6)
         self.image = pygame.Surface((self.size, self.size))
         self.rect = self.image.get_rect()
 
-        # Centrujemy modyfikator w polu
+        # Center the power-up in the field
         self.rect.x = pos_x + (block_size - self.size) // 2
         self.rect.y = pos_y + (block_size - self.size) // 2
 
         self.block_size = block_size
-        self.duration = self.main.settings.power_up_duration  # Czas trwania efektu w ms
+        self.duration = self.main.settings.power_up_duration  # Effect duration in ms
         self.active = True
 
     def apply_effect(self, player):
         """
-        Aplikuje efekt modyfikatora na gracza.
-        Metoda do nadpisania przez klasy potomne.
+        Apply the power-up effect to the player.
+        Method to be overridden by subclasses.
         """
 
     def remove_effect(self, player_num):
         """
-        Usuwa efekt modyfikatora z gracza.
-        Metoda do nadpisania przez klasy potomne.
+        Remove the power-up effect from the player.
+        Method to be overridden by subclasses.
         """
 
     def draw(self, screen):
         """
-        Rysuje modyfikator na ekranie, jeśli jest aktywny.
+        Draw the power-up on the screen if it is active.
         """
         if self.active:
             screen.blit(self.image, self.rect)
@@ -47,15 +48,15 @@ class PowerUp(pygame.sprite.Sprite):
 
 class SpeedBoost(PowerUp):
     """
-    Modyfikator zwiększający prędkość gracza.
+    Power-up that increases the player's speed.
     """
 
     def __init__(self, main, pos_x, pos_y, block_size):
         super().__init__(main, pos_x, pos_y, block_size)
-        self.image.fill((0, 255, 0))  # Zielony kolor dla przyspieszenia
+        self.image.fill((0, 255, 0))  # Green color for speed boost
 
-        # Dostosowujemy koordynaty do zmniejszonego rozmiaru
-        size = self.size  # To jest teraz 60% block_size
+        # Adjust coordinates for reduced size
+        size = self.size  # This is now 60% of block_size
         pygame.draw.polygon(
             self.image,
             (255, 255, 0),
@@ -71,20 +72,20 @@ class SpeedBoost(PowerUp):
 
     def apply_effect(self, player):
         """
-        Zwiększa prędkość gracza na określony czas.
+        Increases the player's speed for a specified time.
         """
         player.speed *= 1.5
 
-        # Rejestrujemy power-up w menedżerze
+        # Register the power-up with the manager
         self.main.powerup_manager.register_powerup("speed", player.player_number, self)
 
-        # Po określonym czasie przywracamy normalną prędkość
+        # After a specified time, restore normal speed
         pygame.time.set_timer(pygame.USEREVENT + player.player_number, self.duration)
         self.active = False
 
     def remove_effect(self, player_num):
         """
-        Przywraca normalną prędkość gracza.
+        Restores the player's normal speed.
         """
         player = self.main.player1 if player_num == 1 else self.main.player2
         player.reset_speed()
@@ -92,14 +93,14 @@ class SpeedBoost(PowerUp):
 
 class SlowDown(PowerUp):
     """
-    Modyfikator zmniejszający prędkość przeciwnika.
+    Power-up that decreases the opponent's speed.
     """
 
     def __init__(self, main, pos_x, pos_y, block_size):
         super().__init__(main, pos_x, pos_y, block_size)
-        self.image.fill((255, 0, 0))  # Czerwony kolor dla spowolnienia
+        self.image.fill((255, 0, 0))  # Red color for slow down
 
-        # Dostosowujemy koordynaty do zmniejszonego rozmiaru
+        # Adjust coordinates for reduced size
         size = self.size
         pygame.draw.circle(self.image, (0, 0, 0), (size // 2, size // 2), size // 3, 2)
         pygame.draw.line(
@@ -108,9 +109,9 @@ class SlowDown(PowerUp):
 
     def apply_effect(self, player):
         """
-        Spowalnia przeciwnika gracza.
+        Slows down the player's opponent.
         """
-        # Znajdujemy przeciwnika
+        # Find the opponent
         if player.player_number == 1:
             opponent = player.main.player2
             opponent_num = 2
@@ -120,16 +121,16 @@ class SlowDown(PowerUp):
 
         opponent.speed *= 0.5
 
-        # Rejestrujemy power-up w menedżerze
+        # Register the power-up with the manager
         self.main.powerup_manager.register_powerup("speed", opponent_num, self)
 
-        # Po określonym czasie przywracamy normalną prędkość
+        # After a specified time, restore normal speed
         pygame.time.set_timer(pygame.USEREVENT + opponent_num, self.duration)
         self.active = False
 
     def remove_effect(self, player_num):
         """
-        Przywraca normalną prędkość gracza.
+        Restores the player's normal speed.
         """
         player = self.main.player1 if player_num == 1 else self.main.player2
         player.reset_speed()
@@ -137,15 +138,15 @@ class SlowDown(PowerUp):
 
 class Enlarge(PowerUp):
     """
-    Modyfikator zwiększający rozmiar przeciwnika gracza dokładnie do rozmiaru bloku.
+    Power-up that enlarges the player's opponent to exactly the size of a block.
     """
 
     def __init__(self, main, pos_x, pos_y, block_size):
         super().__init__(main, pos_x, pos_y, block_size)
-        self.image.fill((255, 165, 0))  # Pomarańczowy kolor
+        self.image.fill((255, 165, 0))  # Orange color
 
         size = self.size
-        # Rysujemy strzałki na zewnątrz
+        # Draw arrows pointing outward
         pygame.draw.polygon(
             self.image,
             (0, 0, 0),
@@ -159,9 +160,9 @@ class Enlarge(PowerUp):
 
     def apply_effect(self, player):
         """
-        Zwiększa rozmiar przeciwnika gracza dokładnie do rozmiaru bloku.
+        Enlarges the player's opponent to exactly the size of a block.
         """
-        # Znajdujemy przeciwnika
+        # Find the opponent
         if player.player_number == 1:
             opponent = self.main.player2
             opponent_num = 2
@@ -169,62 +170,62 @@ class Enlarge(PowerUp):
             opponent = self.main.player1
             opponent_num = 1
 
-        # Zapisujemy oryginalne wymiary
+        # Save the original dimensions
         original_width = opponent.width
         original_height = opponent.height
         block_size = self.main.settings.block_size
 
-        # Zapisujemy oryginalne położenie środka gracza
+        # Save the original center position of the player
         center_x = opponent.x + original_width / 2
         center_y = opponent.y + original_height / 2
 
-        # Ustawiamy nowy rozmiar dokładnie na rozmiar bloku
+        # Set the new size exactly to the size of a block
         new_width = int(block_size * 0.99)
         new_height = int(block_size * 0.99)
 
-        # Obliczamy nowe położenie gracza, aby pozostał wyśrodkowany
+        # Calculate the new position of the player to keep it centered
         new_x = int(center_x - new_width / 2)
         new_y = int(center_y - new_height / 2)
 
-        # ustawiamy nowe wymiary
+        # set the new dimensions
         opponent.width = new_width
         opponent.height = new_height
         opponent.x = new_x
         opponent.y = new_y
 
-        # Aktualizujemy obrazek i prostokąt kolizji
+        # Update the image and collision rectangle
         opponent.update_image()
         opponent.push_out_of_wall()
 
-        # Rejestrujemy power-up w menedżerze
+        # Register the power-up with the manager
         self.main.powerup_manager.register_powerup("enlarge", opponent_num, self)
 
-        # Ustawiamy timer na przywrócenie normalnego rozmiaru
+        # Set a timer to restore the normal size
         pygame.time.set_timer(
             pygame.USEREVENT + 20 + opponent_num, self.duration, loops=1
         )
 
-        # Dezaktywujemy power-up
+        # Deactivate the power-up
         self.active = False
 
     def remove_effect(self, player_num):
         """
-        Przywraca normalny rozmiar gracza.
+        Restores the player's normal size.
         """
         player = self.main.player1 if player_num == 1 else self.main.player2
 
         original_width = self.main.settings.player_width
         original_height = self.main.settings.player_height
 
-        # Zapisujemy środek gracza
+        # Save the player's center
         center_x = player.x + player.width / 2
         center_y = player.y + player.height / 2
 
-        # Przywracamy oryginalny rozmiar
+        # Restore the original size
         player.width = original_width
         player.height = original_height
 
-        # Aktualizujemy położenie, zachowując środek
+        # Update the position, keeping the center
         player.x = int(center_x - original_width / 2)
         player.y = int(center_y - original_height / 2)
 
@@ -233,15 +234,15 @@ class Enlarge(PowerUp):
 
 class Teleport(PowerUp):
     """
-    Modyfikator teleportujący gracza losowo w dostępne miejsce.
+    Power-up that teleports the player randomly to an available location.
     """
 
     def __init__(self, main, pos_x, pos_y, block_size):
         super().__init__(main, pos_x, pos_y, block_size)
-        self.image.fill((148, 0, 211))  # Fioletowy kolor dla teleportu
+        self.image.fill((148, 0, 211))  # Purple color for teleport
 
         size = self.size
-        # Rysujemy spiralę
+        # Draw a spiral
         for i in range(0, size, 2):
             radius = i // 2
             pos = (size // 2, size // 2)
@@ -249,19 +250,19 @@ class Teleport(PowerUp):
 
     def apply_effect(self, player):
         """
-        Teleportuje gracza w losowe miejsce w labiryncie, z wyjątkiem strefy wygranej.
+        Teleports the player to a random location in the maze, except for the winning zone.
         """
-        # Pobieramy wszystkie dostępne podłogi
+        # Get all available floors
         available_floors = []
 
-        # Pobieranie stref wygranej
+        # Get winning zones
         mid_x = self.main.settings.screen_width // 2
         safe_margin = self.main.settings.block_size * 2
 
         for floor in self.main.maze.floors:
             rect = pygame.Rect(floor.rect.x, floor.rect.y, player.width, player.height)
 
-            # Sprawdzanie czy podłoga jest poza strefą wygranej i nie koliduje ze ścianami
+            # Check if the floor is outside the winning zone and does not collide with walls
             is_in_win_zone = (
                 player.player_number == 1 and floor.rect.x > mid_x - safe_margin
             ) or (player.player_number == 2 and floor.rect.x < mid_x + safe_margin)
@@ -270,7 +271,7 @@ class Teleport(PowerUp):
                 available_floors.append(floor)
 
         if available_floors:
-            # Losujemy podłogę
+            # Randomly select a floor
             new_floor = random.choice(available_floors)
             player.x = new_floor.rect.x
             player.y = new_floor.rect.y
@@ -282,15 +283,15 @@ class Teleport(PowerUp):
 
 class Freeze(PowerUp):
     """
-    Modyfikator zamrażający przeciwnika na chwilę.
+    Power-up that freezes the opponent for a short time.
     """
 
     def __init__(self, main, pos_x, pos_y, block_size):
         super().__init__(main, pos_x, pos_y, block_size)
-        self.image.fill((173, 216, 230))  # Jasnoniebieski kolor dla lodu
+        self.image.fill((173, 216, 230))  # Light blue color for ice
 
         size = self.size
-        # Rysujemy płatek śniegu
+        # Draw a snowflake
         pygame.draw.line(
             self.image, (255, 255, 255), (size // 2, 0), (size // 2, size), 2
         )
@@ -314,9 +315,9 @@ class Freeze(PowerUp):
 
     def apply_effect(self, player):
         """
-        Zamraża przeciwnika gracza na określony czas.
+        Freezes the player's opponent for a specified time.
         """
-        # Znajdujemy przeciwnika
+        # Find the opponent
         if player.player_number == 1:
             opponent = self.main.player2
             opponent_num = 2
@@ -332,10 +333,10 @@ class Freeze(PowerUp):
         )
         opponent.speed = 0
 
-        # Rejestrujemy power-up w menedżerze
+        # Register the power-up with the manager
         self.main.powerup_manager.register_powerup("freeze", opponent_num, self)
 
-        # Ustawiam timer na odmrożenie
+        # Set a timer for unfreezing
         pygame.time.set_timer(
             pygame.USEREVENT + 30 + opponent_num, self.duration, loops=1
         )
@@ -343,7 +344,7 @@ class Freeze(PowerUp):
 
     def remove_effect(self, player_num):
         """
-        Odmraża gracza.
+        Unfreezes the player.
         """
         player = self.main.player1 if player_num == 1 else self.main.player2
         player.frozen = False
@@ -356,15 +357,15 @@ class Freeze(PowerUp):
 
 class ReverseControls(PowerUp):
     """
-    Modyfikator odwracający sterowanie przeciwnika gracza.
+    Power-up that reverses the controls of the player's opponent.
     """
 
     def __init__(self, main, pos_x, pos_y, block_size):
         super().__init__(main, pos_x, pos_y, block_size)
-        self.image.fill((255, 215, 0))  # Złoty kolor dla odwrócenia sterowania
+        self.image.fill((255, 215, 0))  # Gold color for reverse controls
 
         size = self.size
-        # Rysujemy strzałki wskazujące przeciwne kierunki
+        # Draw arrows indicating opposite directions
         pygame.draw.line(
             self.image, (0, 0, 0), (size // 4, size // 4), (size // 4, 3 * size // 4), 2
         )
@@ -397,14 +398,14 @@ class ReverseControls(PowerUp):
             2,
         )
 
-        # Zapisujemy przeciwnika, na którym efekt będzie działał
+        # Save the opponent on whom the effect will work
         self.affected_player = None
 
     def apply_effect(self, player):
         """
-        Odwraca sterowanie przeciwnika gracza na określony czas.
+        Reverses the controls of the player's opponent for a specified time.
         """
-        # Znajdujemy przeciwnika
+        # Find the opponent
         if player.player_number == 1:
             self.affected_player = player.main.player2
             opponent_num = 2
@@ -412,15 +413,15 @@ class ReverseControls(PowerUp):
             self.affected_player = player.main.player1
             opponent_num = 1
 
-        # Odwracamy sterowanie
+        # Reverse the controls
         self.affected_player.reversed_controls = True
 
-        # Rejestrujemy power-up w menedżerze
+        # Register the power-up with the manager
         self.main.powerup_manager.register_powerup(
             "reverse_controls", opponent_num, self
         )
 
-        # Dodajemy timer do przywrócenia normalnego sterowania
+        # Add a timer to restore normal controls
         pygame.time.set_timer(
             pygame.USEREVENT + 40 + opponent_num, self.duration, loops=1
         )
@@ -429,7 +430,7 @@ class ReverseControls(PowerUp):
 
     def remove_effect(self, player_num):
         """
-        Usuwa efekt odwróconego sterowania z gracza.
+        Removes the reversed control effect from the player.
         """
         if player_num == 1:
             player = self.main.player1

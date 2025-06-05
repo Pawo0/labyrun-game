@@ -36,11 +36,7 @@ class PlayerStats:
             self.game_history = []
 
     def add_game(self, record: GameRecord) -> None:
-        """Add a game record to the player's history.
-
-        Args:
-            record (GameRecord): GameRecord object containing game data.
-        """
+        """Add a game record to the player's history."""
         # Update overall stats
         self.games_played += 1
         if record.win:

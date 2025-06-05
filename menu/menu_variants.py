@@ -14,12 +14,12 @@ class Menu:
         self.main = main
         self.screen = main.screen
         self.items = items
-        # zaczynamy stawiac przyciski statyczne 225 pikseli od srodka ekranu
+        # Start placing static buttons 225 pixels from the center of the screen
         self.ys = [self.screen.get_height() // 2 - 225]
 
         button_start_y = (
             self.screen.get_height() // 2 - 100
-        )  # kazdy przycisk 100 pikseli nizej
+        )  # Each button 100 pixels lower
         button_spacing = 100
         for i in range(len(items)):
             self.ys.append(button_start_y + i * button_spacing)
@@ -170,7 +170,6 @@ class StatsMenu:
 
         for i, player in enumerate(leaderboard[:10]):  # Show top 10
             y = start_y + (i + 1) * row_height
-
             row_data = [
                 player["player_name"],
                 str(player["wins"]),
@@ -178,18 +177,14 @@ class StatsMenu:
                 f"{player['win_rate']:.1%}" if player["total_games"] > 0 else "0.0%",
                 f"{player['avg_time']:.1f}s" if player["avg_time"] else "N/A",
             ]
-
             for j, data in enumerate(row_data):
                 x = table_start_x + sum(col_widths[:j])
                 data_surface = self.small_font.render(data, True, self.text_color)
-
                 if j == 0:
                     x_pos = x + 10
                 else:
                     x_pos = x + (col_widths[j] - data_surface.get_width()) // 2
-
                 self.screen.blit(data_surface, (x_pos, y))
-
         self.back_button.draw()
 
 
