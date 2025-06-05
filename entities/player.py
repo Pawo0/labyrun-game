@@ -20,7 +20,6 @@ class Player(pygame.sprite.Sprite):  # Dziedziczenie po pygame.sprite.Sprite
         self.height = None
         self.movements = None
         self.color = None
-        self.original_color = None
         self.pos = None
         self.x = None
         self.y = None
@@ -34,8 +33,6 @@ class Player(pygame.sprite.Sprite):  # Dziedziczenie po pygame.sprite.Sprite
         self.reversed_controls = False
 
         self.player_number = player_no
-
-
 
         self.reset()
 
@@ -223,4 +220,12 @@ class Player(pygame.sprite.Sprite):  # Dziedziczenie po pygame.sprite.Sprite
         """
         Draws the player on the screen.
         """
-        self.screen.fill(self.color, (self.x, self.y, self.width, self.height))
+        curr_color = self.color
+        if self.frozen and self.reversed_controls:
+            curr_color = self.settings.freeze_and_reverse_colors
+        elif self.frozen:
+            curr_color = self.settings.freeze_color
+        elif self.reversed_controls:
+            curr_color = self.settings.reverse_controls_color
+
+        self.screen.fill(curr_color, (self.x, self.y, self.width, self.height))

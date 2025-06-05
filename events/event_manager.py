@@ -92,7 +92,6 @@ class EventManager:
         event.activate(self.main)
         self.active_events.append(event)
 
-        print(f"Event triggered: {event.name}")
 
     def get_active_events(self):
         """Get list of currently active events."""

@@ -275,11 +275,6 @@ class Freeze(PowerUp):
         )
         opponent.speed = 0
 
-        # Zapisujemy oryginalny kolor i zmieniamy na niebieski
-        opponent.original_color = opponent.color
-        opponent.color = self.main.settings.freeze_color
-        opponent.update_image()  # Aktualizujemy obraz przeciwnika
-
         # Ustawiam timer na odmrożenie
         player_num = 2 if player.player_no == 1 else 1
         pygame.time.set_timer(
@@ -325,10 +320,6 @@ class ReverseControls(PowerUp):
 
         # Odwracamy sterowanie
         opponent.reversed_controls = True
-
-        opponent.original_color = opponent.color
-        opponent.color = (255, 0, 0)  # Czerwony kolor
-        opponent.update_image()  # Aktualizujemy obraz przeciwnika
 
         # Dodajemy timer do przywrócenia normalnego sterowania
         player_num = 2 if player.player_number == 1 else 1

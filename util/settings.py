@@ -57,7 +57,9 @@ class Settings:
         self.teleport_enabled = True
         self.freeze_enabled = True
         self.reverse_controls_enabled = True
-        self.freeze_color = (173, 216, 230)  # Jasnoniebieski kolor dla zamrożenia
+        self.freeze_color = (173, 216, 230)
+        self.reverse_controls_color = (255, 0, 0)
+        self.freeze_and_reverse_colors = (255, 105, 180)
 
         # Event system settings
         self.events_enabled = True  # Master switch for all events

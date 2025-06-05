@@ -180,11 +180,6 @@ class Maze:
         temp_sprite.rect = rect
         collisions = pygame.sprite.spritecollide(temp_sprite, self.walls, False)
 
-        # Dodaj debugowanie
-        if collisions:
-            # print(f"Wykryto kolizję: {rect} z {[wall.rect for wall in collisions]}")
-            pass
-
         return collisions
 
     def check_power_up_collision(self, player):
