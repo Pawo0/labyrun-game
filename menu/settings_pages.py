@@ -26,13 +26,29 @@ class SettingsOptions:
         # Pozycja tytułu
         self.title_width, self.title_height = self.font.size(title)
         self.title_x = self.screen.get_width() // 2 - self.title_width // 2
-        self.title_y = self.screen.get_height() // 2 - 225
+        self.title_y = self.screen.get_height() // 6
 
-        # Pozycje opcji
-        self.option_spacing = 100
-        self.option_start_y = self.screen.get_height() // 2 - 100
-        self.option_x = self.screen.get_width() // 2 - 150
-        self.value_x = self.screen.get_width() // 2 + 150
+        # Określenie rozmiaru i pozycji elementów
+        screen_height = self.screen.get_height()
+        screen_width = self.screen.get_width()
+
+        # Oblicz całkowitą wymaganą wysokość
+        total_options = len(options_names)
+
+        # Dostosuj odstęp między opcjami na podstawie ilości opcji
+        if total_options <= 5:
+            self.option_spacing = 80
+        else:
+            max_content_height = screen_height * 0.65
+            self.option_spacing = min(80, max_content_height / (total_options + 1))
+
+        # Początek sekcji opcji
+        self.option_start_y = self.title_y + self.title_height + 50
+
+        # Pozycje kolumn
+        column_margin = 150
+        self.option_x = screen_width // 2 - column_margin
+        self.value_x = screen_width // 2 + column_margin
 
         # Aktualnie wybrana opcja
         self.selected = 0
@@ -40,47 +56,147 @@ class SettingsOptions:
         # Przycisk powrotu
         self.back_text = "Back"
         self.back_width, self.back_height = self.font.size(self.back_text)
-        self.back_x = self.screen.get_width() // 2
-        self.back_y = (
-            self.option_start_y + (len(options_names) + 1) * self.option_spacing
-        )
+        self.back_x = screen_width // 2
+
+        # Ustaw pozycję przycisku Back pod ostatnią opcją
+        self.back_y = self.option_start_y + (total_options * self.option_spacing) + 40
+
+        # Upewnij się, że przycisk Back nie jest za nisko
+        max_back_y = screen_height - 80
+        if self.back_y > max_back_y:
+            self.back_y = max_back_y
 
         self.back_button = Button(
             self.main, self.back_text, self.back_x, self.back_y, False
         )
+        self.disabled_options = []  # Lista indeksów wyłączonych opcji
+        self.disabled_color = (100, 100, 100)  # Szary kolor dla wyłączonych opcji
+        self.dependencies = {}  # Słownik zależności między opcjami
+
+    def set_option_dependency(self, dependent_option, parent_option, condition_func):
+        """ustaw opcje zalezna od innej"""
+        if not hasattr(self, 'dependencies'):
+            self.dependencies = {}
+
+        if parent_option not in self.dependencies:
+            self.dependencies[parent_option] = []
+
+        self.dependencies[parent_option].append((dependent_option, condition_func))
+
+    def update_dependencies(self):
+        """Aktualizuje stan opcji zależnych na podstawie ustawień nadrzędnych."""
+        self.disabled_options = []
+
+        for parent, dependents in self.dependencies.items():
+            for dependent_option, condition_func in dependents:
+                if not condition_func(self.current_values, parent):
+                    self.disabled_options.append(dependent_option)
 
     def handle_events(self, event):
         """Obsługa zdarzeń dla strony ustawień."""
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_UP:
+                # Przeskakuj nieaktywne opcje
                 self.selected = (self.selected - 1) % (len(self.options_names) + 1)
+                while self.selected in self.disabled_options:
+                    self.selected = (self.selected - 1) % (len(self.options_names) + 1)
             elif event.key == pygame.K_DOWN:
+                # Przeskakuj nieaktywne opcje
                 self.selected = (self.selected + 1) % (len(self.options_names) + 1)
+                while self.selected in self.disabled_options:
+                    self.selected = (self.selected + 1) % (len(self.options_names) + 1)
             elif event.key == pygame.K_LEFT and self.selected < len(self.options_names):
-                # Zmiana wartości opcji w lewo
-                self.current_values[self.selected] = (
-                    self.current_values[self.selected] - 1
-                ) % len(self.options_values[self.selected])
-                self._apply_setting(self.selected)
-            elif event.key == pygame.K_RIGHT and self.selected < len(
-                self.options_names
-            ):
-                # Zmiana wartości opcji w prawo
-                self.current_values[self.selected] = (
-                    self.current_values[self.selected] + 1
-                ) % len(self.options_values[self.selected])
-                self._apply_setting(self.selected)
+                # Zmiana wartości opcji w lewo tylko dla aktywnych opcji
+                if self.selected not in self.disabled_options:
+                    self.current_values[self.selected] = (
+                                                                 self.current_values[self.selected] - 1
+                                                         ) % len(self.options_values[self.selected])
+                    self._apply_setting(self.selected)
+                    # Aktualizuj zależności po zmianie opcji
+                    self.update_dependencies()
+            elif event.key == pygame.K_RIGHT and self.selected < len(self.options_names):
+                # Zmiana wartości opcji w prawo tylko dla aktywnych opcji
+                if self.selected not in self.disabled_options:
+                    self.current_values[self.selected] = (
+                                                                 self.current_values[self.selected] + 1
+                                                         ) % len(self.options_values[self.selected])
+                    self._apply_setting(self.selected)
+                    # Aktualizuj zależności po zmianie opcji
+                    self.update_dependencies()
             elif event.key == pygame.K_RETURN:
                 # Jeśli wybrano "Back"
                 if self.selected == len(self.options_names):
                     self.main.game_state.open_settings()
 
-        # TODO: obslugo eventow myszki
+        # Obsługa zdarzeń myszy
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            # Sprawdź czy kliknięto przycisk Back
+            if self.back_button.is_clicked(event.pos):
+                self.main.game_state.open_settings()
+                return
 
-    def _apply_setting(self, index):
-        """Aplikuje wybrane ustawienie do gry."""
-        # Ta metoda powinna być nadpisana przez klasy pochodne
-        raise NotImplementedError("This method should be overridden by subclasses.")
+            # Sprawdzanie kliknięcia na opcje
+            for i in range(len(self.options_names)):
+                # Pomijaj nieaktywne opcje
+                if i in self.disabled_options:
+                    continue
+
+                option_y = self.option_start_y + i * self.option_spacing
+
+                # Obszar wiersza opcji
+                option_rect = pygame.Rect(
+                    self.option_x - 100,
+                    option_y - 20,
+                    self.value_x - self.option_x + 200,
+                    40
+                )
+
+                if option_rect.collidepoint(event.pos):
+                    self.selected = i
+                    return
+
+                # Obszar lewej strzałki
+                left_arrow = pygame.Rect(self.value_x - 70, option_y + 10, 40, 40)
+
+                # Obszar prawej strzałki
+                right_arrow = pygame.Rect(self.value_x + 30, option_y + 10, 40, 40)
+
+                if left_arrow.collidepoint(event.pos):
+                    self.selected = i
+                    self.current_values[i] = (self.current_values[i] - 1) % len(self.options_values[i])
+                    self._apply_setting(i)
+                    self.update_dependencies()
+                    return
+
+                if right_arrow.collidepoint(event.pos):
+                    self.selected = i
+                    self.current_values[i] = (self.current_values[i] + 1) % len(self.options_values[i])
+                    self._apply_setting(i)
+                    self.update_dependencies()
+                    return
+
+        elif event.type == pygame.MOUSEMOTION:
+            # Podświetlanie opcji pod kursorem
+            if self.back_button.is_hovered(event.pos):
+                self.selected = len(self.options_names)
+                return
+
+            for i in range(len(self.options_names)):
+                # Pomijaj nieaktywne opcje
+                if i in self.disabled_options:
+                    continue
+
+                option_y = self.option_start_y + i * self.option_spacing
+                option_rect = pygame.Rect(
+                    self.option_x - 100,
+                    option_y - 20,
+                    self.value_x - self.option_x + 200,
+                    40
+                )
+
+                if option_rect.collidepoint(event.pos):
+                    self.selected = i
+                    return
 
     def draw(self):
         """Rysuje stronę ustawień na ekranie."""
@@ -92,10 +208,15 @@ class SettingsOptions:
         for i, option_name in enumerate(self.options_names):
             option_y = self.option_start_y + i * self.option_spacing
 
+            # Określ kolor tekstu w zależności od stanu opcji
+            if i in self.disabled_options:
+                option_color = self.disabled_color  # Szary kolor dla wyłączonych opcji
+            else:
+                option_color = self.active_color if i == self.selected else self.text_color
+
             # Nazwa opcji
-            option_color = self.active_color if i == self.selected else self.text_color
             option_render = self.font.render(option_name, True, option_color)
-            self.screen.blit(option_render, (self.option_x, option_y))
+            self.screen.blit(option_render, (self.option_x - option_render.get_width(), option_y))
 
             # Wartość opcji
             current_value = self.options_values[i][self.current_values[i]]
@@ -103,16 +224,18 @@ class SettingsOptions:
             value_width = value_render.get_width()
             self.screen.blit(value_render, (self.value_x - value_width // 2, option_y))
 
-            # Rysuj strzałki
-            if i == self.selected:
+            # Rysuj strzałki tylko dla aktywnych opcji
+            if i == self.selected and i not in self.disabled_options:
+                arrow_size = min(15, self.option_spacing // 3)
+
                 # Lewa strzałka
                 pygame.draw.polygon(
                     self.screen,
                     option_color,
                     [
-                        (self.value_x - 60, option_y + 30),
-                        (self.value_x - 40, option_y + 15),
-                        (self.value_x - 40, option_y + 45),
+                        (self.value_x - 60, option_y + arrow_size * 2),
+                        (self.value_x - 40, option_y + arrow_size),
+                        (self.value_x - 40, option_y + arrow_size * 3),
                     ],
                 )
 
@@ -121,9 +244,9 @@ class SettingsOptions:
                     self.screen,
                     option_color,
                     [
-                        (self.value_x + 60, option_y + 30),
-                        (self.value_x + 40, option_y + 15),
-                        (self.value_x + 40, option_y + 45),
+                        (self.value_x + 60, option_y + arrow_size * 2),
+                        (self.value_x + 40, option_y + arrow_size),
+                        (self.value_x + 40, option_y + arrow_size * 3),
                     ],
                 )
 
@@ -190,7 +313,7 @@ class GameMenu(SettingsOptions):
             ["On", "Off"],  # Slow Down
             ["On", "Off"],  # Enlarge
             ["On", "Off"],  # Teleport
-            ["On", "Off"],  # Freeze
+            ["On", "Off"]  # Freeze
         ]
 
         super().__init__(main, "Ustawienia gry", options_names, options_values)
@@ -198,12 +321,21 @@ class GameMenu(SettingsOptions):
         # Ustawiamy aktualne wartości
         self.current_values[0] = 0 if main.settings.fog_of_war_enabled else 1
         self.current_values[1] = 0 if main.settings.power_ups_enabled else 1
-
         self.current_values[2] = 0 if main.settings.speed_boost_enabled else 1
         self.current_values[3] = 0 if main.settings.slow_down_enabled else 1
         self.current_values[4] = 0 if main.settings.enlarge_enabled else 1
         self.current_values[5] = 0 if main.settings.teleport_enabled else 1
         self.current_values[6] = 0 if main.settings.freeze_enabled else 1
+
+        # Ustaw zależności - opcje power-upów są aktywne tylko gdy główna opcja jest włączona (value=0)
+        def powerups_enabled(values, parent_idx):
+            return values[parent_idx] == 0  # "On"
+
+        for powerup_idx in range(2, 7):  # Indeksy dla Speed Boost, Slow Down, Enlarge, Teleport, Freeze
+            self.set_option_dependency(powerup_idx, 1, powerups_enabled)
+
+        # Aktualizuj zależności na początku
+        self.update_dependencies()
 
     def _apply_setting(self, index):
         """Aplikuje wybrane ustawienie do gry."""
