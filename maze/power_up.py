@@ -392,18 +392,21 @@ class ReverseControls(PowerUp):
         # Znajdujemy przeciwnika
         if player.player_number == 1:
             self.affected_player = player.main.player2
+            opponent_num = 2
         else:
             self.affected_player = player.main.player1
+            opponent_num = 1
 
         # Odwracamy sterowanie
         self.affected_player.reversed_controls = True
 
+        # Rejestrujemy power-up w menedżerze
+        self.main.powerup_manager.register_powerup("reverse_controls", opponent_num, self)
+
         # Dodajemy timer do przywrócenia normalnego sterowania
-        player_num = 2 if player.player_number == 1 else 1
-        pygame.time.set_timer(pygame.USEREVENT + 40 + player_num, self.duration, loops=1)
+        pygame.time.set_timer(pygame.USEREVENT + 40 + opponent_num, self.duration, loops=1)
 
         self.active = False
-
     def remove_effect(self, player_num):
         """
         Usuwa efekt odwróconego sterowania z gracza.
