@@ -300,6 +300,10 @@ class ReverseControls(PowerUp):
         # Odwracamy sterowanie
         opponent.reversed_controls = True
 
+        opponent.original_color = opponent.color
+        opponent.color = (255, 0, 0)  # Czerwony kolor
+        opponent.update_image()  # Aktualizujemy obraz przeciwnika
+
         # Dodajemy timer do przywrócenia normalnego sterowania
         player_num = 2 if player.player_number == 1 else 1
         pygame.time.set_timer(pygame.USEREVENT + 40 + player_num, self.duration, loops=1)

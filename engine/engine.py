@@ -76,10 +76,19 @@ class Engine:
                 if hasattr(self.main.player2, 'original_color') and self.main.player2.original_color:
                     self.main.player2.color = self.main.player2.original_color
                     self.main.player2.update_image()
+
             elif event.type == pygame.USEREVENT + 41:  # player 1
                 self.main.player1.reversed_controls = False
+                # Przywracamy oryginalny kolor
+                if hasattr(self.main.player1, 'original_color') and self.main.player1.original_color:
+                    self.main.player1.color = self.main.player1.original_color
+                    self.main.player1.update_image()
             elif event.type == pygame.USEREVENT + 42:  # player 2
                 self.main.player2.reversed_controls = False
+                # Przywracamy oryginalny kolor
+                if hasattr(self.main.player2, 'original_color') and self.main.player2.original_color:
+                    self.main.player2.color = self.main.player2.original_color
+                    self.main.player2.update_image()
 
             self.state_manager.handle_event(event)
 
