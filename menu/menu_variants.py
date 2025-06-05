@@ -7,7 +7,6 @@ import pygame
 from menu.menu_elements import Button
 
 
-# TODO: change comments to english
 class Menu:
     """Base class for game menus."""
 

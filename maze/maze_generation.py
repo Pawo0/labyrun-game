@@ -127,7 +127,6 @@ class MazeGenerator:
         maze_map[height // 2][width - 1 : width + 4] = [0] * 5
         maze_map[height // 2 + 1][width : width + 3] = [0] * 3
 
-        # todo change the file format to txt
         maze_json = {"maze": maze_map}
 
         directory = os.path.join(

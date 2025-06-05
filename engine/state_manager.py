@@ -66,8 +66,12 @@ class GameStateManager:
         """Przekazuje obsługę zdarzeń klawiatury do odpowiednich graczy"""
         if event.type in (pygame.KEYDOWN, pygame.KEYUP):
             # Przekazanie obsługi klawiszy do graczy
-            self.main.player1.handle_key_event(event, pygame.K_w, pygame.K_d, pygame.K_a, pygame.K_s)
-            self.main.player2.handle_key_event(event, pygame.K_UP, pygame.K_RIGHT, pygame.K_LEFT, pygame.K_DOWN)
+            self.main.player1.handle_key_event(
+                event, pygame.K_w, pygame.K_d, pygame.K_a, pygame.K_s
+            )
+            self.main.player2.handle_key_event(
+                event, pygame.K_UP, pygame.K_RIGHT, pygame.K_LEFT, pygame.K_DOWN
+            )
 
     def _handle_settings_events(self, event):
         """

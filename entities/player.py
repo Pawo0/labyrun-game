@@ -1,7 +1,7 @@
 import pygame
 
 
-class Player(pygame.sprite.Sprite):  # Dziedziczenie po pygame.sprite.Sprite
+class Player(pygame.sprite.Sprite):
     """
     This class represents the player in the game.
     It handles position, movement, and draws the player on the screen.

@@ -4,7 +4,8 @@ import random
 
 import pygame.sprite
 
-from .power_up import Enlarge, Freeze, SlowDown, SpeedBoost, Teleport, ReverseControls
+from powerups import (Enlarge, Freeze, ReverseControls, SlowDown, SpeedBoost,
+                      Teleport)
 
 
 class Maze:
@@ -101,7 +102,10 @@ class Maze:
             power_up_types.append(Teleport)
         if hasattr(self.settings, "freeze_enabled") and self.settings.freeze_enabled:
             power_up_types.append(Freeze)
-        if hasattr(self.settings, "reverse_controls_enabled") and self.settings.reverse_controls_enabled:
+        if (
+            hasattr(self.settings, "reverse_controls_enabled")
+            and self.settings.reverse_controls_enabled
+        ):
             power_up_types.append(ReverseControls)
 
         if not power_up_types:
@@ -150,16 +154,6 @@ class Maze:
         selected_positions = []
         p1_count = min(num_power_ups // 2, len(player1_positions))
         p2_count = min(num_power_ups // 2, len(player2_positions))
-
-        # Jeśli któraś grupa ma za mało pozycji, dodajemy więcej do drugiej
-        if p1_count < num_power_ups // 2 and p2_count < num_power_ups // 2:
-            total = p1_count + p2_count
-        else:
-            if p1_count < num_power_ups // 2:
-                p2_count = num_power_ups - p1_count
-            elif p2_count < num_power_ups // 2:
-                p1_count = num_power_ups - p2_count
-            total = num_power_ups
 
         if player1_positions and p1_count > 0:
             selected_positions += random.sample(player1_positions, p1_count)
@@ -276,7 +270,7 @@ class Maze:
 
         # Aktualizujemy i rysujemy mgłę wojny, jeśli gra jest w trakcie i opcja włączona
         if (
-            self.main.game_state.state == self.main.game_state.states["running"]
+            self.main.game_state.state == "running"
             and hasattr(self.settings, "fog_of_war_enabled")
             and self.settings.fog_of_war_enabled
         ):

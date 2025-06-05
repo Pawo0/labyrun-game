@@ -11,9 +11,9 @@ from events import EventManager
 from maze import Maze, MazeGenerator
 from menu import (EventMenu, GameMenu, GameOverMenu, MainMenu, PowerupMenu,
                   SetNames, SettingsMenu, StatsMenu)
+from powerups import PowerUpManager
 from stats import StatsManager
 from util import Settings
-from maze.power_up import PowerUpManager
 
 
 class LabyRunGame:
@@ -27,14 +27,12 @@ class LabyRunGame:
         self.screen = pygame.display.set_mode()
         self.settings = Settings(self)
 
-        self.screen = pygame.display.set_mode((
-            self.settings.screen_width,
-            self.settings.screen_height
-        ))
+        self.screen = pygame.display.set_mode(
+            (self.settings.screen_width, self.settings.screen_height)
+        )
         pygame.display.set_caption("LabyRun")
 
         self.powerup_manager = PowerUpManager(self)
-
 
         self.clock = pygame.time.Clock()
         pygame.display.set_caption("LabyRun")

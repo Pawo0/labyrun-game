@@ -1,4 +1,3 @@
-# TODO: add docstrings, change comments to english
 """This module contains classes for different settings pages in the game."""
 import pygame
 

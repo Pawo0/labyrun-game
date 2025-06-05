@@ -30,14 +30,12 @@ class PowerUp(pygame.sprite.Sprite):
         Aplikuje efekt modyfikatora na gracza.
         Metoda do nadpisania przez klasy potomne.
         """
-        pass
 
-    def remove_effect(self, player):
+    def remove_effect(self, player_num):
         """
         Usuwa efekt modyfikatora z gracza.
         Metoda do nadpisania przez klasy potomne.
         """
-        pass
 
     def draw(self, screen):
         """
@@ -257,7 +255,6 @@ class Teleport(PowerUp):
         available_floors = []
 
         # Pobieranie stref wygranej
-        left_zone, right_zone = self.main.engine.win_zone
         mid_x = self.main.settings.screen_width // 2
         safe_margin = self.main.settings.block_size * 2
 
@@ -351,7 +348,7 @@ class Freeze(PowerUp):
         player = self.main.player1 if player_num == 1 else self.main.player2
         player.frozen = False
 
-        if hasattr(player, 'old_speed') and player.old_speed is not None:
+        if hasattr(player, "old_speed") and player.old_speed is not None:
             player.speed = player.old_speed
         else:
             player.reset_speed()
@@ -368,19 +365,37 @@ class ReverseControls(PowerUp):
 
         size = self.size
         # Rysujemy strzałki wskazujące przeciwne kierunki
-        pygame.draw.line(self.image, (0, 0, 0),
-                         (size // 4, size // 4), (size // 4, 3 * size // 4), 2)
-        pygame.draw.line(self.image, (0, 0, 0),
-                         (size // 4, size // 4), (size // 8, size // 3), 2)
-        pygame.draw.line(self.image, (0, 0, 0),
-                         (size // 4, size // 4), (3 * size // 8, size // 3), 2)
+        pygame.draw.line(
+            self.image, (0, 0, 0), (size // 4, size // 4), (size // 4, 3 * size // 4), 2
+        )
+        pygame.draw.line(
+            self.image, (0, 0, 0), (size // 4, size // 4), (size // 8, size // 3), 2
+        )
+        pygame.draw.line(
+            self.image, (0, 0, 0), (size // 4, size // 4), (3 * size // 8, size // 3), 2
+        )
 
-        pygame.draw.line(self.image, (0, 0, 0),
-                         (3 * size // 4, 3 * size // 4), (3 * size // 4, size // 4), 2)
-        pygame.draw.line(self.image, (0, 0, 0),
-                         (3 * size // 4, 3 * size // 4), (5 * size // 8, 2 * size // 3), 2)
-        pygame.draw.line(self.image, (0, 0, 0),
-                         (3 * size // 4, 3 * size // 4), (7 * size // 8, 2 * size // 3), 2)
+        pygame.draw.line(
+            self.image,
+            (0, 0, 0),
+            (3 * size // 4, 3 * size // 4),
+            (3 * size // 4, size // 4),
+            2,
+        )
+        pygame.draw.line(
+            self.image,
+            (0, 0, 0),
+            (3 * size // 4, 3 * size // 4),
+            (5 * size // 8, 2 * size // 3),
+            2,
+        )
+        pygame.draw.line(
+            self.image,
+            (0, 0, 0),
+            (3 * size // 4, 3 * size // 4),
+            (7 * size // 8, 2 * size // 3),
+            2,
+        )
 
         # Zapisujemy przeciwnika, na którym efekt będzie działał
         self.affected_player = None
@@ -401,12 +416,17 @@ class ReverseControls(PowerUp):
         self.affected_player.reversed_controls = True
 
         # Rejestrujemy power-up w menedżerze
-        self.main.powerup_manager.register_powerup("reverse_controls", opponent_num, self)
+        self.main.powerup_manager.register_powerup(
+            "reverse_controls", opponent_num, self
+        )
 
         # Dodajemy timer do przywrócenia normalnego sterowania
-        pygame.time.set_timer(pygame.USEREVENT + 40 + opponent_num, self.duration, loops=1)
+        pygame.time.set_timer(
+            pygame.USEREVENT + 40 + opponent_num, self.duration, loops=1
+        )
 
         self.active = False
+
     def remove_effect(self, player_num):
         """
         Usuwa efekt odwróconego sterowania z gracza.
@@ -416,74 +436,3 @@ class ReverseControls(PowerUp):
         else:
             player = self.main.player2
         player.reversed_controls = False
-
-
-
-
-class PowerUpManager:
-    """
-    Klasa zarządzająca aktywne power-upy w grze.
-    """
-
-    def __init__(self, main):
-        self.main = main
-        self.active_powerups = {}  # Słownik zawierający aktywne power-upy
-
-    def register_powerup(self, powerup_type, player_num, powerup_instance):
-        """
-        Rejestruje aktywny power-up dla danego gracza.
-        """
-        key = (powerup_type, player_num)
-        self.active_powerups[key] = powerup_instance
-
-    def handle_event(self, event):
-        """
-        Obsługuje zdarzenia związane z power-upami.
-        """
-        # Obsługa zdarzeń resetowania prędkości graczy
-        if event.type == pygame.USEREVENT + 1:  # player 1
-            key = ("speed", 1)
-            if key in self.active_powerups:
-                self.active_powerups[key].remove_effect(1)
-                del self.active_powerups[key]
-        elif event.type == pygame.USEREVENT + 2:  # player 2
-            key = ("speed", 2)
-            if key in self.active_powerups:
-                self.active_powerups[key].remove_effect(2)
-                del self.active_powerups[key]
-
-        # Obsługa zdarzeń dla przywracania rozmiaru
-        elif event.type == pygame.USEREVENT + 21:  # player 1
-            key = ("enlarge", 1)
-            if key in self.active_powerups:
-                self.active_powerups[key].remove_effect(1)
-                del self.active_powerups[key]
-        elif event.type == pygame.USEREVENT + 22:  # player 2
-            key = ("enlarge", 2)
-            if key in self.active_powerups:
-                self.active_powerups[key].remove_effect(2)
-                del self.active_powerups[key]
-
-        # Obsługa zdarzeń dla odmrażania graczy
-        elif event.type == pygame.USEREVENT + 31:  # player 1
-            key = ("freeze", 1)
-            if key in self.active_powerups:
-                self.active_powerups[key].remove_effect(1)
-                del self.active_powerups[key]
-        elif event.type == pygame.USEREVENT + 32:  # player 2
-            key = ("freeze", 2)
-            if key in self.active_powerups:
-                self.active_powerups[key].remove_effect(2)
-                del self.active_powerups[key]
-
-        # Obsługa zdarzeń dla odwróconego sterowania
-        elif event.type == pygame.USEREVENT + 41:  # player 1
-            key = ("reverse_controls", 1)
-            if key in self.active_powerups:
-                self.active_powerups[key].remove_effect(1)
-                del self.active_powerups[key]
-        elif event.type == pygame.USEREVENT + 42:  # player 2
-            key = ("reverse_controls", 2)
-            if key in self.active_powerups:
-                self.active_powerups[key].remove_effect(2)
-                del self.active_powerups[key]
